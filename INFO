@@ -1,0 +1,18 @@
+Project: Storage Performance Benchmarking for NFVI (storperf)
+Project Creation Date: 2015-09-15
+Project Category: Integration and Testing
+Lifecycle State: Incubation
+Primary Contact: mark.beierl@emc.com
+Project Lead: mark.beierl@emc.com
+Jira Project Name: Storage Performance Benchmarking for NFVI
+Jira Project Prefix: STORPERF
+Mailing list tag [storperf]
+Repository: storperf
+
+Committers:
+edgar.stpierre@emc.com
+ferenc.f.farkas@ericsson.com
+mark.beierl@emc.com
+
+Link to TSC approval of the project: http://meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-15-13.59.log.html
+Link to approval of additional committers:
