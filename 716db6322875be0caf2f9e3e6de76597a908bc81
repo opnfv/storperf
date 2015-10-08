@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da6255ed_08203a48",
+        "filename": "storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-10-08T21:56:07Z",
+      "side": 1,
+      "message": "Are you planning to setup a private subnet for transmitting carbon metrics? How about we pass in the server address.",
+      "range": {
+        "startLine": 14,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 29
+      },
+      "revId": "716db6322875be0caf2f9e3e6de76597a908bc81",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da6255ed_a816ceef",
+        "filename": "storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-10-08T21:56:07Z",
+      "side": 1,
+      "message": "I would have assumed that this class was spawned by fio_invoker.execute. How do you get this started and linked?",
+      "range": {
+        "startLine": 20,
+        "startChar": 0,
+        "endLine": 20,
+        "endChar": 35
+      },
+      "revId": "716db6322875be0caf2f9e3e6de76597a908bc81",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
