@@ -6,23 +6,25 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+import logging
 
 import socket
 
 class CarbonMetricTransmitter():
-    
+
     carbon_host = '127.0.0.1'
     carbon_port = 2003
-    
+
     def __init__(self):
-        pass
-    
+        self.logger = logging.getLogger(__name__)
+
     def transmit_metrics(self, metrics):
         self.carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.carbon_socket.connect((self.carbon_host, self.carbon_port))
-        
+
         for key, metric in metrics.items():
             message = key + " " + metric + "\n"
+            print message
             self.carbon_socket.send(message)
-            
+
         self.carbon_socket.close()
