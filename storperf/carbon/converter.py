@@ -6,13 +6,22 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+import calendar
+import logging
+import time
 
 class JSONToCarbon(object):
     def __init__(self):
-        pass
-    
+        self.logger = logging.getLogger(__name__)
+
     def convert_to_dictionary(self, json_object, prefix=None):
-        self.timestamp = str(json_object['timestamp'])
+        # Use the timestamp reported by fio, or current time if
+        # not present.
+        if 'timestamp' in json_object:
+           self.timestamp = str(json_object['timestamp'])
+        else:
+            self.timestamp = str(calendar.timegm(time.gmtime()))
+
         self.flat_dictionary = {}
         self.resurse_to_flat_dictionary(json_object, prefix)
         return self.flat_dictionary
