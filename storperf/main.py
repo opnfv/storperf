@@ -85,9 +85,5 @@ def main(argv=None):
     invoker.register(event)
     invoker.execute(simple_args)
 
-
-
-logging.config.fileConfig('logging.ini')
-
 if __name__ == "__main__":
     sys.exit(main())
