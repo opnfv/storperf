@@ -8,32 +8,24 @@
 ##############################################################################
 import getopt
 import json
-import logging
 import logging.config
 import os
-import socket
 import sys
 
-from fio.fio_invoker import FIOInvoker
-from carbon.emitter import CarbonMetricTransmitter
-from carbon.converter import JSONToCarbon
+from test_executor import TestExecutor, UnknownWorkload
 
 """
 """
+
 
 class Usage(Exception):
+
     def __init__(self, msg):
         self.msg = msg
 
-def event(metric):
-    metrics_converter = JSONToCarbon()
-    metrics_emitter = CarbonMetricTransmitter()
-    prefix = socket.getfqdn()
-    carbon_metrics = metrics_converter.convert_to_dictionary(metric, prefix)
-    metrics_emitter.transmit_metrics(carbon_metrics)
 
 def setup_logging(
-    default_path='logging.json',
+    default_path='storperf/logging.json',
     default_level=logging.INFO,
     env_key='LOG_CFG'
 ):
@@ -51,39 +43,62 @@ def setup_logging(
     else:
         logging.basicConfig(level=default_level)
 
-def main(argv=None):
 
+def event(event_string):
+    logging.getLogger(__name__).info(event_string)
+
+
+def main(argv=None):
     setup_logging()
+    test_executor = TestExecutor()
+    verbose = False
+    workloads = None
 
     if argv is None:
         argv = sys.argv
     try:
         try:
-            opts = getopt.getopt(argv[1:], "h", ["help"])
+            opts, args = getopt.getopt(argv[1:], "t:w:scvh",
+                                       ["target=",
+                                        "workload=",
+                                        "nossd",
+                                        "nowarm",
+                                        "verbose",
+                                        "help",
+                                        ])
         except getopt.error, msg:
             raise Usage(msg)
+
+        for o, a in opts:
+            if o in ("-h", "--help"):
+                print __doc__
+                return 0
+            elif o in ("-t", "--target"):
+                test_executor.filename = a
+            elif o in ("-v", "--verbose"):
+                verbose = True
+            elif o in ("-s", "--nossd"):
+                test_executor.precondition = False
+            elif o in ("-c", "--nowarm"):
+                test_executor.warm = False
+            elif o in ("-w", "--workload"):
+                workloads = a.split(",")
+
+        test_executor.register_workloads(workloads)
 
     except Usage, err:
         print >> sys.stderr, err.msg
         print >> sys.stderr, "for help use --help"
         return 2
+    except UnknownWorkload, err:
+        print >> sys.stderr, err.msg
+        print >> sys.stderr, "for help use --help"
+        return 2
 
-    for o in opts:
-        if o in ("-h", "--help"):
-            print __doc__
-            return 0
+    if (verbose):
+        test_executor.register(event)
 
-    simple_args = ['--rw=randread', '--size=32m',
-                    '--directory=.',
-                    '--iodepth=2',
-                    '--direct=1', '--invalidate=1', '--numjobs=4',
-                    '--name=random-read', '--output-format=json',
-                    '--status-interval=60',
-                    '--time_based', '--runtime=6000']
-
-    invoker = FIOInvoker()
-    invoker.register(event)
-    invoker.execute(simple_args)
+    test_executor.execute()
 
 if __name__ == "__main__":
     sys.exit(main())

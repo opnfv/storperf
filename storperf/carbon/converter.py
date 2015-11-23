@@ -10,7 +10,9 @@ import calendar
 import logging
 import time
 
+
 class JSONToCarbon(object):
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
@@ -18,11 +20,13 @@ class JSONToCarbon(object):
         # Use the timestamp reported by fio, or current time if
         # not present.
         if 'timestamp' in json_object:
-           self.timestamp = str(json_object['timestamp'])
+            timestamp = str(json_object.pop('timestamp'))
         else:
-            self.timestamp = str(calendar.timegm(time.gmtime()))
+            timestamp = str(calendar.timegm(time.gmtime()))
 
         self.flat_dictionary = {}
+        self.flat_dictionary['timestamp'] = timestamp
+
         self.resurse_to_flat_dictionary(json_object, prefix)
         return self.flat_dictionary
 
@@ -36,19 +40,18 @@ class JSONToCarbon(object):
                 if hasattr(v, '__iter__'):
                     self.resurse_to_flat_dictionary(v, key)
                 else:
-                    self.flat_dictionary[key] = str(v).replace(" ", "_") + " " + self.timestamp
+                    self.flat_dictionary[key] = str(v).replace(" ", "_")
         elif type(json) == list:
             index = 0
             for v in json:
                 index += 1
                 if hasattr(v, '__iter__'):
-                    self.resurse_to_flat_dictionary(v, prefix+"."+str(index))
+                    self.resurse_to_flat_dictionary(
+                        v, prefix + "." + str(index))
                 else:
                     if prefix is None:
                         self.flat_dictionary[index] = str(v).replace(" ", "_")
                         + " " + self.timestamp
                     else:
-                        key = prefix + "." + index;
-                        self.flat_dictionary[key] = str(v).replace(" ", "_") + " " + self.timestamp
-        else:
-            self.flat_dictionary[json] = self.timestamp
+                        key = prefix + "." + index
+                        self.flat_dictionary[key] = str(v).replace(" ", "_")

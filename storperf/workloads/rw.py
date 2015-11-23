@@ -1,4 +1,3 @@
-#!/bin/bash
 ##############################################################################
 # Copyright (c) 2015 EMC and others.
 #
@@ -7,13 +6,13 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+from workloads import _base_workload
 
-if [ -x /usr/bin/flake8 ]; then
-    flake8 storperf
-fi
 
-nosetests --with-xunit \
-         --with-coverage \
-         --cover-package=storperf\
-         --cover-xml \
-         storperf
+class rw(_base_workload._base_workload):
+
+    def setup(self):
+        self.options['name'] = 'random_readwrite'
+        self.options['rwmixread'] = '70'
+        self.options['rw'] = 'rw'
+        self.logger.debug(self.options)

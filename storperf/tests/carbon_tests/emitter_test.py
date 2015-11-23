@@ -14,8 +14,9 @@ import SocketServer
 import threading
 from time import sleep
 
-import carbon.converter
-import carbon.emitter
+from carbon import converter
+from carbon.emitter import CarbonMetricTransmitter
+
 
 class MetricsHandler(SocketServer.BaseRequestHandler):
 
@@ -24,41 +25,43 @@ class MetricsHandler(SocketServer.BaseRequestHandler):
         CarbonMetricTransmitterTest.response = self.request.recv(1024)
         return
 
+
 class MetricsServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
     pass
+
 
 class CarbonMetricTransmitterTest(unittest.TestCase):
     listen_port = 0
     response = None
-    
+
     def setUp(self):
-        
+
         address = ('localhost', 0)
         server = MetricsServer(address, MetricsHandler)
         ip, self.listen_port = server.server_address
-    
+
         t = threading.Thread(target=server.serve_forever)
-        t.setDaemon(True) 
+        t.setDaemon(True)
         t.start()
-    
+
     def test_transmit_metrics(self):
 
-        testconv = carbon.converter.JSONToCarbon()
-        json_object = json.loads("""{"timestamp" : "12345"}""")
+        testconv = converter.JSONToCarbon()
+        json_object = json.loads("""{"timestamp" : "12345", "key":"value" }""")
         result = testconv.convert_to_dictionary(json_object, "host.run-name")
 
-        emitter = carbon.emitter.CarbonMetricTransmitter()
+        emitter = CarbonMetricTransmitter()
         emitter.carbon_port = self.listen_port
         emitter.transmit_metrics(result)
-        
+
         count = 0
-        
-        while (CarbonMetricTransmitterTest.response == None and count < 10):
+
+        while (CarbonMetricTransmitterTest.response is None and count < 10):
             count += 1
             sleep(0.1)
-        
-        self.assertEqual("host.run-name.timestamp 12345 12345\n", 
-                         CarbonMetricTransmitterTest.response, 
+
+        self.assertEqual("host.run-name.key value 12345\n",
+                         CarbonMetricTransmitterTest.response,
                          CarbonMetricTransmitterTest.response)
 
 if __name__ == '__main__':

@@ -8,4 +8,8 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-exit 0
+echo "Verifying code format and compliance..."
+
+if [ -x /usr/bin/flake8 ] ; then
+	flake8 storperf
+fi
