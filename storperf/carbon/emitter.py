@@ -8,7 +8,10 @@
 ##############################################################################
 import logging
 
+import calendar
 import socket
+import time
+
 
 class CarbonMetricTransmitter():
 
@@ -19,12 +22,17 @@ class CarbonMetricTransmitter():
         self.logger = logging.getLogger(__name__)
 
     def transmit_metrics(self, metrics):
+        if 'timestamp' in metrics:
+            timestamp = metrics.pop('timestamp')
+        else:
+            timestamp = str(calendar.timegm(time.gmtime()))
+
         self.carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.carbon_socket.connect((self.carbon_host, self.carbon_port))
 
         for key, metric in metrics.items():
-            message = key + " " + metric + "\n"
-            print message
-            self.carbon_socket.send(message)
+            message = key + " " + metric + " " + timestamp
+            self.logger.debug("Metric: " + message)
+            self.carbon_socket.send(message + '\n')
 
         self.carbon_socket.close()

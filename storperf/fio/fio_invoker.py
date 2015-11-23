@@ -7,19 +7,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import sys
-import getopt
 import subprocess
 import json
-from threading  import Thread
+from threading import Thread
 
 import logging
 
-class Usage(Exception):
-    def __init__(self, msg):
-        self.msg = msg
 
 class FIOInvoker(object):
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.event_listeners = set()
@@ -39,7 +35,8 @@ class FIOInvoker(object):
             self.json_body += line
             try:
                 if line == "}\n":
-                    self.logger.debug("Have a json snippet: %s", self.json_body)
+                    self.logger.debug(
+                        "Have a json snippet: %s", self.json_body)
                     json_metric = json.loads(self.json_body)
                     self.json_body = ""
 
@@ -59,9 +56,13 @@ class FIOInvoker(object):
         self.fio_process.stderr.close()
 
     def execute(self, args=[]):
-        self.fio_process = subprocess.Popen(['fio']+args,
-                                            universal_newlines=True, stdout=subprocess.PIPE,
-                                            stderr=subprocess.PIPE);
+        for arg in args:
+            self.logger.debug("FIO arg: " + arg)
+
+        self.fio_process = subprocess.Popen(['fio'] + args,
+                                            universal_newlines=True,
+                                            stdout=subprocess.PIPE,
+                                            stderr=subprocess.PIPE)
 
         t = Thread(target=self.stdout_handler, args=())
         t.daemon = False
@@ -71,3 +72,4 @@ class FIOInvoker(object):
         t.daemon = False
         t.start()
 
+        t.join()
