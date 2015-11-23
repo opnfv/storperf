@@ -1,0 +1,67 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a5c5d37_0886f1b9",
+        "filename": "storperf/fio/fio_invoker.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-23T19:12:00Z",
+      "side": 1,
+      "message": "Without this, the test execution returns right away, while leaving FIO running in the background.  Need to think about how we want to do this when it comes to asynchronous APIs.",
+      "range": {
+        "startLine": 75,
+        "startChar": 10,
+        "endLine": 75,
+        "endChar": 14
+      },
+      "revId": "81c6f0639d1fc79b2d9f477c57dc36acdf03b39a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_88c1c1e6",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-23T19:12:00Z",
+      "side": 1,
+      "message": "Todo: create a job id framework.",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 116,
+        "endChar": 19
+      },
+      "revId": "81c6f0639d1fc79b2d9f477c57dc36acdf03b39a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_e8a95d25",
+        "filename": "storperf/workloads/ws.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-23T19:12:00Z",
+      "side": 1,
+      "message": "Need to fix this.  Will submit a new patch.",
+      "revId": "81c6f0639d1fc79b2d9f477c57dc36acdf03b39a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
