@@ -39,6 +39,57 @@
       "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_53037a73",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-11-24T17:02:46Z",
+      "side": 1,
+      "message": "Minor nit for clarity: it looks like the message content could be made a little more clear. E.g.: \"Avg Latency (us) Read/Write: \" + read_latency + \"/\" + write_latency + \" IOPS Read/Write: \" + read_iops + \"/\" + write_iops\n\nCan we make the value captured in ms instead of us? The lowest (non-RAM disk) value I would expect to see is in the hundreds of us, whereas the highest value will be in the 10\u0027s of ms.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_33f8067c",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-11-24T17:02:46Z",
+      "side": 1,
+      "message": "Just verifying behavior: if no workloads are specified in command line, then you will run all of the workloads in the workload_dir? If so, nice. I like the ease in adding new workloads.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_13f50283",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-11-24T17:02:46Z",
+      "side": 1,
+      "message": "We may need to reverse the order of these for loops. I think you want to expand the number of streams of the workload before changing to the next workload. Ordinarily, it would not matter, but for SSD, I understand major context switching of workloads does impact its behavior. See SNIA Performance WP. This can be left as TBD for now.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
