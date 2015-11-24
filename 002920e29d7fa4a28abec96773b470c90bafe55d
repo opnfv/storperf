@@ -59,6 +59,24 @@
     },
     {
       "key": {
+        "uuid": "9a5c5d37_333fe627",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-24T20:48:37Z",
+      "side": 1,
+      "message": "Yes, I need to clean this up a little.",
+      "parentUuid": "9a5c5d37_53037a73",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5c5d37_33f8067c",
         "filename": "storperf/test_executor.py",
         "patchSetId": 2
@@ -76,6 +94,24 @@
     },
     {
       "key": {
+        "uuid": "9a5c5d37_533a5a37",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-24T20:48:37Z",
+      "side": 1,
+      "message": "Correct - this is the implementation of default being \u0027all\u0027.",
+      "parentUuid": "9a5c5d37_33f8067c",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5c5d37_13f50283",
         "filename": "storperf/test_executor.py",
         "patchSetId": 2
@@ -87,6 +123,24 @@
       "writtenOn": "2015-11-24T17:02:46Z",
       "side": 1,
       "message": "We may need to reverse the order of these for loops. I think you want to expand the number of streams of the workload before changing to the next workload. Ordinarily, it would not matter, but for SSD, I understand major context switching of workloads does impact its behavior. See SNIA Performance WP. This can be left as TBD for now.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_133ce22e",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-24T20:48:37Z",
+      "side": 1,
+      "message": "Fair enough.  The question I also have is: do we redo the SSD preconditioning before the next workload?",
+      "parentUuid": "9a5c5d37_13f50283",
       "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
