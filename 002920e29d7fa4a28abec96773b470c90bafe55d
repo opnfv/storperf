@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a5c5d37_7309de2b",
+        "filename": "ci/merge.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-24T04:19:54Z",
+      "side": 1,
+      "message": "If the python-nose-cov package is not installed, nothing will happen here.  Still need to update the JJB to report code coverage reports at some point.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_3313665e",
+        "filename": "ci/verify.sh",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-11-24T04:19:54Z",
+      "side": 1,
+      "message": "This way if flake8 is not installed on the build server, no harm done, we will pass this step.",
+      "range": {
+        "startLine": 13,
+        "startChar": 16,
+        "endLine": 13,
+        "endChar": 17
+      },
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
