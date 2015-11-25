@@ -144,6 +144,24 @@
       "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_0eacb9ec",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 126,
+      "author": {
+        "id": 830
+      },
+      "writtenOn": "2015-11-25T13:50:50Z",
+      "side": 1,
+      "message": "Good question. If you look at the SNIA test spec, it calls out workload independent preconditioning first, before any testing; then, workload-dependent preconditioning per-workload test. IIRC, the workload-dependent test is simply a run of that same workload until steady state is achieved. That implies a monitoring loop that detects when steady state has been reached. I was a little skeptical about whether that would be necessary in for our use case. It is certainly worth experimenting with, but we could add that later as an experiment just as easily.",
+      "parentUuid": "9a5c5d37_133ce22e",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
