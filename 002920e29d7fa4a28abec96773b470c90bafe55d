@@ -112,6 +112,23 @@
     },
     {
       "key": {
+        "uuid": "9a5c5d37_17d16057",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 2823
+      },
+      "writtenOn": "2015-12-09T15:17:30Z",
+      "side": 1,
+      "message": "Should consider adding a phase for \"data dependent preconditioning\".  This is a phase whereby some initial data pattern is generated and executed to the block devices exposed to the client.  Typically this is different than device preconditioning (SSD preconditioning above).  One example is for compression/dedup storage targets, to have the desired data reduction or space utilization as an initial condition.",
+      "revId": "002920e29d7fa4a28abec96773b470c90bafe55d",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5c5d37_13f50283",
         "filename": "storperf/test_executor.py",
         "patchSetId": 2
