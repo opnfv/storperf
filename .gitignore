@@ -1,3 +1,5 @@
 *.pyc
 nosetests.xml
 *.log
+.project
+.pydevproject
