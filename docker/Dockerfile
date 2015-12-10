@@ -22,6 +22,10 @@ WORKDIR /home/opnfv
 
 # Packaged dependencies
 RUN apt-get update && apt-get install -y \
+libaio1 \
+libaio-dev \
+zlib1g-dev \
+supervisor \
 ssh \
 rsync \
 git \
@@ -41,8 +45,14 @@ RUN git clone https://gerrit.opnfv.org/gerrit/storperf ${repos_dir}/storperf
 RUN git clone https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
-RUN cd ${repos_dir}/fio &&  make
+RUN cd ${repos_dir}/fio && make -j 4 install
 RUN puppet module install gdsoperations-graphite
 
 COPY storperf.pp /etc/puppet/manifests/storperf.pp
 RUN puppet apply /etc/puppet/manifests/storperf.pp
+
+#Let others connect to Graphite if they want our data
+EXPOSE 8000
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+CMD ["/usr/bin/supervisord"]

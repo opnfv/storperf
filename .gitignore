@@ -3,3 +3,5 @@ nosetests.xml
 *.log
 .project
 .pydevproject
+coverage.xml
+.coverage
