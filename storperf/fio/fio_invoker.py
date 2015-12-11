@@ -7,11 +7,10 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import subprocess
 import json
-from threading import Thread
-
 import logging
+import subprocess
+from threading import Thread
 
 
 class FIOInvoker(object):
@@ -28,30 +27,33 @@ class FIOInvoker(object):
 
     def stdout_handler(self):
         self.json_body = ""
-        for line in iter(self.fio_process.stdout.readline, b''):
-            if line.startswith("fio"):
-                line = ""
-                continue
-            self.json_body += line
-            try:
-                if line == "}\n":
-                    self.logger.debug(
-                        "Have a json snippet: %s", self.json_body)
-                    json_metric = json.loads(self.json_body)
-                    self.json_body = ""
+        try:
+            for line in iter(self.fio_process.stdout.readline, b''):
+                if line.startswith("fio"):
+                    line = ""
+                    continue
+                self.json_body += line
+                try:
+                    if line == "}\n":
+                        self.logger.debug(
+                            "Have a json snippet: %s", self.json_body)
+                        json_metric = json.loads(self.json_body)
+                        self.json_body = ""
 
-                    for event_listener in self.event_listeners:
-                        event_listener(json_metric)
+                        for event_listener in self.event_listeners:
+                            event_listener(json_metric)
 
-            except Exception, e:
-                self.logger.error("Error parsing JSON: %s", e)
-                pass
+                except Exception, e:
+                    self.logger.error("Error parsing JSON: %s", e)
+                    pass
+        except ValueError:
+            pass  # We might have read from the closed socket, ignore it
 
         self.fio_process.stdout.close()
 
     def stderr_handler(self):
         for line in iter(self.fio_process.stderr.readline, b''):
-            print line
+            self.logger.error("FIO Error: %s", line)
 
         self.fio_process.stderr.close()
 

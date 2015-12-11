@@ -9,15 +9,15 @@
 
 import imp
 import logging
+from os import listdir
 import os
+from os.path import isfile, join
 import socket
 
-from os import listdir
-from os.path import isfile, join
-
-from fio.fio_invoker import FIOInvoker
-from carbon.emitter import CarbonMetricTransmitter
 from carbon.converter import JSONToCarbon
+from carbon.emitter import CarbonMetricTransmitter
+from db.job_db import JobDB
+from fio.fio_invoker import FIOInvoker
 
 
 class UnknownWorkload(Exception):
@@ -37,8 +37,8 @@ class TestExecutor(object):
         self.event_listeners = set()
         self.metrics_converter = JSONToCarbon()
         self.metrics_emitter = CarbonMetricTransmitter()
-        self.prefix = socket.getfqdn()
-        self.job_id = None
+        self.prefix = None
+        self.job_db = JobDB()
 
     def register(self, event_listener):
         self.event_listeners.add(event_listener)
@@ -50,6 +50,7 @@ class TestExecutor(object):
         carbon_metrics = self.metrics_converter.convert_to_dictionary(
             metric,
             self.prefix)
+
         read_latency = carbon_metrics[self.prefix + ".jobs.1.read.lat.mean"]
         write_latency = carbon_metrics[self.prefix + ".jobs.1.write.lat.mean"]
         read_iops = carbon_metrics[self.prefix + ".jobs.1.read.iops"]
@@ -66,7 +67,7 @@ class TestExecutor(object):
 
     def register_workloads(self, workloads):
 
-        if (workloads is None or workloads.length() == 0):
+        if (workloads is None or len(workloads) == 0):
             workload_dir = os.path.normpath(
                 os.path.join(os.path.dirname(__file__), "workloads"))
 
@@ -112,26 +113,53 @@ class TestExecutor(object):
             return imp.load_source(mname, no_ext + '.py')
         return None
 
-    def create_job_id(self):
-        return 1234
-
     def execute(self):
-        if (self.job_id is None):
-            self.job_id = self.create_job_id()
+
+        shortname = socket.getfqdn().split('.')[0]
 
         invoker = FIOInvoker()
         invoker.register(self.event)
+        self.job_db.create_job_id()
+        self.logger.info("Starting job " + self.job_db.job_id)
 
-        for numjobs in [1, 2, 4]:
+        for workload_module in self.workload_modules:
 
-            for workload_module in self.workload_modules:
-                constructor = getattr(workload_module, "__name__")
-                constructorMethod = getattr(workload_module, constructor)
-                self.logger.debug(
-                    "Found constructor: " + str(constructorMethod))
-                workload = constructorMethod()
-                workload.filename = self.filename
-                workload.invoker = invoker
-                workload.options['iodepth'] = str(numjobs)
-                self.logger.info("Executing workload: " + constructor)
-                workload.execute()
+            workload_name = getattr(workload_module, "__name__")
+            constructorMethod = getattr(workload_module, workload_name)
+            self.logger.debug(
+                "Found workload: " + str(constructorMethod))
+            workload = constructorMethod()
+            workload.filename = self.filename
+            workload.invoker = invoker
+
+            if (workload_name.startswith("_")):
+                iodepths = [2, ]
+                blocksizes = [4096, ]
+            else:
+                iodepths = [1, 16, 128]
+                blocksizes = [4096, 65536, 1048576]
+
+            for blocksize in blocksizes:
+                for iodepth in iodepths:
+
+                    full_workload_name = workload_name + \
+                        ".queue-depth." + str(iodepth) + \
+                        ".block-size." + str(blocksize)
+
+                    workload.options['iodepth'] = str(iodepth)
+                    workload.options['bs'] = str(blocksize)
+                    self.logger.info(
+                        "Executing workload: " + full_workload_name)
+
+                    self.prefix = shortname + "." + self.job_db.job_id + \
+                        "." + full_workload_name
+
+                    self.job_db.start_workload(full_workload_name)
+                    workload.execute()
+                    self.job_db.end_workload(full_workload_name)
+
+        self.logger.info("Finished job " + self.job_db.job_id)
+
+    def fetch_results(self, job, workload_name=""):
+        self.job_db.job_id = job
+        return self.job_db.fetch_results(workload_name)

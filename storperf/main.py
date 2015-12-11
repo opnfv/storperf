@@ -52,18 +52,22 @@ def main(argv=None):
     setup_logging()
     test_executor = TestExecutor()
     verbose = False
+    debug = False
     workloads = None
+    report = None
 
     if argv is None:
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "t:w:scvh",
+            opts, args = getopt.getopt(argv[1:], "t:w:r:scvdh",
                                        ["target=",
                                         "workload=",
+                                        "report=",
                                         "nossd",
                                         "nowarm",
                                         "verbose",
+                                        "debug",
                                         "help",
                                         ])
         except getopt.error, msg:
@@ -75,14 +79,23 @@ def main(argv=None):
                 return 0
             elif o in ("-t", "--target"):
                 test_executor.filename = a
+            elif o in ("-t", "--target"):
+                report = a
             elif o in ("-v", "--verbose"):
                 verbose = True
+            elif o in ("-d", "--debug"):
+                debug = True
             elif o in ("-s", "--nossd"):
                 test_executor.precondition = False
             elif o in ("-c", "--nowarm"):
                 test_executor.warm = False
             elif o in ("-w", "--workload"):
                 workloads = a.split(",")
+            elif o in ("-r", "--report"):
+                report = a
+
+        if (debug):
+            logging.getLogger().setLevel(logging.DEBUG)
 
         test_executor.register_workloads(workloads)
 
@@ -98,7 +111,10 @@ def main(argv=None):
     if (verbose):
         test_executor.register(event)
 
-    test_executor.execute()
+    if (report is not None):
+        print test_executor.fetch_results(report, workloads)
+    else:
+        test_executor.execute()
 
 if __name__ == "__main__":
     sys.exit(main())

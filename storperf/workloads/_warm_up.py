@@ -12,6 +12,6 @@ from workloads import _base_workload
 class _warm_up(_base_workload._base_workload):
 
     def setup(self):
-        self.options['name'] = 'ssd_preconditioning'
-        self.options['rw'] = 'randwrite'
-        self.options['loops'] = '4'
+        self.options['name'] = 'warm_up'
+        self.options['rw'] = 'write'
+        self.options['loops'] = '1'

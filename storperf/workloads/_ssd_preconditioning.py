@@ -13,4 +13,5 @@ class _ssd_preconditioning(_base_workload._base_workload):
 
     def setup(self):
         self.options['name'] = 'ssd_preconditioning'
-        self.options['rw'] = 'write'
+        self.options['rw'] = 'randwrite'
+        self.options['loops'] = '1'
