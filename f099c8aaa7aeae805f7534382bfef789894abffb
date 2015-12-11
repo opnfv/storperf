@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a5c5d37_42c71346",
+        "filename": "storperf/main.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 83,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T20:42:19Z",
+      "side": 1,
+      "message": "Ooops.  Copy and paste error.  This should not be here.",
+      "range": {
+        "startLine": 82,
+        "startChar": 24,
+        "endLine": 83,
+        "endChar": 26
+      },
+      "revId": "f099c8aaa7aeae805f7534382bfef789894abffb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_22c41f3f",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 143,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T20:42:19Z",
+      "side": 1,
+      "message": "This loop will eventually get farmed out to the slave VMs to do our dirty work.",
+      "range": {
+        "startLine": 142,
+        "startChar": 12,
+        "endLine": 143,
+        "endChar": 40
+      },
+      "revId": "f099c8aaa7aeae805f7534382bfef789894abffb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_02c11b2e",
+        "filename": "storperf/workloads/_ssd_preconditioning.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T20:42:19Z",
+      "side": 1,
+      "message": "As per Stephen Blinick\u0027s recommendation, the preconditioning phase is 100% fill, with random access writes.  The warm up follows this, and it will be sequential writes.",
+      "range": {
+        "startLine": 15,
+        "startChar": 8,
+        "endLine": 17,
+        "endChar": 35
+      },
+      "revId": "f099c8aaa7aeae805f7534382bfef789894abffb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_e2dde715",
+        "filename": "storperf/workloads/_warm_up.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T20:42:19Z",
+      "side": 1,
+      "message": "Warm up of sequential writes after the preconditioning random writes should disturb the disk cache and dedup.",
+      "range": {
+        "startLine": 16,
+        "startChar": 7,
+        "endLine": 16,
+        "endChar": 36
+      },
+      "revId": "f099c8aaa7aeae805f7534382bfef789894abffb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
