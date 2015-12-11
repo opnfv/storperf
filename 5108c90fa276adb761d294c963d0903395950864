@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9a5c5d37_6f2560c1",
+        "filename": "build-dev-docker.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T14:47:14Z",
+      "side": 1,
+      "message": "https://wiki.opnfv.org/storperf/packaging?\u0026#building_storperf_from_local_clone\n\nEven just now, as an example, in order to test certain things, I might need to deploy uncommitted changes into the local docker image to make sure there are no additional dependencies or misconfiguration.\n\nI am of the opinion that if I have to do something more than once, it\u0027s worth writing a script.  And if I find it useful, then others might too.",
+      "parentUuid": "9a5c5d37_2f908894",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5c5d37_8ff894e6",
         "filename": "build-dev-docker.sh",
         "patchSetId": 1
@@ -30,6 +48,24 @@
       "writtenOn": "2015-12-11T10:00:53Z",
       "side": 1,
       "message": "this will copy your current storperf repo, even if it is detached from master branch with any changes (for example). Is that what you want to achieve?",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_4f229cba",
+        "filename": "build-dev-docker.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T14:47:14Z",
+      "side": 1,
+      "message": "Absolutely.  This is for testing of uncommitted changes inside the container.  Without this, changes would need to be reviewed and merged before they get into the container.",
+      "parentUuid": "9a5c5d37_8ff894e6",
       "revId": "5108c90fa276adb761d294c963d0903395950864",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -53,6 +89,23 @@
     },
     {
       "key": {
+        "uuid": "9a5c5d37_af123860",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 48,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T14:47:14Z",
+      "side": 1,
+      "message": "btw... I forgot to tell you it needs to be installed too :)",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a5c5d37_0fb6e43d",
         "filename": "docker/Dockerfile",
         "patchSetId": 1
@@ -64,6 +117,24 @@
       "writtenOn": "2015-12-11T10:00:53Z",
       "side": 1,
       "message": "Good. Note that when we launch the container, we will have to assign a different local port (up to us), since 8000 is quite common and we don\u0027t want to interfere with other possible services using 8000. This way:\n\ndocker run [options] -p 12345:8000  .....",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_cf1d6c75",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2015-12-11T14:47:14Z",
+      "side": 1,
+      "message": "You got it.\n\nI also need to document how to mount the whisper db as a local volume for persistence if desired.",
+      "parentUuid": "9a5c5d37_0fb6e43d",
       "revId": "5108c90fa276adb761d294c963d0903395950864",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
