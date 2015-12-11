@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a5c5d37_2f908894",
+        "filename": "build-dev-docker.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2015-12-11T10:00:53Z",
+      "side": 1,
+      "message": "I am not sure why you need this docker image :)",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_8ff894e6",
+        "filename": "build-dev-docker.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2015-12-11T10:00:53Z",
+      "side": 1,
+      "message": "this will copy your current storperf repo, even if it is detached from master branch with any changes (for example). Is that what you want to achieve?",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_cfa0ccf6",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2015-12-11T10:00:53Z",
+      "side": 1,
+      "message": "I have tested this inside the container and it installs it without problems.",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5c5d37_0fb6e43d",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2015-12-11T10:00:53Z",
+      "side": 1,
+      "message": "Good. Note that when we launch the container, we will have to assign a different local port (up to us), since 8000 is quite common and we don\u0027t want to interfere with other possible services using 8000. This way:\n\ndocker run [options] -p 12345:8000  .....",
+      "revId": "5108c90fa276adb761d294c963d0903395950864",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
