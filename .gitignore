@@ -5,3 +5,5 @@ nosetests.xml
 .pydevproject
 coverage.xml
 .coverage
+.settings
+storperf.egg-info
