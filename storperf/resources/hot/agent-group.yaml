@@ -1,0 +1,57 @@
+##############################################################################
+# Copyright (c) 2015 EMC and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
+heat_template_version: 2013-05-23
+
+parameters:
+  agent_network:
+    type: string
+    constraints:
+        - custom_constraint: neutron.network
+  flavor:
+    type: string
+    default: "StorPerf Agent"
+  key_name:
+    type: string
+    default: StorPerf
+  volume_size:
+    type: number
+    description: Size of the volume to be created.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 1024 }
+        description: must be between 1 and 1024 Gb.
+  agent_count:
+    type: number
+    default: 1
+    constraints:
+      - range: { min: 1, max: 512 }
+        description: must be between 1 and 512 agents.
+
+
+resources:
+  slaves:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: {get_param: agent_count}
+      resource_def: {
+        type: "storperf-agent.yaml",
+        properties: {
+          agent_network: {get_param: agent_network},
+          flavor: {get_param: flavor},
+          key_name: {get_param: key_name},
+          volume_size: {get_param: volume_size}
+        }
+      }
+
+outputs:
+  slave_ips: {
+      description: "Slave addresses",
+      value: { get_attr: [ slaves, storperf_agent_ip] }
+  }
