@@ -15,11 +15,11 @@
             "stream": "ext://sys.stdout"
         },
 
-        "info_file_handler": {
+        "file_handler": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "INFO",
+            "level": "DEBUG",
             "formatter": "simple",
-            "filename": "info.log",
+            "filename": "storperf.log",
             "maxBytes": 10485760,
             "backupCount": 20,
             "encoding": "utf8"
@@ -45,7 +45,12 @@
     },
 
     "root": {
-        "level": "INFO",
-        "handlers": ["console", "info_file_handler", "error_file_handler"]
+        "level": "WARN",
+        "handlers": ["console", "file_handler", "error_file_handler"]
+    },
+
+    "storperf": {
+        "level": "DEBUG",
+        "handlers": ["console", "file_handler", "error_file_handler"]
     }
 }
