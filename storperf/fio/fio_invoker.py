@@ -7,10 +7,11 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from threading import Thread
+import cmd
 import json
 import logging
 import subprocess
-from threading import Thread
 
 
 class FIOInvoker(object):
@@ -18,6 +19,18 @@ class FIOInvoker(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.event_listeners = set()
+        self.event_callback_ids = set()
+        self._remote_host = None
+        self.callback_id = None
+
+    @property
+    def remote_host(self):
+        return self._remote_host
+
+    @remote_host.setter
+    def remote_host(self, value):
+        self._remote_host = value
+        self.logger = logging.getLogger(__name__ + ":" + value)
 
     def register(self, event_listener):
         self.event_listeners.add(event_listener)
@@ -41,7 +54,7 @@ class FIOInvoker(object):
                         self.json_body = ""
 
                         for event_listener in self.event_listeners:
-                            event_listener(json_metric)
+                            event_listener(self.callback_id, json_metric)
 
                 except Exception, e:
                     self.logger.error("Error parsing JSON: %s", e)
@@ -58,10 +71,18 @@ class FIOInvoker(object):
         self.fio_process.stderr.close()
 
     def execute(self, args=[]):
-        for arg in args:
-            self.logger.debug("FIO arg: " + arg)
+        self.logger.debug("FIO args " + str(args))
 
-        self.fio_process = subprocess.Popen(['fio'] + args,
+        if (self.remote_host is None):
+            cmd = "fio"
+        else:
+            cmd = "ssh"
+            additional_args = ['-o', 'StrictHostKeyChecking=no',
+                               '-i', 'storperf/resources/ssh/storperf_rsa',
+                               'ubuntu@' + self.remote_host, "./fio"]
+            args = additional_args + args
+
+        self.fio_process = subprocess.Popen([cmd] + args,
                                             universal_newlines=True,
                                             stdout=subprocess.PIPE,
                                             stderr=subprocess.PIPE)

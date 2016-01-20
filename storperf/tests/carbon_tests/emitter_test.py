@@ -7,15 +7,13 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import unittest
-
-import json
-import SocketServer
-import threading
+from storperf.carbon import converter
+from storperf.carbon.emitter import CarbonMetricTransmitter
 from time import sleep
-
-from carbon import converter
-from carbon.emitter import CarbonMetricTransmitter
+import SocketServer
+import json
+import threading
+import unittest
 
 
 class MetricsHandler(SocketServer.BaseRequestHandler):

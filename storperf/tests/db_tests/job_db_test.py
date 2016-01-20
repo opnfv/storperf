@@ -7,17 +7,23 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from storperf.db.job_db import JobDB
+import os
+import sqlite3
 import unittest
 
 import mock
-
-from db.job_db import JobDB
 
 
 class JobDBTest(unittest.TestCase):
 
     def setUp(self):
-        JobDB.db_name = ":memory:"
+
+        JobDB.db_name = __name__ + '.db'
+        try:
+            os.remove(JobDB.db_name)
+        except OSError:
+            pass
         self.job = JobDB()
 
     @mock.patch("uuid.uuid4")
@@ -56,7 +62,8 @@ class JobDBTest(unittest.TestCase):
         mock_uuid.side_effect = (job_id,)
         workload_name = "Workload"
 
-        cursor = self.job.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
 
         row = cursor.execute(
             """select * from jobs
@@ -97,7 +104,8 @@ class JobDBTest(unittest.TestCase):
         self.job.start_workload(workload_name)
         self.job.end_workload(workload_name)
 
-        cursor = self.job.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
         cursor.execute(
             """select job_id, workload, start, end from jobs
                        where job_id = ?
@@ -124,7 +132,8 @@ class JobDBTest(unittest.TestCase):
         mock_uuid.side_effect = (job_id,)
         workload_name = "Workload"
 
-        cursor = self.job.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
 
         self.job.start_workload(workload_name)
         self.job.start_workload(workload_name)
@@ -155,7 +164,8 @@ class JobDBTest(unittest.TestCase):
 
         self.job.end_workload(workload_name)
 
-        cursor = self.job.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
         cursor.execute(
             """select job_id, workload, start, end from jobs
                        where job_id = ?

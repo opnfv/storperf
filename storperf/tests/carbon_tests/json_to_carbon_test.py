@@ -7,10 +7,9 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import unittest
+from storperf.carbon.converter import JSONToCarbon
 import json
-
-from carbon.converter import JSONToCarbon
+import unittest
 
 
 class JSONToCarbonTest(unittest.TestCase):
