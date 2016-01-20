@@ -28,10 +28,10 @@ class JobDB(object):
 
         self.logger = logging.getLogger(__name__)
         self.logger.debug("Connecting to " + JobDB.db_name)
-        self.db = sqlite3.connect(JobDB.db_name)
         self.job_id = None
 
-        cursor = self.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
         try:
             cursor.execute('''CREATE TABLE jobs
             (job_id text,
@@ -49,7 +49,8 @@ class JobDB(object):
         Returns a job id that is guaranteed to be unique in this
         StorPerf instance.
         """
-        cursor = self.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
 
         self.job_id = str(uuid.uuid4())
         row = cursor.execute(
@@ -64,7 +65,7 @@ class JobDB(object):
         cursor.execute(
             "insert into jobs(job_id) values (?)", (self.job_id,))
         self.logger.debug("Reserved job id " + self.job_id)
-        self.db.commit()
+        db.commit()
 
     def start_workload(self, workload_name):
         """
@@ -73,7 +74,9 @@ class JobDB(object):
         if (self.job_id is None):
             self.create_job_id()
 
-        cursor = self.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
+
         now = str(calendar.timegm(time.gmtime()))
 
         row = cursor.execute(
@@ -104,7 +107,7 @@ class JobDB(object):
                  now,
                  workload_name,))
 
-        self.db.commit()
+        db.commit()
 
     def end_workload(self, workload_name):
         """
@@ -113,7 +116,8 @@ class JobDB(object):
         if (self.job_id is None):
             self.create_job_id()
 
-        cursor = self.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
         now = str(calendar.timegm(time.gmtime()))
 
         row = cursor.execute(
@@ -146,7 +150,7 @@ class JobDB(object):
                  now,
                  workload_name,))
 
-        self.db.commit()
+        db.commit()
 
     def fetch_results(self, workload_prefix=""):
         if (workload_prefix is None):
@@ -161,7 +165,8 @@ class JobDB(object):
 
         self.logger.debug("Workload like: " + workload_prefix)
 
-        cursor = self.db.cursor()
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
         cursor.execute("""select start, end, workload
             from jobs where workload like ?""",
                        (workload_prefix,))

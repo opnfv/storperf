@@ -6,7 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
-from workloads import _base_workload
+from storperf.workloads import _base_workload
 
 
 class wr(_base_workload._base_workload):

@@ -1,0 +1,108 @@
+##############################################################################
+# Copyright (c) 2015 EMC and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
+heat_template_version: 2013-05-23
+
+parameters:
+  flavor:
+    type: string
+    default: m1.small
+  image:
+    type: string
+    default: 'StorPerf Agent'
+  key_name:
+    type: string
+    default: StorPerf
+  username:
+    type: string
+    default: storperf
+  volume_size:
+    type: number
+    description: Size of the volume to be created.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 1024 }
+        description: must be between 1 and 1024 Gb.
+  agent_network:
+    type: string
+    constraints:
+        - custom_constraint: neutron.network
+
+resources:
+
+  storperf_agent:
+    type: "OS::Nova::Server"
+    properties:
+      name: storperf-agent
+      image: { get_param: image }
+      flavor: { get_param: flavor }
+      key_name: { get_param: key_name }
+      networks:
+        - port: { get_resource: storperf_agent_port }
+      user_data: { get_resource: storperf_agent_config }
+      user_data_format: RAW
+
+  storperf_agent_config:
+    type: "OS::Heat::CloudConfig"
+    properties:
+      cloud_config:
+        users:
+        - name: { get_param: username }
+          groups: users
+          shell: /bin/bash
+          sudo: "ALL=(ALL) NOPASSWD:ALL"
+          ssh_authorized_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEbnDiqZ8RjQJJzJPf074J41XlYED+zYBzaUZ5UkkUquXzymyUmoWaFBXJP+XPu4Ns44U/S8614+JxGk96tjUdJlIjL0Ag8HP6KLtTNCabucKcEASpgJIVWqJvE3E9upZLIEiTGsF8I8S67T2qq1J1uvtxyeZmyjm7NMamjyFXE53dhR2EHqSutyKK1CK74NkRY9wr3qWUIt35kLdKSVSfrr4gOOicDALbIRu77skHIvrjt+wK1VWphBdMg6ytuq5mIE6pjWAU3Gwl4aTxOU0z43ARzCLq8HVf8s/dKjYMj8plNqaIfceMbaEUqpNHv/xbvtGNG7N0aB/a4pkUQL07
+        - default
+        package_update: false
+        package_upgrade: false
+        packages:
+        - fio
+        - python
+        - python-pip
+        - rsync
+        - libaio1
+        - libaio-dev
+        - zlib1g-dev
+
+  storperf_agent_port:
+    type: "OS::Neutron::Port"
+    properties:
+      network_id: { get_param: agent_network }
+      security_groups:
+        - { get_resource: storperf_security_group }
+
+  storperf_security_group:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      description: Neutron security group rules
+      name: StorPerf-Security-Group
+      rules:
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: tcp
+        direction: ingress
+      - remote_ip_prefix: 0.0.0.0/0
+        protocol: icmp
+        direction: ingress
+
+  agent_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: volume_size }
+
+  agent_volume_att:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      instance_uuid: { get_resource: storperf_agent }
+      volume_id: { get_resource: agent_volume}
+
+outputs:
+  storperf_agent_ip:
+    description: The IP address of the agent on the StorPerf network
+    value: { get_attr: [ storperf_agent, first_address ] }
