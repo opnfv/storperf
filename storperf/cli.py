@@ -6,16 +6,18 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+"""
+"""
+
 import getopt
 import json
 import logging.config
 import os
 import sys
+import time
 
-from test_executor import TestExecutor, UnknownWorkload
-
-"""
-"""
+from storperf_master import StorPerfMaster
+from test_executor import UnknownWorkload
 
 
 class Usage(Exception):
@@ -25,13 +27,13 @@ class Usage(Exception):
 
 
 def setup_logging(
-    default_path='storperf/logging.json',
+    default_path='rest_server/logging.json',
     default_level=logging.INFO,
     env_key='LOG_CFG'
 ):
     """Setup logging configuration
-
     """
+
     path = default_path
     value = os.getenv(env_key, None)
     if value:
@@ -50,20 +52,24 @@ def event(event_string):
 
 def main(argv=None):
     setup_logging()
-    test_executor = TestExecutor()
     verbose = False
     debug = False
     workloads = None
     report = None
+    erase = False
+
+    storperf = StorPerfMaster()
 
     if argv is None:
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "t:w:r:scvdh",
+            opts, args = getopt.getopt(argv[1:], "t:w:r:f:escvdh",
                                        ["target=",
                                         "workload=",
                                         "report=",
+                                        "configure=",
+                                        "erase",
                                         "nossd",
                                         "nowarm",
                                         "verbose",
@@ -73,12 +79,14 @@ def main(argv=None):
         except getopt.error, msg:
             raise Usage(msg)
 
+        configuration = None
+
         for o, a in opts:
             if o in ("-h", "--help"):
                 print __doc__
                 return 0
             elif o in ("-t", "--target"):
-                test_executor.filename = a
+                storperf.filename = a
             elif o in ("-t", "--target"):
                 report = a
             elif o in ("-v", "--verbose"):
@@ -86,18 +94,37 @@ def main(argv=None):
             elif o in ("-d", "--debug"):
                 debug = True
             elif o in ("-s", "--nossd"):
-                test_executor.precondition = False
+                storperf.precondition = False
             elif o in ("-c", "--nowarm"):
-                test_executor.warm = False
+                storperf.warm_up = False
             elif o in ("-w", "--workload"):
-                workloads = a.split(",")
+                workloads = a
             elif o in ("-r", "--report"):
                 report = a
+            elif o in ("-e", "--erase"):
+                erase = True
+            elif o in ("-f", "--configure"):
+                configuration = dict(x.split('=') for x in a.split(','))
 
         if (debug):
             logging.getLogger().setLevel(logging.DEBUG)
 
-        test_executor.register_workloads(workloads)
+        if (configuration is not None):
+            if ('volume_size' in configuration):
+                storperf.volume_size = configuration['volume_size']
+            if ('agent_count' in configuration):
+                storperf.agent_count = configuration['agent_count']
+            if ('agent_network' in configuration):
+                storperf.agent_network = configuration['agent_network']
+
+            storperf.validate_stack()
+            storperf.create_stack()
+
+        if (erase):
+            storperf.delete_stack()
+            return 0
+
+        storperf.workloads = workloads
 
     except Usage, err:
         print >> sys.stderr, err.msg
@@ -109,12 +136,14 @@ def main(argv=None):
         return 2
 
     if (verbose):
-        test_executor.register(event)
+        storperf._test_executor.register(event)
 
     if (report is not None):
-        print test_executor.fetch_results(report, workloads)
+        print storperf.fetch_results(report, workloads)
     else:
-        test_executor.execute()
+        while (storperf.is_stack_created == False):
+            time.sleep(1)
+        storperf.execute_workloads()
 
 if __name__ == "__main__":
     sys.exit(main())

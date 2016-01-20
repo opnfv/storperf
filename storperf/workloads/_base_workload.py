@@ -15,7 +15,7 @@ class _base_workload(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.default_filesize = "128M"
-        self.filename = 'storperf.dat'
+        self.filename = 'rest_server.dat'
         self.options = {
             'ioengine': 'libaio',
             'direct': '1',

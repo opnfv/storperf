@@ -8,7 +8,6 @@
 ##############################################################################
 
 import unittest
-
 import mock
 
 from db.job_db import JobDB

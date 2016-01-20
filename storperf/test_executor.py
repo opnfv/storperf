@@ -7,11 +7,11 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from os import listdir
+from os.path import isfile, join
 import imp
 import logging
-from os import listdir
 import os
-from os.path import isfile, join
 import socket
 
 from carbon.converter import JSONToCarbon
@@ -31,7 +31,7 @@ class TestExecutor(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.workload_modules = []
-        self.filename = "storperf.dat"
+        self.filename = "rest_server.dat"
         self.precondition = True
         self.warm = True
         self.event_listeners = set()
@@ -39,6 +39,7 @@ class TestExecutor(object):
         self.metrics_emitter = CarbonMetricTransmitter()
         self.prefix = None
         self.job_db = JobDB()
+        self.slaves = []
 
     def register(self, event_listener):
         self.event_listeners.add(event_listener)
@@ -81,6 +82,8 @@ class TestExecutor(object):
                 mname, ext = os.path.splitext(filename)
                 if (not mname.startswith('_')):
                     workloads.append(mname)
+        else:
+            workloads = workloads.split(',')
 
         if (self.warm is True):
             workloads.insert(0, "_warm_up")
@@ -117,10 +120,15 @@ class TestExecutor(object):
 
         shortname = socket.getfqdn().split('.')[0]
 
+        print self.slaves
+        print self.slaves[0]
+
         invoker = FIOInvoker()
+        invoker.remote_host = self.slaves[0]
         invoker.register(self.event)
         self.job_db.create_job_id()
-        self.logger.info("Starting job " + self.job_db.job_id)
+        self.logger.info(
+            "Starting job " + self.job_db.job_id + " on " + invoker.remote_host)
 
         for workload_module in self.workload_modules:
 
