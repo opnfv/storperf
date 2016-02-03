@@ -16,7 +16,7 @@ fi
 virtualenv $WORKSPACE/storperf_venv
 source $WORKSPACE/storperf_venv/bin/activate
 
-easy_install -U setuptools
+pip install --upgrade setuptools
 pip install nose -I
 pip install coverage -I
 python ci/setup.py develop
