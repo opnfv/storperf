@@ -45,6 +45,7 @@ class StorPerfMaster(object):
         self._username = os.environ.get('OS_USERNAME')
         self._password = os.environ.get('OS_PASSWORD')
         self._tenant_name = os.environ.get('OS_TENANT_NAME')
+        self._tenant_id = os.environ.get('OS_TENANT_ID')
         self._project_name = os.environ.get('OS_PROJECT_NAME')
         self._auth_url = os.environ.get('OS_AUTH_URL')
 
@@ -128,7 +129,7 @@ class StorPerfMaster(object):
     @property
     def volume_quota(self):
         self._attach_to_openstack()
-        quotas = self._cinder_client.quotas.get(self._tenant_name)
+        quotas = self._cinder_client.quotas.get(self._tenant_id)
         return int(quotas.volumes)
 
     @property
