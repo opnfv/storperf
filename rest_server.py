@@ -78,13 +78,15 @@ class StartJob(Resource):
 
         try:
             if ('target' in request.json):
-                storperf.filename = request.json['filename']
+                storperf.filename = request.json['target']
             if ('nossd' in request.json):
                 storperf.precondition = False
             if ('nowarm' in request.json):
                 storperf.warm_up = False
             if ('workload' in request.json):
                 storperf.workloads = request.json['workload']
+            else:
+                storperf.workloads = None
 
             job_id = storperf.execute_workloads()
 
