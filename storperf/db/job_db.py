@@ -80,9 +80,11 @@ class JobDB(object):
         """
         Records the start time for the given workload
         """
+
+        if (self.job_id is None):
+            self.create_job_id()
+
         with db_mutex:
-            if (self.job_id is None):
-                self.create_job_id()
 
             db = sqlite3.connect(JobDB.db_name)
             cursor = db.cursor()
@@ -124,9 +126,10 @@ class JobDB(object):
         """
         Records the end time for the given workload
         """
+        if (self.job_id is None):
+            self.create_job_id()
+
         with db_mutex:
-            if (self.job_id is None):
-                self.create_job_id()
 
             db = sqlite3.connect(JobDB.db_name)
             cursor = db.cursor()
