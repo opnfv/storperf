@@ -8,6 +8,7 @@
 ##############################################################################
 
 from threading import Thread
+import cmd
 import json
 import logging
 import subprocess
@@ -78,7 +79,7 @@ class FIOInvoker(object):
             cmd = "ssh"
             additional_args = ['-o', 'StrictHostKeyChecking=no',
                                '-i', 'storperf/resources/ssh/storperf_rsa',
-                               'ubuntu@' + self.remote_host,
+                               'storperf@' + self.remote_host,
                                "sudo", "./fio"]
             args = additional_args + args
 

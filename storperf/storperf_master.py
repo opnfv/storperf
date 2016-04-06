@@ -266,7 +266,7 @@ class StorPerfMaster(object):
         args = ['scp', '-o', 'StrictHostKeyChecking=no',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
                 '/lib/x86_64-linux-gnu/libaio.so.1',
-                'ubuntu@' + slave + ":"]
+                'storperf@' + slave + ":"]
 
         logger.debug(args)
         proc = subprocess.Popen(args,
@@ -283,7 +283,7 @@ class StorPerfMaster(object):
         args = ['scp', '-o', 'StrictHostKeyChecking=no',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
                 '/usr/local/bin/fio',
-                'ubuntu@' + slave + ":"]
+                'storperf@' + slave + ":"]
 
         logger.debug(args)
         proc = subprocess.Popen(args,
@@ -299,7 +299,7 @@ class StorPerfMaster(object):
 
         args = ['ssh', '-o', 'StrictHostKeyChecking=no',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
-                'ubuntu@' + slave,
+                'storperf@' + slave,
                 'sudo cp -v libaio.so.1 /lib/x86_64-linux-gnu/libaio.so.1'
                 ]
 
