@@ -14,18 +14,18 @@ class _base_workload(object):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.default_filesize = "128M"
-        self.filename = 'storperf.dat'
+        self.default_filesize = "100%"
+        self.filename = '/dev/vdb'
         self.options = {
             'ioengine': 'libaio',
             'direct': '1',
             'rw': 'read',
-            'bs': '4k',
+            'bs': '64k',
             'iodepth': '1',
             'numjobs': '1',
             'loops': '2',
             'output-format': 'json',
-            'status-interval': '60'
+            'status-interval': '600'
         }
         self.invoker = None
 

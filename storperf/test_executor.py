@@ -157,7 +157,7 @@ class TestExecutor(object):
 
             if (workload_name.startswith("_")):
                 iodepths = [2, ]
-                blocksizes = [4096, ]
+                blocksizes = [65536, ]
             else:
                 iodepths = [1, 16, 128]
                 blocksizes = [4096, 65536, 1048576]
