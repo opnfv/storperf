@@ -68,14 +68,14 @@ RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
 RUN cd ${repos_dir}/fio && make -j 6 install
 RUN puppet module install gdsoperations-graphite
 
-RUN ln -s /opt/graphite/lib/whisper* /usr/lib/python2.7/
-
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa
 
 RUN pip install -r ${repos_dir}/storperf/docker/requirements.pip
 
 COPY storperf.pp /etc/puppet/manifests/storperf.pp
 RUN puppet apply /etc/puppet/manifests/storperf.pp
+
+RUN ln -s /opt/graphite/lib/whisper* /usr/lib/python2.7/
 
 # Open access to SSH if desired
 EXPOSE 22
