@@ -10,6 +10,33 @@
 
 echo "Verifying code format and compliance..."
 
-if [ -x /usr/bin/flake8 ] ; then
-	flake8 storperf
+if [ -z $WORKSPACE ]
+then
+    WORKSPACE="$HOME"
 fi
+
+virtualenv $WORKSPACE/storperf_venv
+source $WORKSPACE/storperf_venv/bin/activate
+
+pip install --upgrade setuptools
+pip install coverage==4.0.3
+pip install flake8==2.5.4
+pip install funcsigs==0.4
+pip install mock==1.3.0
+pip install nose==1.3.7
+pip install requests==2.9.1
+
+python ci/setup.py develop
+
+flake8 storperf
+
+nosetests --with-xunit \
+         --with-coverage \
+         --cover-package=storperf\
+         --cover-xml \
+         storperf
+rc=$?
+
+deactivate
+
+exit $rc

@@ -8,28 +8,5 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-if [ -z $WORKSPACE ]
-then
-    WORKSPACE="$HOME"
-fi
-
-virtualenv $WORKSPACE/storperf_venv
-source $WORKSPACE/storperf_venv/bin/activate
-
-pip install --upgrade setuptools
-pip install nose -I
-pip install coverage -I
-python ci/setup.py develop
-
-
-if [ -x /usr/bin/flake8 ]; then
-    flake8 storperf
-fi
-
-nosetests --with-xunit \
-         --with-coverage \
-         --cover-package=storperf\
-         --cover-xml \
-         storperf
-
-deactivate
+# Just run the verify again for now
+`dirname $0`/verify.sh
