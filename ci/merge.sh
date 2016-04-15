@@ -19,12 +19,10 @@ source $WORKSPACE/storperf_venv/bin/activate
 pip install --upgrade setuptools
 pip install nose -I
 pip install coverage -I
+pip install flake8 -I
 python ci/setup.py develop
 
-
-if [ -x /usr/bin/flake8 ]; then
-    flake8 storperf
-fi
+flake8 storperf
 
 nosetests --with-xunit \
          --with-coverage \
