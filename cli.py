@@ -10,7 +10,6 @@
 """
 
 from storperf.storperf_master import StorPerfMaster
-from storperf.test_executor import UnknownWorkload
 from threading import Thread
 import cPickle
 import getopt
@@ -18,13 +17,10 @@ import json
 import logging
 import logging.config
 import logging.handlers
-import os
 import socket
 import struct
 import sys
-import time
 
-import html2text
 import requests
 
 
@@ -49,7 +45,7 @@ class LogRecordStreamHandler(object):
             while True:
                 datagram = self.socket.recv(8192)
                 chunk = datagram[0:4]
-                slen = struct.unpack(">L", chunk)[0]
+                struct.unpack(">L", chunk)[0]
                 chunk = datagram[4:]
                 obj = cPickle.loads(chunk)
                 record = logging.makeLogRecord(obj)
