@@ -26,12 +26,12 @@ class CarbonMetricTransmitter():
         else:
             timestamp = str(calendar.timegm(time.gmtime()))
 
-        self.carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.carbon_socket.connect((self.carbon_host, self.carbon_port))
+        carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        carbon_socket.connect((self.carbon_host, self.carbon_port))
 
         for key, metric in metrics.items():
             message = key + " " + metric + " " + timestamp
             self.logger.debug("Metric: " + message)
-            self.carbon_socket.send(message + '\n')
+            carbon_socket.send(message + '\n')
 
-        self.carbon_socket.close()
+        carbon_socket.close()

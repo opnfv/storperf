@@ -48,14 +48,16 @@ class FIOInvoker(object):
                 self.json_body += line
                 try:
                     if line == "}\n":
-                        self.logger.debug(
-                            "Have a json snippet: %s", self.json_body)
                         json_metric = json.loads(self.json_body)
                         self.json_body = ""
 
                         for event_listener in self.event_listeners:
-                            event_listener(self.callback_id, json_metric)
-
+                            try:
+                                event_listener(self.callback_id, json_metric)
+                            except Exception, e:
+                                self.logger.error("Notifying listener %s: %s",
+                                                  self.callback_id, e)
+                                pass
                 except Exception, e:
                     self.logger.error("Error parsing JSON: %s", e)
                     pass

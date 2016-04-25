@@ -76,10 +76,12 @@ class JobDB(object):
             db.commit()
             db.close()
 
-    def start_workload(self, workload_name):
+    def start_workload(self, workload):
         """
         Records the start time for the given workload
         """
+        
+        workload_name = workload.fullname
 
         if (self.job_id is None):
             self.create_job_id()
@@ -122,12 +124,14 @@ class JobDB(object):
             db.commit()
             db.close()
 
-    def end_workload(self, workload_name):
+    def end_workload(self, workload):
         """
         Records the end time for the given workload
         """
         if (self.job_id is None):
             self.create_job_id()
+
+        workload_name = workload.fullname
 
         with db_mutex:
 

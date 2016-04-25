@@ -87,6 +87,9 @@ class StartJob(Resource):
                 storperf.workloads = request.json['workload']
             else:
                 storperf.workloads = None
+            # Add block size, queue depth, number of passes here.
+            if ('workload' in request.json):
+                storperf.workloads = request.json['workload']
 
             job_id = storperf.execute_workloads()
 

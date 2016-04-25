@@ -13,7 +13,7 @@ import logging
 class _base_workload(object):
 
     def __init__(self):
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(self.__class__.__name__)
         self.default_filesize = "100%"
         self.filename = '/dev/vdb'
         self.options = {
@@ -25,13 +25,20 @@ class _base_workload(object):
             'numjobs': '1',
             'loops': '2',
             'output-format': 'json',
-            'status-interval': '600'
+            'status-interval': '60'
         }
         self.invoker = None
+        self.remote_host = None
+        self.id = None
 
     def execute(self):
-        args = []
+        if (self.invoker == None):
+            raise ValueError("No invoker has been set")
 
+        args = []
+        self.invoker.remote_host = self.remote_host
+        self.invoker.callback_id = self.fullname
+        
         if self.filename.startswith("/dev"):
             self.options['size'] = "100%"
             self.logger.debug(
@@ -52,3 +59,21 @@ class _base_workload(object):
 
     def setup(self):
         pass
+    
+    @property
+    def remote_host(self):
+        return str(self._remote_host)
+    
+    @remote_host.setter
+    def remote_host(self, value):
+        self._remote_host = value
+        
+    
+    @property
+    def fullname(self):
+        return self.id + "." + \
+            self.__class__.__name__ + "." + \
+            self.remote_host.replace(".", "-") + \
+            ".queue-depth." + str(self.options['iodepth']) + \
+            ".block-size." + str(self.options['bs'])
+
