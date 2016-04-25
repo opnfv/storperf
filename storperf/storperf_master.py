@@ -202,7 +202,6 @@ class StorPerfMaster(object):
             parameters=self._make_parameters())
 
         self.stack_id = stack['stack']['id']
-        pass
 
     def validate_stack(self):
         self._attach_to_openstack()
@@ -231,8 +230,6 @@ class StorPerfMaster(object):
 
         self._heat_client.stacks.delete(stack_id=self.stack_id)
         self.stack_id = None
-
-        pass
 
     def execute_workloads(self):
 
