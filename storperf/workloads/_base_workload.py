@@ -57,6 +57,10 @@ class _base_workload(object):
 
         self.invoker.execute(args)
 
+    def terminate(self):
+        if self.invoker is not None:
+            self.invoker.terminate()
+
     def setup(self):
         pass
 

@@ -64,7 +64,7 @@ class Configure(Resource):
             abort(400, str(e))
 
 
-class StartJob(Resource):
+class Job(Resource):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -94,6 +94,13 @@ class StartJob(Resource):
 
             return jsonify({'job_id': job_id})
 
+        except Exception as e:
+            abort(400, str(e))
+
+    def delete(self):
+        try:
+            storperf.terminate_workloads()
+            return True
         except Exception as e:
             abort(400, str(e))
 
@@ -129,7 +136,7 @@ def setup_logging(default_path='storperf/logging.json',
 
 api.add_resource(Configure, "/api/v1.0/configure")
 api.add_resource(Quota, "/api/v1.0/quota")
-api.add_resource(StartJob, "/api/v1.0/start")
+api.add_resource(Job, "/api/v1.0/job")
 
 if __name__ == "__main__":
     setup_logging()

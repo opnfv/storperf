@@ -232,7 +232,6 @@ class StorPerfMaster(object):
         self.stack_id = None
 
     def execute_workloads(self):
-
         if (self.stack_id is None):
             raise ParameterError("ERROR: Stack does not exist")
 
@@ -254,6 +253,9 @@ class StorPerfMaster(object):
 
         self._test_executor.slaves = slaves
         return self._test_executor.execute()
+
+    def terminate_workloads(self):
+        return self._test_executor.terminate()
 
     def _setup_slave(self, slave):
         logger = logging.getLogger(__name__ + ":" + slave)

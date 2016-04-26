@@ -64,6 +64,7 @@ def main(argv=None):
     debug = False
     report = None
     erase = False
+    terminate = False
     options = {}
 
     storperf = StorPerfMaster()
@@ -72,7 +73,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "t:w:r:f:escvdh",
+            opts, args = getopt.getopt(argv[1:], "t:w:r:f:escvdTh",
                                        ["target=",
                                         "workload=",
                                         "report=",
@@ -82,6 +83,7 @@ def main(argv=None):
                                         "nowarm",
                                         "verbose",
                                         "debug",
+                                        "terminate",
                                         "help",
                                         ])
         except getopt.error, msg:
@@ -110,6 +112,8 @@ def main(argv=None):
                 report = a
             elif o in ("-e", "--erase"):
                 erase = True
+            elif o in ("-T", "--terminate"):
+                terminate = True
             elif o in ("-f", "--configure"):
                 configuration = dict(x.split('=') for x in a.split(','))
 
@@ -134,6 +138,14 @@ def main(argv=None):
                 raise Usage(content['message'])
             return 0
 
+        if (terminate):
+            response = requests.delete(
+                'http://127.0.0.1:5000/api/v1.0/job')
+            if (response.status_code == 400):
+                content = json.loads(response.content)
+                raise Usage(content['message'])
+            return 0
+
         if (configuration is not None):
             response = requests.post(
                 'http://127.0.0.1:5000/api/v1.0/configure', json=configuration)
@@ -146,7 +158,7 @@ def main(argv=None):
         else:
             print "Calling start..."
             response = requests.post(
-                'http://127.0.0.1:5000/api/v1.0/start', json=options)
+                'http://127.0.0.1:5000/api/v1.0/job', json=options)
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
