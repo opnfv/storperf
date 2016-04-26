@@ -38,6 +38,8 @@ class TestExecutor(object):
         self.prefix = None
         self.job_db = JobDB()
         self._slaves = []
+        self._terminated = False
+        self._workload_executors = []
         self._workload_thread = None
 
     @property
@@ -118,7 +120,13 @@ class TestExecutor(object):
         self._workload_thread.start()
         return self.job_db.job_id
 
+    def terminate(self):
+        self._terminated = True
+        for workload in self._workload_executors:
+            workload.terminate()
+
     def execute_workloads(self):
+        self._terminated = False
         for workload_module in self.workload_modules:
             workload_name = getattr(workload_module, "__name__")
             constructorMethod = getattr(workload_module, workload_name)
@@ -137,6 +145,9 @@ class TestExecutor(object):
 
             for blocksize in blocksizes:
                 for iodepth in iodepths:
+                    if self._terminated:
+                        return
+
                     workload.options['iodepth'] = str(iodepth)
                     workload.options['bs'] = str(blocksize)
 
@@ -144,6 +155,9 @@ class TestExecutor(object):
                     for slave in self.slaves:
                         slave_workload = copy.copy(workload)
                         slave_workload.remote_host = slave
+
+                        self._workload_executors.append(slave_workload)
+
                         t = Thread(target=self.execute_on_node,
                                    args=(slave_workload,))
                         t.daemon = False
@@ -152,6 +166,8 @@ class TestExecutor(object):
 
                     for slave_thread in slave_threads:
                         slave_thread.join()
+
+                    self._workload_executors = []
 
     def execute_on_node(self, workload):
 

@@ -88,11 +88,35 @@ class FIOInvoker(object):
                                             stderr=subprocess.PIPE)
 
         t = Thread(target=self.stdout_handler, args=())
-        t.daemon = False
+        t.daemon = True
         t.start()
 
         t = Thread(target=self.stderr_handler, args=())
-        t.daemon = False
+        t.daemon = True
         t.start()
 
+        self.logger.debug("Started fio on "+self.remote_host)
         t.join()
+        self.logger.debug("Finished fio on "+self.remote_host)
+
+    def terminate(self):
+        self.logger.debug("Terminating fio on "+self.remote_host)
+        cmd = ['ssh', '-o', 'StrictHostKeyChecking=no',
+               '-i', 'storperf/resources/ssh/storperf_rsa',
+               'storperf@' + self.remote_host,
+               'sudo', 'killall', '-9', 'fio']
+
+        kill_process = subprocess.Popen(cmd,
+                                        universal_newlines=True,
+                                        stdout=subprocess.PIPE,
+                                        stderr=subprocess.PIPE)
+
+        for line in iter(kill_process.stdout.readline, b''):
+            self.logger.debug("FIO Termination: " + line)
+
+        kill_process.stdout.close()
+
+        for line in iter(kill_process.stderr.readline, b''):
+            self.logger.debug("FIO Termination: " + line)
+
+        kill_process.stderr.close()
