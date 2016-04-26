@@ -51,9 +51,9 @@ class ConfigurationDB(object):
             db = sqlite3.connect(ConfigurationDB.db_name)
             cursor = db.cursor()
 
-            cursor.execute(
-                "delete from configuration where configuration_name=? and key=?",
-                (configuration_name, key))
+            cursor.execute("delete from configuration where "
+                           "configuration_name=? and key=?",
+                           (configuration_name, key))
 
             self.logger.debug("Deleted " + configuration_name + ":" + key)
 
@@ -105,9 +105,9 @@ class ConfigurationDB(object):
             db = sqlite3.connect(ConfigurationDB.db_name)
             cursor = db.cursor()
 
-            cursor.execute(
-                "delete from configuration where configuration_name=? and key=?",
-                (configuration_name, key))
+            cursor.execute("delete from configuration where "
+                           "configuration_name=? and key=?",
+                           (configuration_name, key))
 
             cursor.execute(
                 """insert into configuration(configuration_name, key, value)

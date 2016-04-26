@@ -110,8 +110,8 @@ class JobDB(object):
                      workload_name,
                      now,))
             else:
-                self.logger.warn("Duplicate start time for workload "
-                                 + workload_name)
+                self.logger.warn("Duplicate start time for workload %s"
+                                 % workload_name)
                 cursor.execute(
                     """update jobs set
                                job_id = ?,
@@ -146,8 +146,8 @@ class JobDB(object):
                 (self.job_id, workload_name,))
 
             if (row.fetchone() is None):
-                self.logger.warn("No start time recorded for workload "
-                                 + workload_name)
+                self.logger.warn("No start time recorded for workload %s"
+                                 % workload_name)
                 cursor.execute(
                     """insert into jobs
                                (job_id,
@@ -207,10 +207,10 @@ class JobDB(object):
                 self.logger.info("workload=" + workload +
                                  "start=" + start_time + " end=" + end_time)
 
-                request = 'http://127.0.0.1:8000/render/?target=*.' + self.job_id + \
-                    '.' + workload + '.jobs.1.*.clat.mean&format=json&from=' + \
-                    start_time + "&until=" + end_time
-
+                request = ("http://127.0.0.1:8000/render/?target="
+                           "*.%s.%s.jobs.1.*.clat.mean"
+                           "&format=json&from=%s&until=%s"
+                           % (self.job_id, workload, start_time, end_time))
                 response = requests.get(request)
 
                 if (response.status_code == 200):
