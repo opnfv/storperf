@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da87b5cf_04091831",
+        "filename": "cli.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-26T17:36:39Z",
+      "side": 1,
+      "message": "shouldn",
+      "range": {
+        "startLine": 157,
+        "startChar": 49,
+        "endLine": 157,
+        "endChar": 58
+      },
+      "revId": "e3429d642fa0ea9e83598d68363abe7b6516b7c5",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_a405cc15",
+        "filename": "storperf/fio/fio_invoker.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 98,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-26T17:36:39Z",
+      "side": 1,
+      "message": "Although this is not critical at all, for flake8 convenience, it\u0027s better to separate the arithmetic operators from the rest of the things.\n\n\"Started fio on \" + self....",
+      "range": {
+        "startLine": 98,
+        "startChar": 44,
+        "endLine": 98,
+        "endChar": 48
+      },
+      "revId": "e3429d642fa0ea9e83598d68363abe7b6516b7c5",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_c402500b",
+        "filename": "storperf/fio/fio_invoker.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-26T17:36:39Z",
+      "side": 1,
+      "message": "same here",
+      "range": {
+        "startLine": 100,
+        "startChar": 43,
+        "endLine": 100,
+        "endChar": 45
+      },
+      "revId": "e3429d642fa0ea9e83598d68363abe7b6516b7c5",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da87b5cf_67ffc602",
+        "filename": "storperf/fio/fio_invoker.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-26T17:36:39Z",
+      "side": 1,
+      "message": "and here",
+      "range": {
+        "startLine": 103,
+        "startChar": 48,
+        "endLine": 103,
+        "endChar": 52
+      },
+      "revId": "e3429d642fa0ea9e83598d68363abe7b6516b7c5",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
