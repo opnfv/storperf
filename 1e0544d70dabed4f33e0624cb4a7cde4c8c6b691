@@ -22,6 +22,76 @@
       "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_2258d0f9",
+        "filename": "cli.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-04-27T13:47:43Z",
+      "side": 1,
+      "message": "I am in the process of changing this as part of https://jira.opnfv.org/browse/STORPERF-19, so it will be addressed soon.",
+      "parentUuid": "9a91bd0f_5f828b53",
+      "range": {
+        "startLine": 157,
+        "startChar": 49,
+        "endLine": 157,
+        "endChar": 57
+      },
+      "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e2718878",
+        "filename": "storperf/db/configuration_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-04-27T13:47:43Z",
+      "side": 1,
+      "message": "I did not know this one :)  I\u0027ll make sure to follow this style in the future as I don\u0027t think it was flagged by my current flake8 settings.\n\nThanks, it certainly \"looks\" better - more readable.",
+      "range": {
+        "startLine": 54,
+        "startChar": 10,
+        "endLine": 56,
+        "endChar": 24
+      },
+      "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_a26b8084",
+        "filename": "storperf/db/job_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-04-27T13:47:43Z",
+      "side": 1,
+      "message": "I should go through all of these and make them fit the %s style pattern too.  Did not know that either; I\u0027m certainly learning here!",
+      "range": {
+        "startLine": 207,
+        "startChar": 16,
+        "endLine": 208,
+        "endChar": 75
+      },
+      "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
