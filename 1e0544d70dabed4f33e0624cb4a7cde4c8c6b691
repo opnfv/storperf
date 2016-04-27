@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "9a91bd0f_4214f4f4",
+        "filename": "storperf/db/configuration_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-27T13:51:44Z",
+      "side": 1,
+      "message": "Yes, I didn\u0027t know that trick until some days ago. The line breaks between quotes do not mean a line break in the output text. If you need that, just type \\n",
+      "parentUuid": "9a91bd0f_e2718878",
+      "range": {
+        "startLine": 54,
+        "startChar": 10,
+        "endLine": 56,
+        "endChar": 24
+      },
+      "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a91bd0f_a26b8084",
         "filename": "storperf/db/job_db.py",
         "patchSetId": 1
@@ -83,6 +107,30 @@
       "writtenOn": "2016-04-27T13:47:43Z",
       "side": 1,
       "message": "I should go through all of these and make them fit the %s style pattern too.  Did not know that either; I\u0027m certainly learning here!",
+      "range": {
+        "startLine": 207,
+        "startChar": 16,
+        "endLine": 208,
+        "endChar": 75
+      },
+      "revId": "1e0544d70dabed4f33e0624cb4a7cde4c8c6b691",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a91bd0f_e2f8a8c6",
+        "filename": "storperf/db/job_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 208,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-04-27T13:51:44Z",
+      "side": 1,
+      "message": "Well, it depends what\u0027s more clearer. Up to you, this one is not set as a flake8-violation though...",
+      "parentUuid": "9a91bd0f_a26b8084",
       "range": {
         "startLine": 207,
         "startChar": 16,
