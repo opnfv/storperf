@@ -11,12 +11,12 @@ import logging
 import time
 
 
-class JSONToCarbon(object):
+class Converter(object):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def convert_to_dictionary(self, json_object, prefix=None):
+    def convert_json_to_flat(self, json_object, prefix=None):
         # Use the timestamp reported by fio, or current time if
         # not present.
         if 'timestamp' in json_object:

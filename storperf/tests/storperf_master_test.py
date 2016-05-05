@@ -44,8 +44,8 @@ class StorPerfMasterTest(unittest.TestCase):
     def test_agent_network(self):
         expected = "ABCDEF"
 
-        self.storperf.agent_network = expected
-        actual = self.storperf.agent_network
+        self.storperf.public_network = expected
+        actual = self.storperf.public_network
 
         self.assertEqual(
             expected, actual, "Did not expect: " + str(actual))

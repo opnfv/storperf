@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from storperf.carbon.converter import JSONToCarbon
+from storperf.carbon.converter import Converter
 import json
 import unittest
 
@@ -58,45 +58,45 @@ class JSONToCarbonTest(unittest.TestCase):
         pass
 
     def test_to_string(self):
-        testconv = JSONToCarbon()
+        testconv = Converter()
         json_object = json.loads(self.simple_fio_json)
-        result = testconv.convert_to_dictionary(json_object, "host.run-name")
+        result = testconv.convert_json_to_flat(json_object, "host.run-name")
         self.assertEqual("7116", result[
                          "host.run-name.jobs.1.read.io_bytes"],
                          result["host.run-name.jobs.1.read.io_bytes"])
 
     def test_single_text_element_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.single_json_text_element))
 
         self.assertEqual("value", result["key"], result["key"])
 
     def test_single_numeric_element_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.single_json_numeric_element))
 
         self.assertEqual("123", result["key"], result["key"])
 
     def test_single_text_key_space_element_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.single_json_key_with_spaces))
 
         self.assertEqual(
             "value", result["key_with_spaces"], result["key_with_spaces"])
 
     def test_single_text_value_space_element_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.single_json_value_with_spaces))
 
         self.assertEqual("value_with_spaces", result["key"], result["key"])
 
     def test_map_name_with_space_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.json_map_name_with_spaces))
 
         self.assertEqual(
@@ -104,14 +104,13 @@ class JSONToCarbonTest(unittest.TestCase):
             result["map_with_spaces.key"])
 
     def test_list_name_with_space_no_prefix(self):
-        testconv = JSONToCarbon()
-        result = testconv.convert_to_dictionary(
+        testconv = Converter()
+        result = testconv.convert_json_to_flat(
             json.loads(self.json_list_name_with_spaces))
 
         self.assertEqual(
             "value", result["list_with_spaces.1.key"],
             result["list_with_spaces.1.key"])
-
 
 if __name__ == '__main__':
     unittest.main()
