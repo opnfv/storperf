@@ -66,6 +66,11 @@ RUN git clone https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
 RUN cd ${repos_dir}/fio && make -j 6 install
+
+RUN https://github.com/swagger-api/swagger-ui.git ${repos_dir}/swagger-ui
+RUN mkdir -fp ${repos_dir}/storperf/storperf/resources/html/swagger
+RUN cp -r ${repos_dir}/swagger-ui/dist ${repos_dir}/storperf/storperf/resources/html/swagger
+
 RUN puppet module install gdsoperations-graphite
 
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa

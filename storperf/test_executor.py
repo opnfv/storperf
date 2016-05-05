@@ -122,8 +122,11 @@ class TestExecutor(object):
 
     def terminate(self):
         self._terminated = True
+        terminated_hosts = []
         for workload in self._workload_executors:
             workload.terminate()
+            terminated_hosts.append(workload.remote_host)
+        return terminated_hosts
 
     def execute_workloads(self):
         self._terminated = False
