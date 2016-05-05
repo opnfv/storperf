@@ -1,6 +1,8 @@
 from storperf.db.job_db import JobDB
+import calendar
 import json
 import logging
+import time
 
 import requests
 
@@ -41,18 +43,54 @@ class GraphiteDB(object):
         for io_type in ['read', 'write']:
             for workload_name, times in workload_names.iteritems():
                 workload_pattern = self.make_fullname_pattern(workload_name)
+                short_name = '.'.join(workload_name.split('.')[1:6])
+                start = times[0]
+                end = times[1]
+
+                if end is None:
+                    end = str(calendar.timegm(time.gmtime()))
+                averages[short_name + ".duration"] = \
+                    (int(end) - int(start))
+
+                key = short_name + "." + io_type
+
                 request = ("http://127.0.0.1:8000/render/?target="
                            "averageSeries(%s.jobs.1.%s.lat.mean)"
                            "&format=json"
                            "&from=%s"
                            "&until=%s" %
-                           (workload_pattern, io_type, times[0], times[1]))
+                           (workload_pattern, io_type, start, end))
                 self.logger.debug("Calling %s" % (request))
 
                 response = requests.get(request)
                 if (response.status_code == 200):
-                    short_name = '.'.join(workload_name.split('.')[1:6])
-                    averages[short_name + "." + io_type] = \
+                    averages[key + ".latency"] = \
+                        self._average_results(json.loads(response.content))
+
+                request = ("http://127.0.0.1:8000/render/?target="
+                           "averageSeries(%s.jobs.1.%s.bw)"
+                           "&format=json"
+                           "&from=%s"
+                           "&until=%s" %
+                           (workload_pattern, io_type, start, end))
+                self.logger.debug("Calling %s" % (request))
+
+                response = requests.get(request)
+                if (response.status_code == 200):
+                    averages[key + ".throughput"] = \
+                        self._average_results(json.loads(response.content))
+
+                request = ("http://127.0.0.1:8000/render/?target="
+                           "averageSeries(%s.jobs.1.%s.iops)"
+                           "&format=json"
+                           "&from=%s"
+                           "&until=%s" %
+                           (workload_pattern, io_type, start, end))
+                self.logger.debug("Calling %s" % (request))
+
+                response = requests.get(request)
+                if (response.status_code == 200):
+                    averages[key + ".iops"] = \
                         self._average_results(json.loads(response.content))
 
         return averages
