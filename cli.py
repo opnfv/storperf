@@ -154,7 +154,14 @@ def main(argv=None):
                 raise Usage(content['message'])
 
         if (report is not None):
-            print storperf.fetch_results(report)
+            print "Fetching report for %s..." % (report,)
+            response = requests.get(
+                'http://127.0.0.1:5000/api/v1.0/job?id=%s' % (report,))
+            if (response.status_code == 400):
+                content = json.loads(response.content)
+                raise Usage(content['message'])
+            content = json.loads(response.content)
+            print content
         else:
             print "Calling start..."
             response = requests.post(

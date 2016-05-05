@@ -23,6 +23,7 @@ setup(
     url="https://www.opnfv.org",
     install_requires=["flask==0.10",
                       "flask-restful==0.3.5",
+                      "flask-restful-swagger==0.19",
                       "html2text==2016.1.8",
                       "python-cinderclient==1.6.0",
                       "python-glanceclient==1.1.0",

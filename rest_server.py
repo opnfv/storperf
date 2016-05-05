@@ -25,15 +25,40 @@ storperf = StorPerfMaster()
 
 @app.route('/swagger/<path:path>')
 def send_swagger(path):
-    print "called! storperf/resources/html/swagger/" + path
     return send_from_directory('storperf/resources/html/swagger', path)
+
+
+@swagger.model
+class ConfigurationRequestModel:
+    resource_fields = {
+        'agent_count': fields.Integer,
+        'public_network': fields.String,
+        'volume_size': fields.Integer
+    }
+
+
+@swagger.model
+class ConfigurationResponseModel:
+    resource_fields = {
+        'agent_count': fields.Integer,
+        'public_network': fields.String,
+        'stack_created': fields.Boolean,
+        'stack_id': fields.String,
+        'volume_size': fields.Integer
+    }
 
 
 class Configure(Resource):
 
+    """Configuration API"""
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
+    @swagger.operation(
+        notes='Fetch the current agent configuration',
+        type=ConfigurationResponseModel.__name__
+    )
     def get(self):
         return jsonify({'agent_count': storperf.agent_count,
                         'public_network': storperf.public_network,
@@ -41,6 +66,23 @@ class Configure(Resource):
                         'stack_created': storperf.is_stack_created,
                         'stack_id': storperf.stack_id})
 
+    @swagger.operation(
+        notes='''Set the current agent configuration and create a stack in
+        the controller.  Returns once the stack request is submitted.''',
+        parameters=[
+            {
+                "name": "configuration",
+                "description": '''Configuration to be set. All parameters are
+                optional, and will retain their previous value if not
+                specified.  Volume size is in GB.
+                ''',
+                "required": True,
+                "type": "ConfigurationRequestModel",
+                "paramType": "body"
+            }
+        ],
+        type=ConfigurationResponseModel.__name__
+    )
     def post(self):
         if not request.json:
             abort(400, "ERROR: No data specified")
@@ -64,6 +106,9 @@ class Configure(Resource):
         except Exception as e:
             abort(400, str(e))
 
+    @swagger.operation(
+        notes='Deletes the agent configuration and the stack'
+    )
     def delete(self):
         try:
             storperf.delete_stack()
@@ -81,7 +126,16 @@ class WorkloadModel:
     }
 
 
+@swagger.model
+class WorkloadResponseModel:
+    resource_fields = {
+        'job_id': fields.String
+    }
+
+
 class Job(Resource):
+
+    """Job API"""
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -131,10 +185,11 @@ class Job(Resource):
                 "paramType": "body"
             }
         ],
+        type=WorkloadResponseModel.__name__,
         responseMessages=[
             {
                 "code": 200,
-                "message": "Wordload ID found, response in JSON format"
+                "message": "Job submitted"
             },
             {
                 "code": 400,
@@ -181,16 +236,31 @@ class Job(Resource):
     )
     def delete(self):
         try:
-            storperf.terminate_workloads()
-            return True
+            return jsonify({'Slaves': storperf.terminate_workloads()})
         except Exception as e:
             abort(400, str(e))
 
 
-class Quota(Resource):
+@swagger.model
+class QuotaModel:
 
+    resource_fields = {
+        'quota': fields.Integer
+    }
+
+
+class Quota(Resource):
+    """Quota API"""
+
+    @swagger.operation(
+        notes='''Fetch the current Cinder volume quota.  This value limits
+        the number of volumes that can be created, and by extension, defines
+        the maximum number of agents that can be created for any given test
+        scenario''',
+        type=QuotaModel.__name__
+    )
     def get(self):
-        quota = storperf.get_volume_quota()
+        quota = storperf.volume_quota
         return jsonify({'quota': quota})
 
 
