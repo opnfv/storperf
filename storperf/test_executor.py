@@ -135,10 +135,10 @@ class TestExecutor(object):
                 workload.filename = self.filename
 
             if (workload_name.startswith("_")):
-                iodepths = [2, ]
+                iodepths = [32, ]
                 blocksizes = [8192, ]
             else:
-                iodepths = [1, 16, 128]
+                iodepths = [128, 16, 1]
                 blocksizes = [8192, 4096, 512]
 
             workload.id = self.job_db.job_id
@@ -183,6 +183,6 @@ class TestExecutor(object):
 
         self.logger.info("Ended " + workload.fullname)
 
-    def fetch_results(self, job, workload_name=""):
+    def fetch_workloads(self, job, workload_name=""):
         self.job_db.job_id = job
-        return self.job_db.fetch_results(workload_name)
+        return self.job_db.fetch_workloads(workload_name)

@@ -7,15 +7,13 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from _sqlite3 import OperationalError
+from sqlite3 import OperationalError
 from threading import Lock
 import calendar
 import logging
 import sqlite3
 import time
 import uuid
-
-import requests
 
 
 db_mutex = Lock()
@@ -172,22 +170,14 @@ class JobDB(object):
             db.commit()
             db.close()
 
-    def fetch_results(self, workload_prefix=""):
-        if (workload_prefix is None):
-            workload_prefix = ""
-
-        workload_prefix = workload_prefix + "%"
-
-        start_time = str(calendar.timegm(time.gmtime()))
-        end_time = "0"
-
-        self.logger.debug("Workload like: " + workload_prefix)
+    def fetch_workloads(self, workload):
+        workload_prefix = workload + "%"
+        workload_executions = []
 
         with db_mutex:
-
             db = sqlite3.connect(JobDB.db_name)
             cursor = db.cursor()
-            cursor.execute("""select start, end, workload
+            cursor.execute("""select  workload, start, end
                 from jobs where workload like ?""",
                            (workload_prefix,))
 
@@ -195,27 +185,8 @@ class JobDB(object):
                 row = cursor.fetchone()
                 if (row is None):
                     break
-
-                start_time = str(row[0])
-                end_time = str(row[1])
-                workload = str(row[2])
-
-                # for most of these stats, we just want the final one
-                # as that is cumulative average or whatever for the whole
-                # run
-
-                self.logger.info("workload=" + workload +
-                                 "start=" + start_time + " end=" + end_time)
-
-                request = ("http://127.0.0.1:8000/render/?target="
-                           "*.%s.%s.jobs.1.*.clat.mean"
-                           "&format=json&from=%s&until=%s"
-                           % (self.job_id, workload, start_time, end_time))
-                response = requests.get(request)
-
-                if (response.status_code == 200):
-                    data = response.json()
-                    print data
-                else:
-                    pass
+                workload_execution = [row[0], row[1], row[2]]
+                workload_executions.append(workload_execution)
             db.close()
+
+        return workload_executions
