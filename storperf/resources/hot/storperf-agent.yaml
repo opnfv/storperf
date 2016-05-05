@@ -33,7 +33,10 @@ parameters:
     type: string
     constraints:
         - custom_constraint: neutron.network
-
+  public_network:
+    type: string
+    constraints:
+        - custom_constraint: neutron.network
 resources:
 
   storperf_agent:
@@ -69,20 +72,25 @@ resources:
     properties:
       network_id: { get_param: agent_network }
       security_groups:
-        - { get_resource: storperf_security_group }
+        - { get_resource: storperf_open_security_group }
 
-  storperf_security_group:
+  storperf_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network_id: { get_param: public_network }
+      port_id: { get_resource: storperf_agent_port }
+
+  storperf_open_security_group:
     type: OS::Neutron::SecurityGroup
     properties:
-      description: Neutron security group rules
-      name: StorPerf-Security-Group
+      description: An open security group to allow all access to the StorPerf slaves
       rules:
-      - remote_ip_prefix: 0.0.0.0/0
-        protocol: tcp
-        direction: ingress
-      - remote_ip_prefix: 0.0.0.0/0
-        protocol: icmp
-        direction: ingress
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: tcp
+          port_range_min: 22
+          port_range_max: 22
+        - remote_ip_prefix: 0.0.0.0/0
+          protocol: icmp
 
   agent_volume:
     type: OS::Cinder::Volume
@@ -97,5 +105,5 @@ resources:
 
 outputs:
   storperf_agent_ip:
-    description: The IP address of the agent on the StorPerf network
-    value: { get_attr: [ storperf_agent, first_address ] }
+    description: The floating IP address of the agent on the public network
+    value: { get_attr: [ storperf_floating_ip, floating_ip_address ] }

@@ -10,13 +10,13 @@
 heat_template_version: 2013-05-23
 
 parameters:
-  agent_network:
+  public_network:
     type: string
     constraints:
         - custom_constraint: neutron.network
   flavor:
     type: string
-    default: "StorPerf Agent"
+    default: "m1.small"
   key_name:
     type: string
     default: StorPerf
@@ -43,12 +43,38 @@ resources:
       resource_def: {
         type: "storperf-agent.yaml",
         properties: {
-          agent_network: {get_param: agent_network},
+          public_network: {get_param: public_network},
+          agent_network: {get_resource: storperf_network},
           flavor: {get_param: flavor},
           key_name: {get_param: key_name},
           volume_size: {get_param: volume_size}
         }
       }
+
+  storperf_network:
+        type: OS::Neutron::Net
+        properties:
+          name: storperf-network
+
+  storperf_subnet:
+        type: OS::Neutron::Subnet
+        properties:
+          network_id: { get_resource: storperf_network }
+          cidr: 172.16.0.0/16
+          gateway_ip: 172.16.0.1
+
+  storperf_network_router:
+        type: OS::Neutron::Router
+        properties:
+          external_gateway_info:
+                network: { get_param: public_network }
+
+  storperf_network_router_interface:
+        type: OS::Neutron::RouterInterface
+        properties:
+          router_id: { get_resource: storperf_network_router }
+          subnet_id: { get_resource: storperf_subnet }
+
 
 outputs:
   slave_ips: {

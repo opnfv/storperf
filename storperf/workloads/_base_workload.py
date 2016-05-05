@@ -74,8 +74,9 @@ class _base_workload(object):
 
     @property
     def fullname(self):
-        return str(self.id) + "." + \
-            self.__class__.__name__ + "." + \
-            str(self.remote_host).replace(".", "-") + \
-            ".queue-depth." + str(self.options['iodepth']) + \
-            ".block-size." + str(self.options['bs'])
+        return ("%s.%s.queue-depth.%s.block-size.%s.%s" %
+                (str(self.id),
+                 self.__class__.__name__,
+                 str(self.options['iodepth']),
+                 str(self.options['bs']),
+                 str(self.remote_host).replace(".", "-")))

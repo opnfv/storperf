@@ -154,7 +154,7 @@ def main(argv=None):
                 raise Usage(content['message'])
 
         if (report is not None):
-            print storperf.fetch_results(report, workload)
+            print storperf.fetch_results(report)
         else:
             print "Calling start..."
             response = requests.post(

@@ -13,13 +13,20 @@ import logging
 import logging.config
 import os
 
-from flask import abort, Flask, request, jsonify
-from flask_restful import Resource, Api
+from flask import abort, Flask, request, jsonify, send_from_directory
+from flask_restful import Resource, Api, fields
+from flask_restful_swagger import swagger
 
+app = Flask(__name__, static_url_path="")
+api = swagger.docs(Api(app), apiVersion='1.0')
 
-app = Flask(__name__)
-api = Api(app)
 storperf = StorPerfMaster()
+
+
+@app.route('/swagger/<path:path>')
+def send_swagger(path):
+    print "called! storperf/resources/html/swagger/" + path
+    return send_from_directory('storperf/resources/html/swagger', path)
 
 
 class Configure(Resource):
@@ -29,7 +36,7 @@ class Configure(Resource):
 
     def get(self):
         return jsonify({'agent_count': storperf.agent_count,
-                        'agent_network': storperf.agent_network,
+                        'public_network': storperf.public_network,
                         'volume_size': storperf.volume_size,
                         'stack_created': storperf.is_stack_created,
                         'stack_id': storperf.stack_id})
@@ -41,8 +48,8 @@ class Configure(Resource):
         try:
             if ('agent_count' in request.json):
                 storperf.agent_count = request.json['agent_count']
-            if ('agent_network' in request.json):
-                storperf.agent_network = request.json['agent_network']
+            if ('public_network' in request.json):
+                storperf.public_network = request.json['public_network']
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
 
@@ -50,7 +57,7 @@ class Configure(Resource):
             storperf.create_stack()
 
             return jsonify({'agent_count': storperf.agent_count,
-                            'agent_network': storperf.agent_network,
+                            'public_network': storperf.public_network,
                             'volume_size': storperf.volume_size,
                             'stack_id': storperf.stack_id})
 
@@ -64,11 +71,77 @@ class Configure(Resource):
             abort(400, str(e))
 
 
+@swagger.model
+class WorkloadModel:
+    resource_fields = {
+        'target': fields.String,
+        'nossd': fields.String,
+        'nowarm': fields.String,
+        'workload': fields.String,
+    }
+
+
 class Job(Resource):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
+    @swagger.operation(
+        notes='Fetch the average latency of the specified workload',
+        parameters=[
+            {
+                "name": "id",
+                "description": "The UUID of the workload in the format "
+                "NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN",
+                "required": True,
+                "type": "string",
+                "allowMultiple": False,
+                "paramType": "query"
+            }
+        ],
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Wordload ID found, response in JSON format"
+            },
+            {
+                "code": 404,
+                "message": "Workload ID not found"
+            }
+        ]
+    )
+    def get(self):
+        workload_id = request.args.get('id')
+        print workload_id
+        return jsonify(storperf.fetch_results(workload_id))
+
+    @swagger.operation(
+        parameters=[
+            {
+                "name": "body",
+                "description": 'Start execution of a workload with the '
+                'following parameters: "target": The target device to '
+                'profile", "nossd": Do not fill the target with random '
+                'data prior to running the test, "nowarm": Do not '
+                'refill the target with data '
+                'prior to running any further tests, "workload":if specified, '
+                'the workload to run. Defaults to all.',
+                "required": True,
+                "type": "WorkloadModel",
+                "paramType": "body"
+            }
+        ],
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Wordload ID found, response in JSON format"
+            },
+            {
+                "code": 400,
+                "message": "Missing configuration data"
+            }
+        ]
+    )
     def post(self):
         if not request.json:
             abort(400, "ERROR: Missing configuration data")
@@ -97,6 +170,15 @@ class Job(Resource):
         except Exception as e:
             abort(400, str(e))
 
+    @swagger.operation(
+        notes='Cancels the currently running workload',
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Wordload ID found, response in JSON format"
+            },
+        ]
+    )
     def delete(self):
         try:
             storperf.terminate_workloads()

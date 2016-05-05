@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from _sqlite3 import OperationalError
+from sqlite3 import OperationalError
 from threading import Lock
 import logging
 import sqlite3
