@@ -44,9 +44,9 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
 
     def test_transmit_metrics(self):
 
-        testconv = converter.JSONToCarbon()
+        testconv = converter.Converter()
         json_object = json.loads("""{"timestamp" : "12345", "key":"value" }""")
-        result = testconv.convert_to_dictionary(json_object, "host.run-name")
+        result = testconv.convert_json_to_flat(json_object, "host.run-name")
 
         emitter = CarbonMetricTransmitter()
         emitter.carbon_port = self.listen_port

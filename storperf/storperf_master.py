@@ -7,7 +7,9 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from storperf.db.graphite_db import GraphiteDB
 from threading import Thread
+from time import sleep
 import logging
 import os
 import subprocess
@@ -97,20 +99,20 @@ class StorPerfMaster(object):
             value)
 
     @property
-    def agent_network(self):
+    def public_network(self):
         return self.configuration_db.get_configuration_value(
             'stack',
-            'agent_network')
+            'public_network')
 
-    @agent_network.setter
-    def agent_network(self, value):
+    @public_network.setter
+    def public_network(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
-                "ERROR: Cannot change agent network after stack is created")
+                "ERROR: Cannot change public network after stack is created")
 
         self.configuration_db.set_configuration_value(
             'stack',
-            'agent_network',
+            'public_network',
             value)
 
     @property
@@ -190,7 +192,8 @@ class StorPerfMaster(object):
             raise ParameterError("ERROR: Stack has already been created")
 
         self._attach_to_openstack()
-        if (self.agent_count > self.volume_quota):
+        volume_quota = self.volume_quota
+        if (volume_quota > 0 and self.agent_count > volume_quota):
             message = "ERROR: Volume quota too low: " + \
                 str(self.agent_count) + " > " + str(self.volume_quota)
             raise ParameterError(message)
@@ -205,7 +208,8 @@ class StorPerfMaster(object):
 
     def validate_stack(self):
         self._attach_to_openstack()
-        if (self.agent_count > self.volume_quota):
+        volume_quota = self.volume_quota
+        if (volume_quota > 0 and self.agent_count > volume_quota):
             message = "ERROR: Volume quota too low: " + \
                 str(self.agent_count) + " > " + str(self.volume_quota)
             self.logger.error(message)
@@ -218,18 +222,24 @@ class StorPerfMaster(object):
             parameters=self._make_parameters())
         return True
 
-    def wait_for_stack_creation(self):
-
-        pass
-
     def delete_stack(self):
         if (self.stack_id is None):
             raise ParameterError("ERROR: Stack does not exist")
 
         self._attach_to_openstack()
-
-        self._heat_client.stacks.delete(stack_id=self.stack_id)
-        self.stack_id = None
+        while True:
+            stack = self._heat_client.stacks.get(self.stack_id)
+            status = getattr(stack, 'stack_status')
+            self.logger.debug("Stack status=%s" % (status,))
+            if (status == u'CREATE_COMPLETE'):
+                self._heat_client.stacks.delete(stack_id=self.stack_id)
+            if (status == u'DELETE_COMPLETE'):
+                self.stack_id = None
+                return True
+            if (status == u'DELETE_FAILED'):
+                sleep(5)
+                self._heat_client.stacks.delete(stack_id=self.stack_id)
+            sleep(2)
 
     def execute_workloads(self):
         if (self.stack_id is None):
@@ -256,6 +266,10 @@ class StorPerfMaster(object):
 
     def terminate_workloads(self):
         return self._test_executor.terminate()
+
+    def fetch_results(self, job_id):
+        graphite_db = GraphiteDB()
+        return graphite_db.fetch_averages(job_id)
 
     def _setup_slave(self, slave):
         logger = logging.getLogger(__name__ + ":" + slave)
@@ -316,7 +330,7 @@ class StorPerfMaster(object):
 
     def _make_parameters(self):
         heat_parameters = {}
-        heat_parameters['agent_network'] = self.agent_network
+        heat_parameters['public_network'] = self.public_network
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_size'] = self.volume_size
         return heat_parameters
