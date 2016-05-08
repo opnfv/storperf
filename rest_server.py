@@ -7,7 +7,10 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from storperf.db.job_db import JobDB
+from storperf.plot.barchart import Barchart
 from storperf.storperf_master import StorPerfMaster
+import io
 import json
 import logging
 import logging.config
@@ -16,6 +19,7 @@ import os
 from flask import abort, Flask, request, jsonify, send_from_directory
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
+
 
 app = Flask(__name__, static_url_path="")
 api = swagger.docs(Api(app), apiVersion='1.0')
@@ -26,6 +30,73 @@ storperf = StorPerfMaster()
 @app.route('/swagger/<path:path>')
 def send_swagger(path):
     return send_from_directory('storperf/resources/html/swagger', path)
+
+
+@app.route('/results/<path:job_id>')
+def results_page(job_id):
+
+    job_db = JobDB()
+    params = {}
+
+    params = job_db.fetch_workload_params(job_id)
+
+    results = storperf.fetch_results(job_id)
+    workloads = []
+    block_sizes = []
+    queue_depths = []
+
+    for key, value in results.iteritems():
+        workload = key.split('.')[0]
+        queue_depth = key.split('.')[2]
+        block_size = key.split('.')[4]
+        if workload not in workloads:
+            workloads.append(workload)
+        if queue_depth not in queue_depths:
+            queue_depths.append(queue_depth)
+        if block_size not in block_sizes:
+            block_sizes.append(block_size)
+
+    read_latencies = []
+    write_latencies = []
+    for workload in workloads:
+        for queue_depth in queue_depths:
+            rlatencies = []
+            read_latencies.append(rlatencies)
+            wlatencies = []
+            write_latencies.append(wlatencies)
+            for block_size in block_sizes:
+                key = "%s.queue-depth.%s.block-size.%s.read.latency" % \
+                    (workload, queue_depth, block_size)
+                rlatencies.append(results[key])
+                key = "%s.queue-depth.%s.block-size.%s.write.latency" % \
+                    (workload, queue_depth, block_size)
+                wlatencies.append(results[key])
+
+    chart = Barchart()
+    chart.barchart(queue_depths, block_sizes, read_latencies)
+    readchart = chart.to_base64_image()
+
+    chart.barchart(queue_depths, block_sizes, write_latencies)
+    writechart = chart.to_base64_image()
+
+    print read_latencies
+    print write_latencies
+
+    html = """<html><body>%s <BR>
+    Number of VMs: %s <BR>
+    Cinder volume size per VM: %s (GB) <BR>
+    <center>Read Latency Report <BR>
+    <img src="data:image/png;base64,%s"/> <BR>
+    <center>Write Latency Report <BR>
+    <img src="data:image/png;base64,%s"/>
+    </body></html>""" % (job_id,
+                         params['agent_count'],
+                         params['volume_size'],
+                         readchart,
+                         writechart,
+                         )
+
+    return html
 
 
 @swagger.model
@@ -123,6 +194,8 @@ class WorkloadModel:
         'nossd': fields.String,
         'nowarm': fields.String,
         'workload': fields.String,
+        'queue_depths': fields.String,
+        'block_sizes': fields.String
     }
 
 
@@ -210,6 +283,10 @@ class Job(Resource):
                 storperf.precondition = False
             if ('nowarm' in request.json):
                 storperf.warm_up = False
+            if ('queue_depths' in request.json):
+                storperf.queue_depths = request.json['queue_depths']
+            if ('block_sizes' in request.json):
+                storperf.block_sizes = request.json['block_sizes']
             if ('workload' in request.json):
                 storperf.workloads = request.json['workload']
             else:

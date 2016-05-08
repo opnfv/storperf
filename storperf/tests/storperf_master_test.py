@@ -32,6 +32,24 @@ class StorPerfMasterTest(unittest.TestCase):
         self.assertEqual(
             expected, actual, "Did not expect: " + str(actual))
 
+    def test_queue_depths(self):
+        expected = "1,2,3"
+
+        self.storperf.queue_depths = expected
+        actual = self.storperf.queue_depths
+
+        self.assertEqual(
+            expected, actual, "Did not expect: " + str(actual))
+
+    def test_block_sizes(self):
+        expected = "8,2,1,0"
+
+        self.storperf.block_sizes = expected
+        actual = self.storperf.block_sizes
+
+        self.assertEqual(
+            expected, actual, "Did not expect: " + str(actual))
+
     def test_volume_size(self):
         expected = 20
 

@@ -108,7 +108,10 @@ class GraphiteDB(object):
                     total += datapoint[0]
                     count += 1
 
-            average = total / count
+            if count > 0:
+                average = total / count
+            else:
+                average = total
 
         return average
 

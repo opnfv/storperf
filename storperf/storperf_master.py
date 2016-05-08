@@ -15,6 +15,7 @@ import os
 import subprocess
 
 from db.configuration_db import ConfigurationDB
+from db.job_db import JobDB
 from test_executor import TestExecutor
 import cinderclient.v2 as cinderclient
 import heatclient.client as heatclient
@@ -31,6 +32,7 @@ class StorPerfMaster(object):
         self.logger = logging.getLogger(__name__)
 
         self.configuration_db = ConfigurationDB()
+        self.job_db = JobDB()
 
         template_file = open("storperf/resources/hot/agent-group.yaml")
         self._agent_group_hot = template_file.read()
@@ -159,6 +161,22 @@ class StorPerfMaster(object):
         self._test_executor.warm = value
 
     @property
+    def queue_depths(self):
+        return self._test_executor.queue_depths
+
+    @queue_depths.setter
+    def queue_depths(self, value):
+        self._test_executor.queue_depths = value
+
+    @property
+    def block_sizes(self):
+        return self._test_executor.block_sizes
+
+    @block_sizes.setter
+    def block_sizes(self, value):
+        self._test_executor.block_sizes = value
+
+    @property
     def is_stack_created(self):
         if (self.stack_id is not None):
             self._attach_to_openstack()
@@ -262,7 +280,13 @@ class StorPerfMaster(object):
             thread.join()
 
         self._test_executor.slaves = slaves
-        return self._test_executor.execute()
+        job_id = self._test_executor.execute()
+        params = {}
+        params['agent_count'] = self.agent_count
+        params['public_network'] = self.public_network
+        params['volume_size'] = self.volume_size
+        self.job_db.record_workload_params(job_id, params)
+        return job_id
 
     def terminate_workloads(self):
         return self._test_executor.terminate()
