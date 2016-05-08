@@ -32,6 +32,8 @@ class TestExecutor(object):
         self.filename = None
         self.precondition = True
         self.warm = True
+        self._queue_depths = [1, 4, 8]
+        self._block_sizes = [512, 4096, 16384]
         self.event_listeners = set()
         self.metrics_converter = Converter()
         self.metrics_emitter = CarbonMetricTransmitter()
@@ -50,6 +52,24 @@ class TestExecutor(object):
     def slaves(self, slaves):
         self.logger.debug("Set slaves to: " + str(slaves))
         self._slaves = slaves
+
+    @property
+    def queue_depths(self):
+        return ','.join(self._queue_depths)
+
+    @queue_depths.setter
+    def queue_depths(self, queue_depths):
+        self.logger.debug("Set queue_depths to: " + str(queue_depths))
+        self._queue_depths = queue_depths.split(',')
+
+    @property
+    def block_sizes(self):
+        return ','.join(self._block_sizes)
+
+    @block_sizes.setter
+    def block_sizes(self, block_sizes):
+        self.logger.debug("Set block_sizes to: " + str(block_sizes))
+        self._block_sizes = block_sizes.split(',')
 
     def register(self, event_listener):
         self.event_listeners.add(event_listener)
@@ -138,11 +158,11 @@ class TestExecutor(object):
                 workload.filename = self.filename
 
             if (workload_name.startswith("_")):
-                iodepths = [32, ]
-                blocksizes = [8192, ]
+                iodepths = [8, ]
+                blocksizes = [16384, ]
             else:
-                iodepths = [128, 16, 1]
-                blocksizes = [8192, 4096, 512]
+                iodepths = self._queue_depths
+                blocksizes = self._block_sizes
 
             workload.id = self.job_db.job_id
 

@@ -45,7 +45,17 @@ class JobDB(object):
             except OperationalError:
                 self.logger.debug("Job table exists")
 
+            try:
+                cursor.execute('''CREATE TABLE job_params
+                (job_id text,
+                param text,
+                value text)''')
+                self.logger.debug("Created job_params table")
+            except OperationalError:
+                self.logger.debug("Job params table exists")
+
             cursor.execute('SELECT * FROM jobs')
+            cursor.execute('SELECT * FROM job_params')
             db.commit()
             db.close()
 
@@ -177,7 +187,7 @@ class JobDB(object):
         with db_mutex:
             db = sqlite3.connect(JobDB.db_name)
             cursor = db.cursor()
-            cursor.execute("""select  workload, start, end
+            cursor.execute("""select workload, start, end
                 from jobs where workload like ?""",
                            (workload_prefix,))
 
@@ -190,3 +200,45 @@ class JobDB(object):
             db.close()
 
         return workload_executions
+
+    def record_workload_params(self, job_id, params):
+        """
+        """
+        with db_mutex:
+
+            db = sqlite3.connect(JobDB.db_name)
+            cursor = db.cursor()
+            for param, value in params.iteritems():
+                cursor.execute(
+                    """insert into job_params
+                               (job_id,
+                               param,
+                               value)
+                               values (?, ?, ?)""",
+                    (job_id,
+                     param,
+                     value,))
+            db.commit()
+            db.close()
+
+    def fetch_workload_params(self, job_id):
+        """
+        """
+        params = {}
+        with db_mutex:
+
+            db = sqlite3.connect(JobDB.db_name)
+            cursor = db.cursor()
+
+            cursor.execute(
+                "select param, value from job_params where job_id = ?",
+                (job_id,))
+
+            while (True):
+                row = cursor.fetchone()
+                if (row is None):
+                    break
+                params[row[0]] = row[1]
+
+            db.close()
+        return params
