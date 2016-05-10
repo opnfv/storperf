@@ -7,6 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from datetime import datetime
 from storperf.db.graphite_db import GraphiteDB
 from threading import Thread
 from time import sleep
@@ -56,6 +57,7 @@ class StorPerfMaster(object):
         self._cinder_client = None
         self._heat_client = None
         self._test_executor = TestExecutor()
+        self._last_openstack_auth = datetime.now()
 
     @property
     def volume_size(self):
@@ -98,6 +100,28 @@ class StorPerfMaster(object):
         self.configuration_db.set_configuration_value(
             'stack',
             'agent_count',
+            value)
+
+    @property
+    def agent_image(self):
+        value = self.configuration_db.get_configuration_value(
+            'stack',
+            'agent_image')
+
+        if (value is None):
+            value = 'Ubuntu 14.04'
+            self.agent_image = value
+            return value
+
+    @agent_image.setter
+    def agent_image(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change agent image after stack is created")
+
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'agent_image',
             value)
 
     @property
@@ -357,17 +381,24 @@ class StorPerfMaster(object):
         heat_parameters['public_network'] = self.public_network
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_size'] = self.volume_size
+        heat_parameters['agent_image'] = self.agent_image
         return heat_parameters
 
     def _attach_to_openstack(self):
 
-        if (self._cinder_client is None):
+        time_since_last_auth = datetime.now() - self._last_openstack_auth
+        print time_since_last_auth.total_seconds()
+        if (self._cinder_client is None or
+                time_since_last_auth.total_seconds() > 600):
+            self._last_openstack_auth = datetime.now()
+
+            self.logger.debug("Authenticating with OpenStack")
+
             self._cinder_client = cinderclient.Client(
                 self._username, self._password, self._project_name,
                 self._auth_url, service_type='volumev2')
             self._cinder_client.authenticate()
 
-        if (self._heat_client is None):
             self._keystone_client = ksclient.Client(
                 auth_url=self._auth_url,
                 username=self._username,

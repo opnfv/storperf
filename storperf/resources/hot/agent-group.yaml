@@ -17,6 +17,9 @@ parameters:
   flavor:
     type: string
     default: "m1.small"
+  agent_image:
+    type: string
+    default: 'StorPerf Ubuntu 14.04'
   key_name:
     type: string
     default: StorPerf
@@ -47,6 +50,7 @@ resources:
           public_network: {get_param: public_network},
           agent_network: {get_resource: storperf_network},
           flavor: {get_param: flavor},
+          image: {get_param: agent_image},
           storperf_open_security_group: {get_resource: storperf_open_security_group},
           key_name: {get_param: key_name},
           volume_size: {get_param: volume_size}

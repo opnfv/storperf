@@ -113,6 +113,7 @@ def results_page(job_id):
 class ConfigurationRequestModel:
     resource_fields = {
         'agent_count': fields.Integer,
+        'agent_image': fields.String,
         'public_network': fields.String,
         'volume_size': fields.Integer
     }
@@ -122,6 +123,7 @@ class ConfigurationRequestModel:
 class ConfigurationResponseModel:
     resource_fields = {
         'agent_count': fields.Integer,
+        'agent_image': fields.String,
         'public_network': fields.String,
         'stack_created': fields.Boolean,
         'stack_id': fields.String,
@@ -142,6 +144,7 @@ class Configure(Resource):
     )
     def get(self):
         return jsonify({'agent_count': storperf.agent_count,
+                        'agent_image': storperf.agent_image,
                         'public_network': storperf.public_network,
                         'volume_size': storperf.volume_size,
                         'stack_created': storperf.is_stack_created,
@@ -171,6 +174,8 @@ class Configure(Resource):
         try:
             if ('agent_count' in request.json):
                 storperf.agent_count = request.json['agent_count']
+            if ('agent_image' in request.json):
+                storperf.agent_image = request.json['agent_image']
             if ('public_network' in request.json):
                 storperf.public_network = request.json['public_network']
             if ('volume_size' in request.json):
@@ -180,6 +185,7 @@ class Configure(Resource):
             storperf.create_stack()
 
             return jsonify({'agent_count': storperf.agent_count,
+                            'agent_image': storperf.agent_image,
                             'public_network': storperf.public_network,
                             'volume_size': storperf.volume_size,
                             'stack_id': storperf.stack_id})
