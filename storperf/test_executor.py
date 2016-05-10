@@ -116,7 +116,8 @@ class TestExecutor(object):
                 if(workload_module is None):
                     raise UnknownWorkload(
                         "ERROR: Unknown workload: " + workload)
-                self.workload_modules.append(workload_module)
+                if workload_module not in self.workload_modules:
+                    self.workload_modules.append(workload_module)
             except ImportError, err:
                 raise UnknownWorkload("ERROR: " + str(err))
 
@@ -168,6 +169,7 @@ class TestExecutor(object):
 
             for blocksize in blocksizes:
                 for iodepth in iodepths:
+
                     if self._terminated:
                         return
 

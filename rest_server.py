@@ -74,14 +74,17 @@ def results_page(job_id):
 
             key = "%s.queue-depth.%s.block-size.%s.read.latency" % \
                 (workload, queue_depth, block_size)
-
-            print key + "=" + str(results[key])
             if key in results:
                 rlatencies.append(results[key] / 1000)
+            else:
+                rlatencies.append(0)
+
             key = "%s.queue-depth.%s.block-size.%s.write.latency" % \
                 (workload, queue_depth, block_size)
             if key in results:
                 wlatencies.append(results[key] / 1000)
+            else:
+                wlatencies.append(0)
 
     chart = Barchart()
     chart.barchart3d(queue_depths, block_sizes, read_latencies, 'g',
@@ -307,9 +310,6 @@ class Job(Resource):
                 storperf.workloads = request.json['workload']
             else:
                 storperf.workloads = None
-            # Add block size, queue depth, number of passes here.
-            if ('workload' in request.json):
-                storperf.workloads = request.json['workload']
 
             job_id = storperf.execute_workloads()
 
