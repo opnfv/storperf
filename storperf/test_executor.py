@@ -18,6 +18,8 @@ import copy
 import imp
 import logging
 import os
+import sched
+import time
 
 
 class UnknownWorkload(Exception):
@@ -31,6 +33,7 @@ class TestExecutor(object):
         self.workload_modules = []
         self.filename = None
         self.precondition = True
+        self.deadline = 10
         self.warm = True
         self._queue_depths = [1, 4, 8]
         self._block_sizes = [512, 4096, 16384]
@@ -143,6 +146,10 @@ class TestExecutor(object):
 
     def terminate(self):
         self._terminated = True
+        return self.terminate_current_run()
+
+    def terminate_current_run(self):
+        self.logger.info("Terminating current run")
         terminated_hosts = []
         for workload in self._workload_executors:
             workload.terminate()
@@ -170,8 +177,16 @@ class TestExecutor(object):
             for blocksize in blocksizes:
                 for iodepth in iodepths:
 
+                    scheduler = sched.scheduler(time.time, time.sleep)
                     if self._terminated:
                         return
+
+                    if self.deadline is not None \
+                            and not workload_name.startswith("_"):
+                        event = scheduler.enter(self.deadline * 60, 1,
+                                                self.terminate_current_run, ())
+                        t = Thread(target=scheduler.run, args=())
+                        t.start()
 
                     workload.options['iodepth'] = str(iodepth)
                     workload.options['bs'] = str(blocksize)
@@ -191,6 +206,12 @@ class TestExecutor(object):
 
                     for slave_thread in slave_threads:
                         slave_thread.join()
+
+                    if not scheduler.empty():
+                        try:
+                            scheduler.cancel(event)
+                        except:
+                            pass
 
                     self._workload_executors = []
 
