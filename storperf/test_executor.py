@@ -207,7 +207,3 @@ class TestExecutor(object):
         self.job_db.end_workload(workload)
 
         self.logger.info("Ended " + workload.fullname)
-
-    def fetch_workloads(self, job, workload_name=""):
-        self.job_db.job_id = job
-        return self.job_db.fetch_workloads(workload_name)

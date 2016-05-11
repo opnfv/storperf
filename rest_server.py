@@ -95,9 +95,16 @@ def results_page(job_id):
                      'Write Latency (ms)')
     writechart = chart.to_base64_image()
 
+    metadata = "<table>"
+    for key, value in params.iteritems():
+        metadata += "<TR><TD>" + key + "<TD>" + value + "</TR>"
+    metadata += "</table>"
+
     html = """<html><body>%s <BR>
     Number of VMs: %s <BR>
     Cinder volume size per VM: %s (GB) <BR>
+    Metadata: <BR>
+    %s<BR>
     <center>Read Latency Report <BR>
     <img src="data:image/png;base64,%s"/>
     <center>Write Latency Report <BR>
@@ -105,6 +112,7 @@ def results_page(job_id):
     </body></html>""" % (job_id,
                          params['agent_count'],
                          params['volume_size'],
+                         metadata,
                          readchart,
                          writechart,
                          )
@@ -233,7 +241,7 @@ class Job(Resource):
         self.logger = logging.getLogger(__name__)
 
     @swagger.operation(
-        notes='Fetch the average latency of the specified workload',
+        notes='Fetch the metrics of the specified workload',
         parameters=[
             {
                 "name": "id",
@@ -243,12 +251,21 @@ class Job(Resource):
                 "type": "string",
                 "allowMultiple": False,
                 "paramType": "query"
+            },
+            {
+                "name": "type",
+                "description": "The type of metrics to report.  May be "
+                "metrics (default), or metadata",
+                "required": False,
+                "type": "string",
+                "allowMultiple": False,
+                "paramType": "query"
             }
         ],
         responseMessages=[
             {
                 "code": 200,
-                "message": "Wordload ID found, response in JSON format"
+                "message": "Workload ID found, response in JSON format"
             },
             {
                 "code": 404,
@@ -257,9 +274,18 @@ class Job(Resource):
         ]
     )
     def get(self):
+
+        type = "metrics"
+        if request.args.get('type'):
+            type = request.args.get('type')
+
         workload_id = request.args.get('id')
-        print workload_id
-        return jsonify(storperf.fetch_results(workload_id))
+
+        if type == "metrics":
+            return jsonify(storperf.fetch_results(workload_id))
+
+        if type == "metadata":
+            return jsonify(storperf.fetch_metadata(workload_id))
 
     @swagger.operation(
         parameters=[
@@ -310,8 +336,12 @@ class Job(Resource):
                 storperf.workloads = request.json['workload']
             else:
                 storperf.workloads = None
+            if ('metadata' in request.json):
+                metadata = request.json['metadata']
+            else:
+                metadata = {}
 
-            job_id = storperf.execute_workloads()
+            job_id = storperf.execute_workloads(metadata)
 
             return jsonify({'job_id': job_id})
 
