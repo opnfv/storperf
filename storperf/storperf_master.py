@@ -283,7 +283,7 @@ class StorPerfMaster(object):
                 self._heat_client.stacks.delete(stack_id=self.stack_id)
             sleep(2)
 
-    def execute_workloads(self):
+    def execute_workloads(self, metadata={}):
         if (self.stack_id is None):
             raise ParameterError("ERROR: Stack does not exist")
 
@@ -305,11 +305,13 @@ class StorPerfMaster(object):
 
         self._test_executor.slaves = slaves
         job_id = self._test_executor.execute()
-        params = {}
+
+        params = metadata
         params['agent_count'] = self.agent_count
         params['public_network'] = self.public_network
         params['volume_size'] = self.volume_size
         self.job_db.record_workload_params(job_id, params)
+
         return job_id
 
     def terminate_workloads(self):
@@ -318,6 +320,9 @@ class StorPerfMaster(object):
     def fetch_results(self, job_id):
         graphite_db = GraphiteDB()
         return graphite_db.fetch_averages(job_id)
+
+    def fetch_metadata(self, job_id):
+        return self.job_db.fetch_workload_params(job_id)
 
     def _setup_slave(self, slave):
         logger = logging.getLogger(__name__ + ":" + slave)
@@ -387,7 +392,7 @@ class StorPerfMaster(object):
     def _attach_to_openstack(self):
 
         time_since_last_auth = datetime.now() - self._last_openstack_auth
-        print time_since_last_auth.total_seconds()
+
         if (self._cinder_client is None or
                 time_since_last_auth.total_seconds() > 600):
             self._last_openstack_auth = datetime.now()
