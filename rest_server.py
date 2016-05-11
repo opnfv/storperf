@@ -220,6 +220,7 @@ class WorkloadModel:
         'target': fields.String,
         'nossd': fields.String,
         'nowarm': fields.String,
+        'deadline': fields.Integer,
         'workload': fields.String,
         'queue_depths': fields.String,
         'block_sizes': fields.String
@@ -291,13 +292,22 @@ class Job(Resource):
         parameters=[
             {
                 "name": "body",
-                "description": 'Start execution of a workload with the '
-                'following parameters: "target": The target device to '
-                'profile", "nossd": Do not fill the target with random '
-                'data prior to running the test, "nowarm": Do not '
-                'refill the target with data '
-                'prior to running any further tests, "workload":if specified, '
-                'the workload to run. Defaults to all.',
+                "description": """Start execution of a workload with the
+                following parameters:
+
+                "target": The target device to profile",
+
+                "deadline": if specified, the maximum duration in minutes
+                for any single test iteration.
+
+                "nossd": Do not fill the target with random
+                data prior to running the test,
+
+                "nowarm": Do not refill the target with data
+                prior to running any further tests,
+
+                "workload":if specified, the workload to run. Defaults to all.
+                """,
                 "required": True,
                 "type": "WorkloadModel",
                 "paramType": "body"
@@ -324,6 +334,8 @@ class Job(Resource):
         try:
             if ('target' in request.json):
                 storperf.filename = request.json['target']
+            if ('deadline' in request.json):
+                storperf.deadline = request.json['deadline']
             if ('nossd' in request.json):
                 storperf.precondition = False
             if ('nowarm' in request.json):

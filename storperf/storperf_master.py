@@ -177,6 +177,14 @@ class StorPerfMaster(object):
         self._test_executor.precondition = value
 
     @property
+    def deadline(self):
+        return self._test_executor.deadline
+
+    @deadline.setter
+    def deadline(self, value):
+        self._test_executor.deadline = value
+
+    @property
     def warm_up(self):
         return self._test_executor.warm
 
