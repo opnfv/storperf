@@ -1,5 +1,13 @@
+##############################################################################
+# Copyright (c) 2016 EMC and others.
+#
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Apache License, Version 2.0
+# which accompanies this distribution, and is available at
+# http://www.apache.org/licenses/LICENSE-2.0
+##############################################################################
+
 from storperf.db.graphite_db import GraphiteDB
-import this
 import unittest
 
 
@@ -9,13 +17,13 @@ class GraphiteDBTest(unittest.TestCase):
         self.graphdb = GraphiteDB()
         self.graphdb._job_db = self
 
-    def test_wilcard_pattern(self):
+    def test_wildcard_pattern(self):
         workload = "job_id"
         expected = "job_id.*.*.*.*.*.*"
         actual = self.graphdb.make_fullname_pattern(workload)
         self.assertEqual(expected, actual, actual)
 
-    def test_no_wilcard_pattern(self):
+    def test_no_wildcard_pattern(self):
         workload = "job_id.workload.host.queue-depth.1.block-size.16"
         actual = self.graphdb.make_fullname_pattern(workload)
         self.assertEqual(workload, actual, actual)

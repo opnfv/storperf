@@ -1,5 +1,5 @@
 ##############################################################################
-# Copyright (c) 2015 EMC and others.
+# Copyright (c) 2016 EMC and others.
 #
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Apache License, Version 2.0
@@ -186,6 +186,7 @@ class JobDBTest(unittest.TestCase):
 
     def test_job_params(self):
         expected = {"a": "1", "b": "2"}
-        self.job.record_workload_params("ABCD", expected)
-        actual = self.job.fetch_workload_params("ABCD")
+        self.job.job_id = "ABCD"
+        self.job.record_workload_params(expected)
+        actual = self.job.fetch_workload_params(self.job.job_id)
         self.assertEqual(expected, actual)
