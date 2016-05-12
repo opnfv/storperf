@@ -201,9 +201,12 @@ class JobDB(object):
 
         return workload_executions
 
-    def record_workload_params(self, job_id, params):
+    def record_workload_params(self, params):
         """
         """
+        if (self.job_id is None):
+            self.create_job_id()
+
         with db_mutex:
 
             db = sqlite3.connect(JobDB.db_name)
@@ -215,7 +218,7 @@ class JobDB(object):
                                param,
                                value)
                                values (?, ?, ?)""",
-                    (job_id,
+                    (self.job_id,
                      param,
                      value,))
             db.commit()

@@ -1,5 +1,4 @@
 from storperf.db.graphite_db import GraphiteDB
-import this
 import unittest
 
 

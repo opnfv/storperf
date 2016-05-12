@@ -312,13 +312,12 @@ class StorPerfMaster(object):
             thread.join()
 
         self._test_executor.slaves = slaves
-        job_id = self._test_executor.execute()
 
         params = metadata
         params['agent_count'] = self.agent_count
         params['public_network'] = self.public_network
         params['volume_size'] = self.volume_size
-        self.job_db.record_workload_params(job_id, params)
+        job_id = self._test_executor.execute(params)
 
         return job_id
 

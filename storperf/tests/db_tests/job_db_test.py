@@ -186,6 +186,7 @@ class JobDBTest(unittest.TestCase):
 
     def test_job_params(self):
         expected = {"a": "1", "b": "2"}
-        self.job.record_workload_params("ABCD", expected)
-        actual = self.job.fetch_workload_params("ABCD")
+        self.job.job_id = "ABCD"
+        self.job.record_workload_params(expected)
+        actual = self.job.fetch_workload_params(self.job.job_id)
         self.assertEqual(expected, actual)
