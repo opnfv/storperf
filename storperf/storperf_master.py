@@ -111,7 +111,8 @@ class StorPerfMaster(object):
         if (value is None):
             value = 'Ubuntu 14.04'
             self.agent_image = value
-            return value
+
+        return value
 
     @agent_image.setter
     def agent_image(self, value):
