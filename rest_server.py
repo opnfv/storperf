@@ -7,6 +7,9 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+from storperf.db.job_db import JobDB
+from storperf.plot.barchart import Barchart
+from storperf.storperf_master import StorPerfMaster
 import io
 import json
 import logging
@@ -15,11 +18,7 @@ import os
 
 from flask import abort, Flask, request, jsonify, send_from_directory
 from flask_restful import Resource, Api, fields
-
 from flask_restful_swagger import swagger
-from storperf.db.job_db import JobDB
-from storperf.plot.barchart import Barchart
-from storperf.storperf_master import StorPerfMaster
 
 
 app = Flask(__name__, static_url_path="")
@@ -421,9 +420,9 @@ def setup_logging(default_path='storperf/logging.json',
     rootLogger.addHandler(socketHandler)
 
 
-api.add_resource(Configure, "/api/v1.0/configure")
-api.add_resource(Quota, "/api/v1.0/quota")
-api.add_resource(Job, "/api/v1.0/job")
+api.add_resource(Configure, "/api/v1.0/configurations")
+api.add_resource(Quota, "/api/v1.0/quotas")
+api.add_resource(Job, "/api/v1.0/jobs")
 
 if __name__ == "__main__":
     setup_logging()

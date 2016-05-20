@@ -92,6 +92,8 @@ class TestExecutor(object):
         self.metrics_emitter.transmit_metrics(carbon_metrics)
 
     def register_workloads(self, workloads):
+        self.workload_modules = []
+
         if (workloads is None or len(workloads) == 0):
             workload_dir = os.path.normpath(
                 os.path.join(os.path.dirname(__file__), "workloads"))

@@ -17,11 +17,10 @@ import json
 import logging
 import logging.config
 import logging.handlers
+import requests
 import socket
 import struct
 import sys
-
-import requests
 
 
 class Usage(Exception):
@@ -132,7 +131,7 @@ def main(argv=None):
 
         if (erase):
             response = requests.delete(
-                'http://127.0.0.1:5000/api/v1.0/configure')
+                'http://127.0.0.1:5000/api/v1.0/configurations')
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
@@ -140,7 +139,7 @@ def main(argv=None):
 
         if (terminate):
             response = requests.delete(
-                'http://127.0.0.1:5000/api/v1.0/job')
+                'http://127.0.0.1:5000/api/v1.0/jobs')
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
@@ -148,7 +147,7 @@ def main(argv=None):
 
         if (configuration is not None):
             response = requests.post(
-                'http://127.0.0.1:5000/api/v1.0/configure', json=configuration)
+                'http://127.0.0.1:5000/api/v1.0/configurations', json=configuration)
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
@@ -156,7 +155,7 @@ def main(argv=None):
         if (report is not None):
             print "Fetching report for %s..." % (report,)
             response = requests.get(
-                'http://127.0.0.1:5000/api/v1.0/job?id=%s' % (report,))
+                'http://127.0.0.1:5000/api/v1.0/jobs?id=%s' % (report,))
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
@@ -165,7 +164,7 @@ def main(argv=None):
         else:
             print "Calling start..."
             response = requests.post(
-                'http://127.0.0.1:5000/api/v1.0/job', json=options)
+                'http://127.0.0.1:5000/api/v1.0/jobs', json=options)
             if (response.status_code == 400):
                 content = json.loads(response.content)
                 raise Usage(content['message'])
