@@ -20,9 +20,6 @@ parameters:
   agent_image:
     type: string
     default: 'StorPerf Ubuntu 14.04'
-  key_name:
-    type: string
-    default: StorPerf
   volume_size:
     type: number
     description: Size of the volume to be created.
@@ -41,7 +38,8 @@ parameters:
 resources:
   slaves:
     type: OS::Heat::ResourceGroup
-    depends_on: [storperf_subnet, storperf_network_router_interface, storperf_open_security_group]
+    depends_on: [storperf_subnet, storperf_network_router_interface, 
+      storperf_open_security_group, storperf_key_pair]
     properties:
       count: {get_param: agent_count}
       resource_def: {
@@ -52,7 +50,7 @@ resources:
           flavor: {get_param: flavor},
           image: {get_param: agent_image},
           storperf_open_security_group: {get_resource: storperf_open_security_group},
-          key_name: {get_param: key_name},
+          key_name: {get_resource: storperf_key_pair},
           volume_size: {get_param: volume_size}
         }
       }
@@ -80,6 +78,12 @@ resources:
         properties:
           router_id: { get_resource: storperf_network_router }
           subnet_id: { get_resource: storperf_subnet }
+          
+  storperf_key_pair:
+    type: OS::Nova::KeyPair
+    properties:
+      save_private_key: true
+      name: storperf_agent_keypair
 
   storperf_open_security_group:
     type: OS::Neutron::SecurityGroup
