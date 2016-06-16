@@ -21,7 +21,7 @@ source $WORKSPACE/storperf_venv/bin/activate
 pip install setuptools
 pip install autoflake==0.6.6
 pip install autopep8==1.2.2
-pip install coverage==4.0.3
+pip install coverage==3.4
 pip install flask==0.10
 pip install flask-restful==0.3.5
 pip install flask-restful-swagger==0.19
