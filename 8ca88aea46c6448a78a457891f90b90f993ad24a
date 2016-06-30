@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_6d2c59ac",
+        "filename": "storperf/utilities/math.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-06-30T21:39:39Z",
+      "side": 1,
+      "message": "You should set your IDE to trim whitespace.  In LiClipse / PyDev, Preferences, General, Editors, AnyEdit Tools and select \"Remove trailing whitespace\".",
+      "revId": "8ca88aea46c6448a78a457891f90b90f993ad24a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
