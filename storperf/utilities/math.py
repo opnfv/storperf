@@ -7,46 +7,82 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-class math(object):
 
-    @staticmethod
-    def slope(data_series):
+def slope(data_series):
+    """
+    This function implements the linear least squares algorithm described in
+    the following wikipedia article :
+    https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)
+    in the case of m equations (provided by m data points) and 2 unknown
+    variables (x and y, which represent the time and the Volume performance
+    variable being tested e.g. IOPS, latency...).
+    The data_series is currently assumed to follow the pattern :
+    [[x1,y1], [x2,y2], ..., [xm,ym]].
+    If this data pattern were to change, the data_treatement function
+    should be adjusted to ensure compatibility with the rest of the
+    Steady State Dectection module.
+    """
+
+    # In the particular case of an empty data series
+    if len(data_series) == 0:
+        beta2 = 0
+
+    else:  # The general case
+        m = len(data_series)
+        # To make sure at least one element is a float number so the result
+        # of the algorithm be a float number
+        data_series[0][0] = float(data_series[0][0])
+
         """
-        This function implements the linear least squares algorithm described in the following wikipedia article
-        https://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)
-        in the case of m equations (provided by m data points) and 2 unknown variables (x and
-        y, which represent the time and the Volume performance variable being
-        tested e.g. IOPS, latency...)
+        It consists in solving the normal equations system (2 equations,
+        2 unknowns) by calculating the value of beta2 (slope).
+        The formula of beta1 (the y-intercept) is given as a comment in
+        case it is needed later.
         """
+        sum_xi = 0
+        sum_xi_sq = 0
+        sum_yi_xi = 0
+        sum_yi = 0
+        for i in range(0, m):
+            xi = data_series[i][0]
+            yi = data_series[i][1]
 
-        if len(data_series)==0: #In the particular case of an empty data series
-            beta2 = 0
+            sum_xi += xi
+            sum_xi_sq += xi**2
+            sum_yi_xi += xi * yi
+            sum_yi += yi
 
-        else: #The general case
-            m = len(data_series) #given a [[x1,y1], [x2,y2], ..., [xm,ym]] data series
-            data_series[0][0] = float(data_series[0][0]) #To make sure at least one element is a float number so the result of the algorithm be a float number
+        beta2 = (sum_yi * sum_xi - m * sum_yi_xi) / \
+            (sum_xi**2 - m * sum_xi_sq)  # The slope
+        # beta1 = (sum_yi_xi - beta2*sum_xi_sq)/sum_xi #The y-intercept if
+        # needed
 
-            """
-            It consists in solving the normal equations system (2 equations, 2 unknowns)
-            by calculating the value of beta2 (slope). The formula of beta1 (the y-intercept)
-            is given as a comment in case it is needed later.
-            """
-            sum_xi = 0
-            sum_xi_sq = 0
-            sum_yi_xi = 0
-            sum_yi = 0
-            for i in range(0, m):
-                xi = data_series[i][0]
-                yi = data_series[i][1]
-
-                sum_xi += xi
-                sum_xi_sq += xi**2
-                sum_yi_xi += xi*yi
-                sum_yi += yi
-
-            beta2 = (sum_yi*sum_xi - m*sum_yi_xi)/(sum_xi**2 - m*sum_xi_sq) #The slope
-            #beta1 = (sum_yi_xi - beta2*sum_xi_sq)/sum_xi #The y-intercept if needed
-
-        return beta2
+    return beta2
 
 
+def range_value(data_series):
+    """
+    This function implements a range algorithm that returns a float number
+    representing the range of the data_series that is passed to it.
+    The data_series being passed is assumed to follow the following data
+    pattern : [y1, y2, y3, ..., ym] where yi represents the ith
+    measuring point of the y variable. The y variable represents the
+    Volume performance being tested (e.g. IOPS, latency...).
+    If this data pattern were to change, the data_treatment function
+    should be adjusted to ensure compatibility with the rest of the
+    Steady State Dectection module.
+    The conversion of the data series from the original pattern to the
+    [y1, y2, y3, ..., ym] pattern is done outside this function
+    so the original pattern can be changed without breaking this function.
+    """
+
+    # In the particular case of an empty data series
+    if len(data_series) == 0:
+        range_value = 0
+
+    else:  # The general case
+        max_value = max(data_series)
+        min_value = min(data_series)
+        range_value = max_value - min_value
+
+    return range_value
