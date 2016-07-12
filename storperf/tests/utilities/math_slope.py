@@ -7,9 +7,9 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 import unittest
-from storperf.utilities.math import math
+from storperf.utilities.math_slope import MathSlope as math
 
-class MathTest(unittest.TestCase):
+class MathSlopeTest(unittest.TestCase):
 
     def setUp(self):
         unittest.TestCase.setUp(self)

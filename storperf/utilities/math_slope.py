@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-class math(object):
+class MathSlope(object):
 
     @staticmethod
     def slope(data_series):
