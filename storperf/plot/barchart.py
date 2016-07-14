@@ -11,9 +11,9 @@ import cStringIO
 
 import matplotlib as mpl
 mpl.use('Agg')
-import matplotlib.pyplot as pyplot
-from mpl_toolkits.mplot3d import Axes3D
-import numpy as np
+import matplotlib.pyplot as pyplot  # noqa: ignore E402
+from mpl_toolkits.mplot3d import Axes3D  # noqa: ignore E402, F401
+import numpy as np  # noqa: ignore E402
 
 
 class Barchart(object):
@@ -24,8 +24,6 @@ class Barchart(object):
     def barchart3d(self, queue_depths, block_sizes, latencies, c, title):
 
         fig = pyplot.figure()
-
-        #ax = Axes3D(fig)
 
         data = np.array(latencies)
 

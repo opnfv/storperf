@@ -25,7 +25,6 @@ setup(
                       "flask-restful==0.3.5",
                       "flask-restful-swagger==0.19",
                       "html2text==2016.1.8",
-                      "matplotlib==1.3.1",
                       "python-cinderclient==1.6.0",
                       "python-glanceclient==1.1.0",
                       "python-heatclient==0.8.0",
