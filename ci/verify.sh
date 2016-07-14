@@ -21,7 +21,7 @@ source $WORKSPACE/storperf_venv/bin/activate
 pip install setuptools
 pip install autoflake==0.6.6
 pip install autopep8==1.2.2
-pip install coverage==3.4
+pip install coverage==4.1
 pip install flask==0.10
 pip install flask-restful==0.3.5
 pip install flask-restful-swagger==0.19
@@ -29,6 +29,7 @@ pip install flask-swagger==0.2.12
 pip install funcsigs==0.4
 pip install flake8==2.5.4
 pip install html2text==2016.1.8
+pip install matplotlib==1.3.1
 pip install mock==1.3.0
 pip install nose==1.3.7
 pip install python-cinderclient==1.6.0
@@ -45,6 +46,8 @@ python ci/setup.py develop
 
 flake8 storperf
 
+flake8rc=$?
+
 nosetests --with-xunit \
          --with-coverage \
          --cover-package=storperf\
@@ -53,5 +56,11 @@ nosetests --with-xunit \
 rc=$?
 
 deactivate
+
+if [ $flake8rc -ne 0 ]
+then
+    echo "Formatting did not meet guidelines"
+    exit $flake8rc
+fi
 
 exit $rc
