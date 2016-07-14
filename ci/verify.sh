@@ -52,7 +52,7 @@ nosetests --with-xunit \
          --with-coverage \
          --cover-package=storperf\
          --cover-xml \
-         storperf
+         tests
 rc=$?
 
 deactivate
