@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a7ca5a3_6420ddf7",
+        "filename": "storperf/utilities/math.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-07-15T20:52:26Z",
+      "side": 1,
+      "message": "I agree that None makes sense, but wanted to know why you chose to change it from mathematical 0 to None?",
+      "revId": "aa20b986cebf031489f4280988b4574a9acbc647",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_841df9bf",
+        "filename": "storperf/utilities/steady_state.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-07-15T20:52:26Z",
+      "side": 1,
+      "message": "Love how nicely this code reads.  This is why I believe in tests and well written code instead of many inline comments about what is happening.  This is clear.",
+      "revId": "aa20b986cebf031489f4280988b4574a9acbc647",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a7ca5a3_c423f103",
+        "filename": "tests/utilities_tests/steady_state_test.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-07-15T20:52:26Z",
+      "side": 1,
+      "message": "Again, curious: did you use these numbers and manually calculate the result, or did you add \"expected \u003d True\" because you ran the numbers through your routines and it said \"True\"?",
+      "revId": "aa20b986cebf031489f4280988b4574a9acbc647",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
