@@ -25,7 +25,7 @@ def slope(data_series):
 
     # In the particular case of an empty data series
     if len(data_series) == 0:
-        beta2 = 0
+        beta2 = None
 
     else:  # The general case
         m = len(data_series)
@@ -78,7 +78,7 @@ def range_value(data_series):
 
     # In the particular case of an empty data series
     if len(data_series) == 0:
-        range_value = 0
+        range_value = None
 
     else:  # The general case
         max_value = max(data_series)
@@ -86,3 +86,26 @@ def range_value(data_series):
         range_value = max_value - min_value
 
     return range_value
+
+
+def average(data_series):
+    """
+    This function seeks to calculate the average value of the data series
+    given a series following the pattern : [y1, y2, y3, ..., ym].
+    If this data pattern were to change, the data_treatment function
+    should be adjusted to ensure compatibility with the rest of the
+    Steady State Dectection module.
+    The function returns a float number corresponding to the average of the yi.
+    """
+    m = len(data_series)
+
+    if m == 0:  # In the particular case of an empty data series
+        average = None
+
+    else:
+        data_sum = 0
+        for value in data_series:
+            data_sum += value
+        average = data_sum / float(m)
+
+    return average
