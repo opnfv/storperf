@@ -57,3 +57,9 @@ class SteadyStateTest(unittest.TestCase):
         data_series = [[-15, 0.43], [-16, 0.41], [-3, 0.45], [4, 0.42]]
         actual = SteadyState.steady_state(data_series)
         self.assertEqual(expected, actual)
+
+    def test_negative_slope(self):
+        expected = False
+        data_series = [[1.3, 1], [1.2, 1], [1.1, 1.1], [1.0, 1.1]]
+        actual = SteadyState.steady_state(data_series)
+        self.assertEqual(expected, actual)
