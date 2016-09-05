@@ -8,3 +8,5 @@ coverage.xml
 .settings
 storperf.egg-info
 *.db
+docs_build
+docs_output
