@@ -77,6 +77,8 @@ class FIOInvoker(object):
         else:
             cmd = "ssh"
             additional_args = ['-o', 'StrictHostKeyChecking=no',
+                               '-o', 'UserKnownHostsFile=/dev/null',
+                               '-o', 'LogLevel=error',
                                '-i', 'storperf/resources/ssh/storperf_rsa',
                                'storperf@' + self.remote_host,
                                "sudo", "./fio"]
@@ -102,6 +104,8 @@ class FIOInvoker(object):
     def terminate(self):
         self.logger.debug("Terminating fio on " + self.remote_host)
         cmd = ['ssh', '-o', 'StrictHostKeyChecking=no',
+               '-o', 'UserKnownHostsFile=/dev/null',
+               '-o', 'LogLevel=error',
                '-i', 'storperf/resources/ssh/storperf_rsa',
                'storperf@' + self.remote_host,
                'sudo', 'killall', '-9', 'fio']

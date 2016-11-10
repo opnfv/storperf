@@ -8,19 +8,19 @@
 ##############################################################################
 
 from datetime import datetime
-from storperf.db.graphite_db import GraphiteDB
-from threading import Thread
-from time import sleep
 import logging
 import os
 import subprocess
+from threading import Thread
+from time import sleep
 
+import cinderclient.v2 as cinderclient
 from db.configuration_db import ConfigurationDB
 from db.job_db import JobDB
-from test_executor import TestExecutor
-import cinderclient.v2 as cinderclient
 import heatclient.client as heatclient
 import keystoneclient.v2_0 as ksclient
+from storperf.db.graphite_db import GraphiteDB
+from test_executor import TestExecutor
 
 
 class ParameterError(Exception):
@@ -257,21 +257,19 @@ class StorPerfMaster(object):
 
         self.stack_id = stack['stack']['id']
 
-    def validate_stack(self):
-        self._attach_to_openstack()
-        volume_quota = self.volume_quota
-        if (volume_quota > 0 and self.agent_count > volume_quota):
-            message = "ERROR: Volume quota too low: " + \
-                str(self.agent_count) + " > " + str(self.volume_quota)
-            self.logger.error(message)
-            raise ParameterError(message)
-
-        self._heat_client.stacks.preview(
-            stack_name="StorPerfAgentGroup",
-            template=self._agent_group_hot,
-            files=self._hot_files,
-            parameters=self._make_parameters())
-        return True
+        while True:
+            stack = self._heat_client.stacks.get(self.stack_id)
+            status = getattr(stack, 'stack_status')
+            self.logger.debug("Stack status=%s" % (status,))
+            if (status == u'CREATE_COMPLETE'):
+                return True
+            if (status == u'DELETE_COMPLETE'):
+                self.stack_id = None
+                return True
+            if (status == u'CREATE_FAILED'):
+                sleep(5)
+                self._heat_client.stacks.delete(stack_id=self.stack_id)
+            sleep(2)
 
     def delete_stack(self):
         if (self.stack_id is None):
@@ -338,6 +336,8 @@ class StorPerfMaster(object):
         logger.info("Initializing slave at " + slave)
 
         args = ['scp', '-o', 'StrictHostKeyChecking=no',
+                '-o', 'UserKnownHostsFile=/dev/null',
+                '-o', 'LogLevel=error',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
                 '/lib/x86_64-linux-gnu/libaio.so.1',
                 'storperf@' + slave + ":"]
@@ -355,6 +355,8 @@ class StorPerfMaster(object):
             logger.error(stderr.decode('utf-8').strip())
 
         args = ['scp', '-o', 'StrictHostKeyChecking=no',
+                '-o', 'UserKnownHostsFile=/dev/null',
+                '-o', 'LogLevel=error',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
                 '/usr/local/bin/fio',
                 'storperf@' + slave + ":"]
@@ -372,6 +374,8 @@ class StorPerfMaster(object):
             logger.error(stderr.decode('utf-8').strip())
 
         args = ['ssh', '-o', 'StrictHostKeyChecking=no',
+                '-o', 'UserKnownHostsFile=/dev/null',
+                '-o', 'LogLevel=error',
                 '-i', 'storperf/resources/ssh/storperf_rsa',
                 'storperf@' + slave,
                 'sudo cp -v libaio.so.1 /lib/x86_64-linux-gnu/libaio.so.1'

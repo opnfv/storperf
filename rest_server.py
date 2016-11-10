@@ -7,9 +7,6 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from storperf.db.job_db import JobDB
-from storperf.plot.barchart import Barchart
-from storperf.storperf_master import StorPerfMaster
 import io
 import json
 import logging
@@ -19,6 +16,10 @@ import os
 from flask import abort, Flask, request, jsonify, send_from_directory
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
+
+from storperf.db.job_db import JobDB
+from storperf.plot.barchart import Barchart
+from storperf.storperf_master import StorPerfMaster
 
 
 app = Flask(__name__, static_url_path="")
@@ -191,7 +192,6 @@ class Configure(Resource):
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
 
-            storperf.validate_stack()
             storperf.create_stack()
 
             return jsonify({'agent_count': storperf.agent_count,
