@@ -52,6 +52,7 @@ nosetests --with-xunit \
          --with-coverage \
          --cover-package=storperf\
          --cover-xml \
+         --cover-html \
          tests
 rc=$?
 

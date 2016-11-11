@@ -5,8 +5,10 @@ nosetests.xml
 .pydevproject
 coverage.xml
 .coverage
+cover
 .settings
 storperf.egg-info
 *.db
+ci/job
 docs_build
 docs_output
