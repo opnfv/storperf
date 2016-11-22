@@ -10,6 +10,7 @@
 from datetime import datetime
 import logging
 import os
+import socket
 import subprocess
 from threading import Thread
 from time import sleep
@@ -334,6 +335,26 @@ class StorPerfMaster(object):
         logger = logging.getLogger(__name__ + ":" + slave)
 
         logger.info("Initializing slave at " + slave)
+
+        logger.debug("Checking if slave " + slave + " is alive")
+
+        alive = False
+        timer = 10
+        while not alive:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            result = s.connect_ex((slave, 22))
+            s.close()
+
+            if result:
+                alive = False
+                sleep(1)
+                timer -= 1
+                if timer == 0:
+                    logger.debug("Still waiting for slave " + slave)
+                    timer = 10
+            else:
+                alive = True
+                logger.debug("Slave " + slave + " is alive and ready")
 
         args = ['scp', '-o', 'StrictHostKeyChecking=no',
                 '-o', 'UserKnownHostsFile=/dev/null',
