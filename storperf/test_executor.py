@@ -7,8 +7,16 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+import copy
+import imp
+import logging
 from os import listdir
+import os
 from os.path import isfile, join
+import sched
+from threading import Thread
+import time
+
 from storperf.carbon.converter import Converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
 from storperf.db import test_results_db
@@ -16,13 +24,6 @@ from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
 from storperf.fio.fio_invoker import FIOInvoker
 from storperf.utilities import dictionary
-from threading import Thread
-import copy
-import imp
-import logging
-import os
-import sched
-import time
 
 
 class UnknownWorkload(Exception):
@@ -164,6 +165,15 @@ class TestExecutor(object):
             workload.terminate()
             terminated_hosts.append(workload.remote_host)
         return terminated_hosts
+
+    def execution_status(self, job_id):
+        if self.job_db.job_id != job_id:
+            return "Completed"
+
+        if len(self._workload_executors) > 0:
+            return "Running"
+
+        return "Completed"
 
     def execute_workloads(self):
         self._terminated = False
