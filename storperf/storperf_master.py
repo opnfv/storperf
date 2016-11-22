@@ -331,6 +331,9 @@ class StorPerfMaster(object):
     def fetch_metadata(self, job_id):
         return self.job_db.fetch_workload_params(job_id)
 
+    def fetch_job_status(self, job_id):
+        return self._test_executor.execution_status(job_id)
+
     def _setup_slave(self, slave):
         logger = logging.getLogger(__name__ + ":" + slave)
 
