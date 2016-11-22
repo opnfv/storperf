@@ -287,6 +287,9 @@ class Job(Resource):
         if type == "metadata":
             return jsonify(storperf.fetch_metadata(workload_id))
 
+        if type == "status":
+            return jsonify({"Status": storperf.fetch_job_status(workload_id)})
+
     @swagger.operation(
         parameters=[
             {

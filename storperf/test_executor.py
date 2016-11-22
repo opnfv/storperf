@@ -7,8 +7,16 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+import copy
+import imp
+import logging
 from os import listdir
+import os
 from os.path import isfile, join
+import sched
+from threading import Thread
+import time
+
 from storperf.carbon.converter import Converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
 from storperf.db import test_results_db
@@ -16,13 +24,6 @@ from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
 from storperf.fio.fio_invoker import FIOInvoker
 from storperf.utilities import dictionary
-from threading import Thread
-import copy
-import imp
-import logging
-import os
-import sched
-import time
 
 
 class UnknownWorkload(Exception):
@@ -165,6 +166,15 @@ class TestExecutor(object):
             terminated_hosts.append(workload.remote_host)
         return terminated_hosts
 
+    def execution_status(self, job_id):
+        if self.job_db.job_id != job_id:
+            return "Completed"
+
+        if (self._terminated is False):
+            return "Running"
+
+        return "Completed"
+
     def execute_workloads(self):
         self._terminated = False
         self.logger.info("Starting job %s" % (self.job_db.job_id))
@@ -232,6 +242,8 @@ class TestExecutor(object):
 
             self.logger.info("Completed workload %s" % (workload_name))
         self.logger.info("Completed job %s" % (self.job_db.job_id))
+        self._terminated = True
+
         end_time = time.time()
         pod_name = dictionary.get_key_from_dict(self.metadata,
                                                 'pod_name',
@@ -263,7 +275,7 @@ class TestExecutor(object):
             payload['metrics'] = graphite_db.fetch_averages(self.job_db.job_id)
             criteria = {}
             criteria['block_sizes'] = self.block_sizes
-            criteria['queue_depths'] = self.block_sizes
+            criteria['queue_depths'] = self.queue_depths
 
             try:
                 test_results_db.push_results_to_db(test_db,
