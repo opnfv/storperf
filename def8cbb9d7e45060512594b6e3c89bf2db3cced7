@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac10518_d173c8af",
+        "filename": "storperf/test_executor.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-11-23T15:57:30Z",
+      "side": 1,
+      "message": "There is a tiny race condition where the number of executors could be 0, but the job is in fact running.  This terminated state was here already, just never cleared, so it is better to use that.",
+      "revId": "def8cbb9d7e45060512594b6e3c89bf2db3cced7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
