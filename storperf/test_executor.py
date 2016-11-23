@@ -242,7 +242,6 @@ class TestExecutor(object):
 
             self.logger.info("Completed workload %s" % (workload_name))
         self.logger.info("Completed job %s" % (self.job_db.job_id))
-        self._terminated = True
 
         end_time = time.time()
         pod_name = dictionary.get_key_from_dict(self.metadata,
@@ -252,7 +251,7 @@ class TestExecutor(object):
                                                'version',
                                                'Unknown')
         scenario = dictionary.get_key_from_dict(self.metadata,
-                                                'scenario',
+                                                'scenario_name',
                                                 'Unknown')
         build_tag = dictionary.get_key_from_dict(self.metadata,
                                                  'build_tag',
@@ -281,6 +280,8 @@ class TestExecutor(object):
                 test_results_db.push_results_to_db(test_db,
                                                    "storperf",
                                                    "Latency Test",
+                                                   start_time,
+                                                   end_time,
                                                    self.logger,
                                                    pod_name,
                                                    version,
@@ -290,6 +291,8 @@ class TestExecutor(object):
                                                    payload)
             except:
                 self.logger.exception("Error pushing results into Database")
+
+        self._terminated = True
 
     def execute_on_node(self, workload):
 
