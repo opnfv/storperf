@@ -8,8 +8,9 @@
 ##############################################################################
 
 import json
-import requests
 import os
+
+import requests
 
 
 def get_installer_type(logger=None):
@@ -26,7 +27,8 @@ def get_installer_type(logger=None):
     return installer
 
 
-def push_results_to_db(db_url, project, case_name, logger, pod_name,
+def push_results_to_db(db_url, project, case_name,
+                       test_start, test_stop, logger, pod_name,
                        version, scenario, criteria, build_tag, payload):
     """
     POST results to the Result target DB
@@ -34,6 +36,7 @@ def push_results_to_db(db_url, project, case_name, logger, pod_name,
     url = db_url + "/results"
     installer = get_installer_type(logger)
     params = {"project_name": project, "case_name": case_name,
+              "start_date": test_start, "stop_date": test_stop,
               "pod_name": pod_name, "installer": installer,
               "version": version, "scenario": scenario, "criteria": criteria,
               "build_tag": build_tag, "details": payload}
