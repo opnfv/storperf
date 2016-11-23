@@ -8,29 +8,86 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-if [ -f ~/jenkins-os.rc ]
-then
-    . ~/jenkins-os.rc
-fi
-
 if [ -z $WORKSPACE ]
 then
+    cd `dirname $0`/..
     WORKSPACE=`pwd`
 fi
 
-function stage_base_os_in_glance {
+if [ -d $WORKSPACE/ci/job ]
+then
+    sudo rm -rf $WORKSPACE/ci/job
+fi
+sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
 
-   export OS_IMAGE_API_VERSION=1
+$WORKSPACE/ci/generate-admin-rc.sh
+$WORKSPACE/ci/generate-environment.sh
 
-    glance image-list | grep "$1"
-    if [ $? -eq 1 ]
-    then
-        curl -s -o $WORKSPACE/$1.qcow2 https://cloud-images.ubuntu.com/releases/15.10/release/ubuntu-15.10-server-cloudimg-amd64-disk1.img
-        glance image-create --name="$1" --disk-format=qcow2 --container-format=bare < $WORKSPACE/$1.qcow2
-    fi
+. $WORKSPACE/ci/job/environment.rc
+for env in `cat $WORKSPACE/ci/job/admin.rc`
+do
+    export $env
+done
 
-}
+echo "Checking for an existing stack"
+STACK_ID=`heat stack-list | grep StorPerfAgentGroup | awk '{print $2}'`
+if [ ! -z $STACK_ID ]
+then
+    heat stack-delete -y StorPerfAgentGroup
+fi
 
-stage_base_os_in_glance ubuntu-server
+while [ ! -z $STACK_ID ]
+do
+    STACK_ID=`heat stack-list | grep StorPerfAgentGroup | awk '{print $2}'`
+done
+
+echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
+echo "INSTALLER_TYPE=${INSTALLER}" >> $WORKSPACE/ci/job/admin.rc
+$WORKSPACE/ci/launch_docker_container.sh
+
+echo "Waiting for StorPerf to become active"
+while [ $(curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > /dev/null 2>&1;echo $?) -ne 0 ]
+do
+    sleep 1
+done
+
+echo Creating 1:1 stack
+$WORKSPACE/ci/create_stack.sh $CINDER_NODES 1
+
+WARM_UP=`$WORKSPACE/ci/warmup.sh "${CINDER_BACKEND}" ${CINDER_NODES} | awk '/job_id/ {print $2}' | sed 's/"//g'`
+
+WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
+    | awk '/Status/ {print $2}' | sed 's/"//g'`
+while [ "$WARM_UP_STATUS" != "Completed" ]
+do
+    sleep 10
+    WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
+    | awk '/Status/ {print $2}' | sed 's/"//g'`
+done
+
+
+for WORKLOAD in ws wr rs rr rw
+do
+    for BLOCK_SIZE in 2048 8192 16384
+    do
+        for QUEUE_DEPTH in 1 2 8
+        do
+            JOB=`$WORKSPACE/ci/start_job.sh $BLOCK_SIZE $QUEUE_DEPTH ${WORKLOAD} "${CINDER_BACKEND}_${WORKLOAD}" ${CINDER_NODES} \
+                | awk '/job_id/ {print $2}' | sed 's/"//g'`
+            JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+                | awk '/Status/ {print $2}' | sed 's/"//g'`
+            while [ "$JOB_STATUS" != "Completed" ]
+            do
+                sleep 10
+                JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+                    | awk '/Status/ {print $2}' | sed 's/"//g'`
+            done
+        done
+    done
+done
+
+
+echo "Deleting stack for cleanup"
+curl -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
 
 exit 0
