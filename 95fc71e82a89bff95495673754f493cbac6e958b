@@ -1,0 +1,140 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac10518_f7e9141b",
+        "filename": "ci/daily.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 75,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "trailing ws",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_578d887a",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "replace \\t by spaces",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_3790fc94",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "openstack catalog show  identity |awk \u0027/public/ {print $4}\u0027",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_77968496",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "openstack project list|awk \u0027/admin/ {print $2}\u0027",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_17ef0020",
+        "filename": "ci/generate-environment.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "trailing whitespaces",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_77dd2470",
+        "filename": "ci/generate-environment.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "is that a default configuration for a CI deployment?",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_97da1077",
+        "filename": "ci/launch_docker_container.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "replace all the tabs by spaces",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_173dc08f",
+        "filename": "storperf/db/test_results_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T15:00:17Z",
+      "side": 1,
+      "message": "if logger is not definer, we don\u0027t print anything?",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
