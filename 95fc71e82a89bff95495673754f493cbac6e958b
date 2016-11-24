@@ -71,6 +71,24 @@
     },
     {
       "key": {
+        "uuid": "5ac10518_97e4500e",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T16:24:55Z",
+      "side": 1,
+      "message": "you are right, I saw it too fast and didn\u0027t realize that it\u0027s a juju command.",
+      "parentUuid": "5ac10518_575268de",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac10518_77968496",
         "filename": "ci/generate-admin-rc.sh",
         "patchSetId": 1
@@ -186,6 +204,24 @@
       "side": 1,
       "message": "I had copied this from the functest repo, it looks like things have changed since then.  I will update this.",
       "parentUuid": "5ac10518_173dc08f",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_37f1dccd",
+        "filename": "storperf/db/test_results_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2016-11-24T16:24:55Z",
+      "side": 1,
+      "message": "the implementation is fine. But make sure that when you call this function you have logger defined and pass it as a variable. Another option you have here is to replace \"logger\" by \"print\".",
+      "parentUuid": "5ac10518_1764e0b7",
       "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
