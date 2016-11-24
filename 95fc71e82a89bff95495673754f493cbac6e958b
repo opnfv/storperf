@@ -53,6 +53,24 @@
     },
     {
       "key": {
+        "uuid": "5ac10518_575268de",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-11-24T15:17:52Z",
+      "side": 1,
+      "message": "However, if I don\u0027t have the AUTH_URL yet, how can I use openstack cli?",
+      "parentUuid": "5ac10518_3790fc94",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac10518_77968496",
         "filename": "ci/generate-admin-rc.sh",
         "patchSetId": 1
@@ -104,6 +122,24 @@
     },
     {
       "key": {
+        "uuid": "5ac10518_f75ef4e8",
+        "filename": "ci/generate-environment.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-11-24T15:17:52Z",
+      "side": 1,
+      "message": "No.  It\u0027s a placeholder while I figure out how to get this information from the other installers.",
+      "parentUuid": "5ac10518_77dd2470",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5ac10518_97da1077",
         "filename": "ci/launch_docker_container.sh",
         "patchSetId": 1
@@ -132,6 +168,24 @@
       "writtenOn": "2016-11-24T15:00:17Z",
       "side": 1,
       "message": "if logger is not definer, we don\u0027t print anything?",
+      "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ac10518_1764e0b7",
+        "filename": "storperf/db/test_results_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-11-24T15:17:52Z",
+      "side": 1,
+      "message": "I had copied this from the functest repo, it looks like things have changed since then.  I will update this.",
+      "parentUuid": "5ac10518_173dc08f",
       "revId": "95fc71e82a89bff95495673754f493cbac6e958b",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
