@@ -6,3 +6,6 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
