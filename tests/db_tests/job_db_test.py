@@ -7,13 +7,14 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from storperf.db.job_db import JobDB
-from storperf.workloads.rr import rr
 import os
 import sqlite3
 import unittest
 
 import mock
+
+from storperf.db.job_db import JobDB
+from storperf.workloads.rr import rr
 
 
 class JobDBTest(unittest.TestCase):
