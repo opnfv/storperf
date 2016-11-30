@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5ac10518_090b58d7",
+        "filename": "docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2016-11-30T17:53:38Z",
+      "side": 1,
+      "message": "Is this hard coded and does it get changed and committed to the branch that gets built?  Can it not be determined from the Jenkins job?",
+      "revId": "b20e463faa9990a2bdfe13683f7fb76d32e2fd65",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
