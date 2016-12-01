@@ -64,8 +64,8 @@ RUN mkdir -p /root/.ssh
 RUN chmod 700 /root/.ssh
 
 RUN git config --global http.sslVerify false
-RUN git --depth 1 -b $BRANCH clone https://gerrit.opnfv.org/gerrit/storperf ${repos_dir}/storperf
-RUN git --depth 1 clone https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
+RUN git clone --depth 1 -b $BRANCH https://gerrit.opnfv.org/gerrit/storperf ${repos_dir}/storperf
+RUN git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
 
 # Third party git fetches
 RUN git clone https://github.com/swagger-api/swagger-ui.git ${repos_dir}/swagger-ui
