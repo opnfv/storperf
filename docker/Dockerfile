@@ -36,6 +36,8 @@ libaio-dev \
 zlib1g-dev \
 supervisor \
 ssh \
+libssl-dev \
+libffi-dev \
 rsync \
 git \
 wget \

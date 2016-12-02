@@ -35,3 +35,5 @@ class CarbonMetricTransmitter():
             carbon_socket.send(message + '\n')
 
         carbon_socket.close()
+        self.logger.info("Sent metrics to carbon with timestamp %s"
+                         % timestamp)
