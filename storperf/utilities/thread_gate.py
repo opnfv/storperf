@@ -55,4 +55,9 @@ class ThreadGate(object):
                                   k, time_since_last_report)
                 ready = False
 
+        self.logger.debug("Gate pass? %s", ready)
+
+        if ready:
+            self._registrants.clear()
+
         return ready
