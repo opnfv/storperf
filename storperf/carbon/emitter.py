@@ -21,10 +21,7 @@ class CarbonMetricTransmitter():
         self.logger = logging.getLogger(__name__)
 
     def transmit_metrics(self, metrics):
-        if 'timestamp' in metrics:
-            timestamp = metrics.pop('timestamp')
-        else:
-            timestamp = str(calendar.timegm(time.gmtime()))
+        timestamp = str(calendar.timegm(time.gmtime()))
 
         carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         carbon_socket.connect((self.carbon_host, self.carbon_port))

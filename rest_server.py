@@ -12,6 +12,8 @@ import json
 import logging
 import logging.config
 import os
+import sys
+import traceback
 
 from flask import abort, Flask, request, jsonify, send_from_directory
 from flask_restful import Resource, Api, fields
@@ -372,10 +374,27 @@ prior to running any further tests,
         ]
     )
     def delete(self):
+        self.logger.info("Threads: %s" % sys._current_frames())
+        print sys._current_frames()
         try:
             return jsonify({'Slaves': storperf.terminate_workloads()})
         except Exception as e:
             abort(400, str(e))
+
+    def put(self):
+        print >> sys.stderr, "\n*** STACKTRACE - START ***\n"
+        code = []
+        for threadId, stack in sys._current_frames().items():
+            code.append("\n# ThreadID: %s" % threadId)
+            for filename, lineno, name, line in traceback.extract_stack(stack):
+                code.append('File: "%s", line %d, in %s' % (filename,
+                                                            lineno, name))
+                if line:
+                    code.append("  %s" % (line.strip()))
+
+        for line in code:
+            print >> sys.stderr, line
+        print >> sys.stderr, "\n*** STACKTRACE - END ***\n"
 
 
 @swagger.model

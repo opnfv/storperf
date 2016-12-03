@@ -52,8 +52,11 @@ def slope(data_series):
             sum_yi_xi += xi * yi
             sum_yi += yi
 
-        beta2 = (sum_yi * sum_xi - m * sum_yi_xi) / \
-            (sum_xi**2 - m * sum_xi_sq)  # The slope
+        over = (sum_xi**2 - m * sum_xi_sq)
+        if over == 0:
+            beta2 = None  # Infinite slope
+        else:
+            beta2 = (sum_yi * sum_xi - m * sum_yi_xi) / over  # The slope
         # beta1 = (sum_yi_xi - beta2*sum_xi_sq)/sum_xi #The y-intercept if
         # needed
 

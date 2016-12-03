@@ -44,7 +44,8 @@ def push_results_to_db(db_url, project, case_name,
     headers = {'Content-Type': 'application/json'}
     try:
         if logger:
-            logger.debug("Pushing results to %s" % (url))
+            logger.info("Pushing results to %s" % (url))
+            logger.debug("Parameters: %s" % params)
         r = requests.post(url, data=json.dumps(params), headers=headers)
         if logger:
             logger.debug(r)

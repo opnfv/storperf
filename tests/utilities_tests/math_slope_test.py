@@ -65,3 +65,8 @@ class MathSlopeTest(unittest.TestCase):
         expected = 1.5
         actual = Slope.slope([[0.0, 0], [1, 1], [2, 3]])
         self.assertEqual(expected, actual)
+
+    def test_infinte_slope(self):
+        expected = None
+        actual = Slope.slope([[1480623510, 1295.87], [1480623520, 1380.79]])
+        self.assertEqual(expected, actual)

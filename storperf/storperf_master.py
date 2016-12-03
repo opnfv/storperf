@@ -378,9 +378,9 @@ class StorPerfMaster(object):
         (_, stdout, stderr) = ssh.exec_command(cmd)
 
         for line in stdout.readlines():
-            logger.debug(line.decode('utf-8').strip())
+            logger.debug(line.strip())
         for line in stderr.readlines():
-            logger.error(line.decode('utf-8').strip())
+            logger.error(line.strip())
 
     def _make_parameters(self):
         heat_parameters = {}
