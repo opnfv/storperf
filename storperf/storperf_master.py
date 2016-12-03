@@ -11,16 +11,18 @@ from datetime import datetime
 import logging
 import os
 import socket
-import subprocess
 from threading import Thread
 from time import sleep
 
+import paramiko
+from scp import SCPClient
+
 import cinderclient.v2 as cinderclient
-from db.configuration_db import ConfigurationDB
-from db.job_db import JobDB
 import heatclient.client as heatclient
 import keystoneclient.v2_0 as ksclient
+from storperf.db.configuration_db import ConfigurationDB
 from storperf.db.graphite_db import GraphiteDB
+from storperf.db.job_db import JobDB
 from test_executor import TestExecutor
 
 
@@ -359,63 +361,26 @@ class StorPerfMaster(object):
                 alive = True
                 logger.debug("Slave " + slave + " is alive and ready")
 
-        args = ['scp', '-o', 'StrictHostKeyChecking=no',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'LogLevel=error',
-                '-i', 'storperf/resources/ssh/storperf_rsa',
-                '/lib/x86_64-linux-gnu/libaio.so.1',
-                'storperf@' + slave + ":"]
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(slave, username='storperf',
+                    key_filename='storperf/resources/ssh/storperf_rsa',
+                    timeout=2)
 
-        logger.debug(args)
-        proc = subprocess.Popen(args,
-                                universal_newlines=True,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+        scp = SCPClient(ssh.get_transport())
+        logger.debug("Transferring libaio.so.1 to %s" % slave)
+        scp.put('/lib/x86_64-linux-gnu/libaio.so.1', '~/')
+        logger.debug("Transferring fio to %s" % slave)
+        scp.put('/usr/local/bin/fio', '~/')
 
-        (stdout, stderr) = proc.communicate()
-        if (len(stdout) > 0):
-            logger.debug(stdout.decode('utf-8').strip())
-        if (len(stderr) > 0):
-            logger.error(stderr.decode('utf-8').strip())
+        cmd = 'sudo cp -v libaio.so.1 /lib/x86_64-linux-gnu/libaio.so.1'
+        logger.debug("Executing on %s: %s" % (slave, cmd))
+        (_, stdout, stderr) = ssh.exec_command(cmd)
 
-        args = ['scp', '-o', 'StrictHostKeyChecking=no',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'LogLevel=error',
-                '-i', 'storperf/resources/ssh/storperf_rsa',
-                '/usr/local/bin/fio',
-                'storperf@' + slave + ":"]
-
-        logger.debug(args)
-        proc = subprocess.Popen(args,
-                                universal_newlines=True,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-
-        (stdout, stderr) = proc.communicate()
-        if (len(stdout) > 0):
-            logger.debug(stdout.decode('utf-8').strip())
-        if (len(stderr) > 0):
-            logger.error(stderr.decode('utf-8').strip())
-
-        args = ['ssh', '-o', 'StrictHostKeyChecking=no',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'LogLevel=error',
-                '-i', 'storperf/resources/ssh/storperf_rsa',
-                'storperf@' + slave,
-                'sudo cp -v libaio.so.1 /lib/x86_64-linux-gnu/libaio.so.1'
-                ]
-
-        logger.debug(args)
-        proc = subprocess.Popen(args,
-                                universal_newlines=True,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-
-        (stdout, stderr) = proc.communicate()
-        if (len(stdout) > 0):
-            logger.debug(stdout.decode('utf-8').strip())
-        if (len(stderr) > 0):
-            logger.error(stderr.decode('utf-8').strip())
+        for line in stdout.readlines():
+            logger.debug(line.decode('utf-8').strip())
+        for line in stderr.readlines():
+            logger.error(line.decode('utf-8').strip())
 
     def _make_parameters(self):
         heat_parameters = {}

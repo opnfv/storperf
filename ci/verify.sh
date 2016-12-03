@@ -32,6 +32,7 @@ pip install html2text==2016.1.8
 pip install matplotlib==1.3.1
 pip install mock==1.3.0
 pip install nose==1.3.7
+pip install paramiko==2.0.2
 pip install python-cinderclient==1.6.0
 pip install python-glanceclient==1.1.0
 pip install python-heatclient==0.8.0
@@ -40,6 +41,7 @@ pip install python-neutronclient==2.6.0
 pip install python-novaclient==2.28.1
 pip install pyyaml==3.10
 pip install requests==2.9.1
+pip install scp==0.10.2
 pip install six==1.10.0
 
 python ci/setup.py develop
