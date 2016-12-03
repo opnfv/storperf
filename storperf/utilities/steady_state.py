@@ -6,6 +6,8 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+import logging
+
 from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import math as math
 
@@ -21,6 +23,8 @@ def steady_state(data_series):
     The function returns a boolean describing wether or not steady state
     has been reached with the data that is passed to it.
     """
+
+    logger = logging.getLogger('storperf.utilities.steady_state')
 
     # Pre conditioning the data to match the algorithms
     treated_data = DataTreatment.data_treatment(data_series)
@@ -39,6 +43,11 @@ def steady_state(data_series):
 
         steady_state = range_condition and slope_condition
 
+        logger.debug("Range %s < %s?" % (abs(range_value),
+                                         (0.20 * abs(average_value))))
+        logger.debug("Slope %s < %s?" % (abs(slope_value),
+                                         (0.10 * abs(average_value))))
+        logger.debug("Steady State? %s" % steady_state)
     else:
         steady_state = False
 

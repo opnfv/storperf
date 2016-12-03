@@ -54,12 +54,14 @@ class FIOInvoker(object):
 
                         for event_listener in self.event_listeners:
                             try:
+                                self.logger.debug(
+                                    "Event listener callback")
                                 event_listener(self.callback_id, json_metric)
                             except Exception, e:
                                 self.logger.exception(
                                     "Notifying listener %s: %s",
                                     self.callback_id, e)
-                            self.logger.info(
+                            self.logger.debug(
                                 "Event listener callback complete")
                 except Exception, e:
                     self.logger.error("Error parsing JSON: %s", e)
@@ -78,7 +80,6 @@ class FIOInvoker(object):
         self.logger.debug("Finished")
 
     def execute(self, args=[]):
-
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(self.remote_host, username='storperf',
@@ -87,7 +88,12 @@ class FIOInvoker(object):
 
         command = "sudo ./fio " + ' '.join(args)
         self.logger.debug("Remote command: %s" % command)
-        (_, stdout, stderr) = ssh.exec_command(command)
+
+        chan = ssh.get_transport().open_session(timeout=None)
+        chan.settimeout(None)
+        chan.exec_command(command)
+        stdout = chan.makefile('r', -1)
+        stderr = chan.makefile_stderr('r', -1)
 
         tout = Thread(target=self.stdout_handler, args=(stdout,),
                       name="%s stdout" % self._remote_host)
@@ -100,9 +106,18 @@ class FIOInvoker(object):
         terr.start()
 
         self.logger.info("Started fio on " + self.remote_host)
+        exit_status = chan.recv_exit_status()
+        self.logger.info("Finished fio on %s with exit code %s" %
+                         (self.remote_host, exit_status))
+
+        stdout.close()
+        stderr.close()
+
+        self.logger.debug("Joining stderr handler")
         terr.join()
+        self.logger.debug("Joining stdout handler")
         tout.join()
-        self.logger.info("Finished fio on " + self.remote_host)
+        self.logger.debug("Ended")
 
     def terminate(self):
         self.logger.debug("Terminating fio on " + self.remote_host)

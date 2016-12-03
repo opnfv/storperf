@@ -7,13 +7,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from storperf.carbon import converter
-from storperf.carbon.emitter import CarbonMetricTransmitter
-from time import sleep
 import SocketServer
 import json
+from storperf.carbon import converter
+from storperf.carbon.emitter import CarbonMetricTransmitter
 import threading
+from time import sleep, strptime
 import unittest
+
+import mock
 
 
 class MetricsHandler(SocketServer.BaseRequestHandler):
@@ -42,10 +44,14 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         t.setDaemon(True)
         t.start()
 
-    def test_transmit_metrics(self):
+    @mock.patch("time.gmtime")
+    def test_transmit_metrics(self, mock_time):
+
+        mock_time.return_value = strptime("30 Nov 00", "%d %b %y")
 
         testconv = converter.Converter()
-        json_object = json.loads("""{"timestamp" : "12345", "key":"value" }""")
+        json_object = json.loads(
+            """{"timestamp" : "975542400", "key":"value" }""")
         result = testconv.convert_json_to_flat(json_object, "host.run-name")
 
         emitter = CarbonMetricTransmitter()
@@ -58,7 +64,7 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
             count += 1
             sleep(0.1)
 
-        self.assertEqual("host.run-name.key value 12345\n",
+        self.assertEqual("host.run-name.key value 975542400\n",
                          CarbonMetricTransmitterTest.response,
                          CarbonMetricTransmitterTest.response)
 
