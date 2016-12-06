@@ -9,15 +9,14 @@
 
 import logging
 import os
-from time import sleep
-import time
-
 from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
 from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import dictionary
 from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
+from time import sleep
+import time
 
 
 class DataHandler(object):
@@ -65,7 +64,9 @@ class DataHandler(object):
             executor.metadata['report_data'] = metrics
             executor.metadata['steady_state'] = steady_state
 
-            if steady_state:
+            workload_name = executor.current_workload.split('.')[1]
+
+            if steady_state and not workload_name.startswith('_'):
                 executor.terminate()
 
     def _lookup_prior_data(self, executor, metric, io_type):
