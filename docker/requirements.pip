@@ -11,5 +11,5 @@ flask-restful==0.3.5
 flask-restful-swagger==0.19
 flask-swagger==0.2.12
 html2text==2016.1.8
-paramiko=2.0.2
+paramiko==2.0.2
 scp==0.10.2
