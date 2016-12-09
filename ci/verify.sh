@@ -29,6 +29,7 @@ pip install flask-swagger==0.2.12
 pip install funcsigs==0.4
 pip install flake8==2.5.4
 pip install html2text==2016.1.8
+pip install keystoneauth1==2.12.1
 pip install matplotlib==1.3.1
 pip install mock==1.3.0
 pip install nose==1.3.7
