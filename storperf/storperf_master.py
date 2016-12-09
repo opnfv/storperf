@@ -8,22 +8,23 @@
 ##############################################################################
 
 from datetime import datetime
-import logging
-import os
-import socket
-from threading import Thread
-from time import sleep
-
-import paramiko
-from scp import SCPClient
-
-import cinderclient.v2 as cinderclient
-import heatclient.client as heatclient
-import keystoneclient.v2_0 as ksclient
 from storperf.db.configuration_db import ConfigurationDB
 from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
+from threading import Thread
+from time import sleep
+import logging
+import os
+import socket
+
+from keystoneauth1 import session
+from keystoneauth1.identity import v3
+from keystoneclient.v3 import client as ksclient
+from scp import SCPClient
+import paramiko
+
 from test_executor import TestExecutor
+import heatclient.client as heatclient
 
 
 class ParameterError(Exception):
@@ -55,9 +56,10 @@ class StorPerfMaster(object):
         self._tenant_name = os.environ.get('OS_TENANT_NAME')
         self._tenant_id = os.environ.get('OS_TENANT_ID')
         self._project_name = os.environ.get('OS_PROJECT_NAME')
+        self._project_id = os.environ.get('OS_PROJECT_ID')
         self._auth_url = os.environ.get('OS_AUTH_URL')
+        self._user_domain_id = os.environ.get('OS_USER_DOMAIN_ID')
 
-        self._cinder_client = None
         self._heat_client = None
         self._test_executor = TestExecutor()
         self._last_openstack_auth = datetime.now()
@@ -159,12 +161,6 @@ class StorPerfMaster(object):
             value)
 
     @property
-    def volume_quota(self):
-        self._attach_to_openstack()
-        quotas = self._cinder_client.quotas.get(self._tenant_id)
-        return int(quotas.volumes)
-
-    @property
     def filename(self):
         return self._test_executor.filename
 
@@ -246,12 +242,8 @@ class StorPerfMaster(object):
             raise ParameterError("ERROR: Stack has already been created")
 
         self._attach_to_openstack()
-        volume_quota = self.volume_quota
-        if (volume_quota > 0 and self.agent_count > volume_quota):
-            message = "ERROR: Volume quota too low: " + \
-                str(self.agent_count) + " > " + str(self.volume_quota)
-            raise ParameterError(message)
 
+        self.logger.debug("Creating stack")
         stack = self._heat_client.stacks.create(
             stack_name="StorPerfAgentGroup",
             template=self._agent_group_hot,
@@ -394,24 +386,36 @@ class StorPerfMaster(object):
 
         time_since_last_auth = datetime.now() - self._last_openstack_auth
 
-        if (self._cinder_client is None or
+        if (self._heat_client is None or
                 time_since_last_auth.total_seconds() > 600):
             self._last_openstack_auth = datetime.now()
 
-            self.logger.debug("Authenticating with OpenStack")
+            self.logger.debug("Getting keystone client")
+            if self._project_id is None:
+                self._keystone_client = ksclient.Client(
+                    version=(2,),
+                    auth_url=self._auth_url,
+                    username=self._username,
+                    password=self._password,
+                    tenant_name=self._tenant_name)
 
-            self._cinder_client = cinderclient.Client(
-                self._username, self._password, self._project_name,
-                self._auth_url, service_type='volumev2')
-            self._cinder_client.authenticate()
+                heat_endpoint = self._keystone_client.service_catalog.url_for(
+                    service_type='orchestration')
+                token = self._keystone_client.auth_token
 
-            self._keystone_client = ksclient.Client(
-                auth_url=self._auth_url,
-                username=self._username,
-                password=self._password,
-                tenant_name=self._tenant_name)
-            heat_endpoint = self._keystone_client.service_catalog.url_for(
-                service_type='orchestration')
+            else:
+                auth = v3.Password(auth_url=self._auth_url,
+                                   username=self._username,
+                                   password=self._password,
+                                   project_id=self._project_id,
+                                   user_domain_id=self._user_domain_id)
+                sess = session.Session(auth=auth)
+                self._keystone_client = ksclient.Client(session=sess)
+
+                heat_endpoint = sess.get_endpoint(auth=auth,
+                                                  service_type="orchestration")
+                token = sess.get_token(auth=auth)
+
             self._heat_client = heatclient.Client(
                 '1', endpoint=heat_endpoint,
-                token=self._keystone_client.auth_token)
+                token=token)
