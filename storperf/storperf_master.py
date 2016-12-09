@@ -8,22 +8,23 @@
 ##############################################################################
 
 from datetime import datetime
-import logging
-import os
-import socket
-from threading import Thread
-from time import sleep
-
-import paramiko
-from scp import SCPClient
-
-import cinderclient.v2 as cinderclient
-import heatclient.client as heatclient
-import keystoneclient.v2_0 as ksclient
 from storperf.db.configuration_db import ConfigurationDB
 from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
+from threading import Thread
+from time import sleep
+import logging
+import os
+import socket
+
+from cinderclient import client as cinderclient
+from keystoneauth1 import loading
+from keystoneauth1 import session
+from scp import SCPClient
+import paramiko
+
 from test_executor import TestExecutor
+import heatclient.client as heatclient
 
 
 class ParameterError(Exception):
@@ -49,13 +50,6 @@ class StorPerfMaster(object):
             "Loaded agent-group template as: " + self._agent_group_hot)
         self.logger.debug(
             "Loaded agent-resource template as: " + self._agent_resource_hot)
-
-        self._username = os.environ.get('OS_USERNAME')
-        self._password = os.environ.get('OS_PASSWORD')
-        self._tenant_name = os.environ.get('OS_TENANT_NAME')
-        self._tenant_id = os.environ.get('OS_TENANT_ID')
-        self._project_name = os.environ.get('OS_PROJECT_NAME')
-        self._auth_url = os.environ.get('OS_AUTH_URL')
 
         self._cinder_client = None
         self._heat_client = None
@@ -161,7 +155,8 @@ class StorPerfMaster(object):
     @property
     def volume_quota(self):
         self._attach_to_openstack()
-        quotas = self._cinder_client.quotas.get(self._tenant_id)
+        quotas = self._cinder_client.quotas.get(
+            os.environ.get('OS_TENANT_NAME'))
         return int(quotas.volumes)
 
     @property
@@ -252,6 +247,7 @@ class StorPerfMaster(object):
                 str(self.agent_count) + " > " + str(self.volume_quota)
             raise ParameterError(message)
 
+        self.logger.debug("Creating stack")
         stack = self._heat_client.stacks.create(
             stack_name="StorPerfAgentGroup",
             template=self._agent_group_hot,
@@ -394,24 +390,37 @@ class StorPerfMaster(object):
 
         time_since_last_auth = datetime.now() - self._last_openstack_auth
 
-        if (self._cinder_client is None or
+        if (self._heat_client is None or
                 time_since_last_auth.total_seconds() > 600):
             self._last_openstack_auth = datetime.now()
 
-            self.logger.debug("Authenticating with OpenStack")
+            creds = {
+                "username": os.environ.get('OS_USERNAME'),
+                "password": os.environ.get('OS_PASSWORD'),
+                "auth_url": os.environ.get('OS_AUTH_URL'),
+                "project_name": os.environ.get('OS_PROJECT_NAME'),
+                "project_id": os.environ.get('OS_PROJECT_ID'),
+                "tenant_name": os.environ.get('OS_TENANT_NAME'),
+                "user_domain_id": os.environ.get('OS_USER_DOMAIN_ID')
+            }
 
-            self._cinder_client = cinderclient.Client(
-                self._username, self._password, self._project_name,
-                self._auth_url, service_type='volumev2')
-            self._cinder_client.authenticate()
+            loader = loading.get_plugin_loader('password')
+            auth = loader.load_from_options(**creds)
+            sess = session.Session(auth=auth)
 
-            self._keystone_client = ksclient.Client(
-                auth_url=self._auth_url,
-                username=self._username,
-                password=self._password,
-                tenant_name=self._tenant_name)
-            heat_endpoint = self._keystone_client.service_catalog.url_for(
-                service_type='orchestration')
+            self.logger.debug("Looking up orchestration endpoint")
+            heat_endpoint = sess.get_endpoint(auth=auth,
+                                              service_type="orchestration",
+                                              endpoint_type='publicURL')
+
+            self.logger.debug("Orchestration endpoint is %s" % heat_endpoint)
+            token = sess.get_token(auth=auth)
+
             self._heat_client = heatclient.Client(
-                '1', endpoint=heat_endpoint,
-                token=self._keystone_client.auth_token)
+                "1",
+                endpoint=heat_endpoint,
+                token=token)
+
+            self.logger.debug("Creating cinder client")
+            self._cinder_client = cinderclient.Client("2", session=sess)
+            self.logger.debug("OpenStack authentication complete")
