@@ -8,23 +8,23 @@
 ##############################################################################
 
 from datetime import datetime
-from storperf.db.configuration_db import ConfigurationDB
-from storperf.db.graphite_db import GraphiteDB
-from storperf.db.job_db import JobDB
-from threading import Thread
-from time import sleep
 import logging
 import os
 import socket
+from threading import Thread
+from time import sleep
 
 from cinderclient import client as cinderclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
-from scp import SCPClient
 import paramiko
+from scp import SCPClient
 
-from test_executor import TestExecutor
 import heatclient.client as heatclient
+from storperf.db.configuration_db import ConfigurationDB
+from storperf.db.graphite_db import GraphiteDB
+from storperf.db.job_db import JobDB
+from storperf.test_executor import TestExecutor
 
 
 class ParameterError(Exception):
@@ -156,7 +156,7 @@ class StorPerfMaster(object):
     def volume_quota(self):
         self._attach_to_openstack()
         quotas = self._cinder_client.quotas.get(
-            os.environ.get('OS_TENANT_NAME'))
+            os.environ.get('OS_TENANT_ID'))
         return int(quotas.volumes)
 
     @property
@@ -401,6 +401,7 @@ class StorPerfMaster(object):
                 "project_name": os.environ.get('OS_PROJECT_NAME'),
                 "project_id": os.environ.get('OS_PROJECT_ID'),
                 "tenant_name": os.environ.get('OS_TENANT_NAME'),
+                "tenant_id": os.environ.get("OS_TENANT_ID"),
                 "user_domain_id": os.environ.get('OS_USER_DOMAIN_ID')
             }
 
