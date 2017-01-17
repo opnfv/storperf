@@ -14,6 +14,21 @@ then
     WORKSPACE=`pwd`
 fi
 
+if [ -d $WORKSPACE/ci/job ]
+then
+    sudo rm -rf $WORKSPACE/ci/job
+fi
+
+virtualenv $WORKSPACE/ci/job/storperf_daily_venv
+source $WORKSPACE/ci/job/storperf_daily_venv/bin/activate
+
+pip install --upgrade setuptools
+pip install functools32
+pip install pytz
+pip install osc_lib
+pip install python-openstackclient
+pip install python-heatclient
+
 # This is set by Jenkins, but if we are running manually, just use the
 # current hostname.
 if [ -z "$NODE_NAME" ]
@@ -22,11 +37,9 @@ then
 fi
 export POD_NAME=$NODE_NAME
 
-if [ -d $WORKSPACE/ci/job ]
-then
-    sudo rm -rf $WORKSPACE/ci/job
-fi
 sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
+
+export INSTALLER=`./detect_installer.sh`
 
 $WORKSPACE/ci/generate-admin-rc.sh
 $WORKSPACE/ci/generate-environment.sh
@@ -38,16 +51,20 @@ do
 done
 
 echo "Checking for an existing stack"
-STACK_ID=`heat stack-list | grep StorPerfAgentGroup | awk '{print $2}'`
+STACK_ID=`openstack stack list | grep StorPerfAgentGroup | awk '{print $2}'`
 if [ ! -z $STACK_ID ]
 then
-    heat stack-delete -y StorPerfAgentGroup
+    openstack stack delete --yes --wait StorPerfAgentGroup
 fi
 
-while [ ! -z $STACK_ID ]
-do
-    STACK_ID=`heat stack-list | grep StorPerfAgentGroup | awk '{print $2}'`
-done
+echo Checking for Ubuntu 14.04 image in Glance
+IMAGE=`openstack image list | grep "Trusty x86_64"`
+if [ -z $IMAGE ]
+then
+    wget https://cloud-images.ubuntu.com/releases/14.04/release/ubuntu-14.04-server-cloudimg-amd64-disk1.img
+    openstack image create "Trusty x86_64" --disk-format qcow2 --public \
+    --container-format bare --file ubuntu-14.04-server-cloudimg-amd64-disk1.img
+fi
 
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
 echo "INSTALLER_TYPE=${INSTALLER}" >> $WORKSPACE/ci/job/admin.rc
@@ -60,11 +77,11 @@ do
 done
 
 echo Creating 1:1 stack
-$WORKSPACE/ci/create_stack.sh $CINDER_NODES 10
+$WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Trusty x86_64" $NETWORK
 
 export QUEUE_DEPTH=8
 export BLOCK_SIZE=16384
-export WORKLOAD=ws
+export WORKLOAD=_warm_up
 export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
 WARM_UP=`$WORKSPACE/ci/start_job.sh | awk '/job_id/ {print $2}' | sed 's/"//g'`
 
@@ -76,7 +93,6 @@ do
     WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
     | awk '/Status/ {print $2}' | sed 's/"//g'`
 done
-
 
 for WORKLOAD in ws wr rs rr rw
 do

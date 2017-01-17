@@ -13,13 +13,12 @@ if [ ! -d job ]
 then
     mkdir job
 fi
+ssh_options="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
-# TODO: This assumes JOID.  Need to make this programmatic
-
-INSTALLER=JOID
+export INSTALLER=`./detect_installer.sh`
 
 case $INSTALLER in
-    JOID)
+    joid)
         # Determine Cinder backend
         if [ ! -z "$(juju status | grep ceph)" ]
         then
@@ -31,18 +30,28 @@ case $INSTALLER in
             CINDER_BACKEND=scaleio
             JUJU_CHARM=scaleio-sds
         fi
-            # Determine how many storage blades we have
-            CINDER_NODES=`juju status | grep "$JUJU_CHARM/" | wc -l`
-            # Later, collect info about each node:
-            # juju status | grep hardware: | grep tags | grep -v virtual
+        # Determine how many storage blades we have
+        CINDER_NODES=`juju status | grep "$JUJU_CHARM/" | wc -l`
+        # Later, collect info about each node:
+        # juju status | grep hardware: | grep tags | grep -v virtual
+        NETWORK=ext-net
+        ;;
+    apex)
+        INSTALLER_IP=`sudo virsh domifaddr undercloud | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
+        CINDER_BACKEND=ceph
+        sudo scp $ssh_options root@$INSTALLER_IP:/home/stack/instackenv.json job/
+        CINDER_NODES=`grep capabilities job/instackenv.json | wc -l`
+        NETWORK=external
         ;;
     *)
         CINDER_BACKEND=ceph
         CINDER_NODES=4
+        NETWORK=external
 esac
 
 cat << EOF > job/environment.rc
 export CINDER_BACKEND=$CINDER_BACKEND
 export CINDER_NODES=$CINDER_NODES
 export INSTALLER=$INSTALLER
+export NETWORK=$NETWORK
 EOF

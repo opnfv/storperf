@@ -17,18 +17,29 @@ then
     mkdir job
 fi
 
-export OS_AUTH_URL=http://`juju status keystone | grep public | awk '{print $2}'`:5000/v2.0
-export OS_USERNAME=admin
-export OS_PASSWORD=openstack
-export OS_TENANT_ID=`openstack project list|awk '/admin/ {print $2}'`
-
-cat << EOF > job/admin.rc
-OS_AUTH_URL=$OS_AUTH_URL
-OS_USERNAME=$OS_USERNAME
-OS_PASSWORD=$OS_PASSWORD
-OS_TENANT_ID=$OS_TENANT_ID
-OS_TENANT_NAME=admin
-OS_PROJECT_NAME=admin
-OS_REGION_NAME=RegionOne
+export INSTALLER=`./detect_installer.sh`
+case $INSTALLER in
+    joid)
+        export OS_AUTH_URL=http://`juju status keystone | grep public | awk '{print $2}'`:5000/v2.0
+        export OS_USERNAME=admin
+        export OS_PASSWORD=openstack
+        cat << EOF > job/openstack.rc
+export OS_AUTH_URL=$OS_AUTH_URL
+export OS_USERNAME=$OS_USERNAME
+export OS_PASSWORD=$OS_PASSWORD
+export OS_TENANT_NAME=admin
+export OS_PROJECT_NAME=admin
 EOF
+        ;;
+    apex)
+        INSTALLER_IP=`sudo virsh domifaddr undercloud | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
+        ;;
+esac
 
+if [ ! -z $INSTALLER_IP ]
+then
+    ../../releng/utils/fetch_os_creds.sh -i $INSTALLER -a $INSTALLER_IP -d job/openstack.rc
+    echo export OS_PROJECT_NAME=admin >> job/openstack.rc
+fi
+
+sed "s/export //" job/openstack.rc > job/admin.rc

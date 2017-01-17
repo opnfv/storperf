@@ -8,16 +8,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-cat << EOF > body.json
-{
-  "agent_count": $1,
-  "agent_image": "$3",
-  "public_network": "$4",
-  "volume_size": $2
-}
-EOF
+which juju 2>/dev/null
+if [ $? -eq 0 ]
+then
+    INSTALLER=joid
+fi
+sudo virsh list --all | grep undercloud >/dev/null
+if [ $? -eq 0 ]
+then
+    INSTALLER=apex
+fi
 
-curl -X POST --header 'Content-Type: application/json' \
-     --header 'Accept: application/json' -d @body.json \
-     'http://127.0.0.1:5000/api/v1.0/configurations'
-
+echo $INSTALLER

@@ -29,6 +29,8 @@ then
     sudo chown 33:33 job/carbon
 fi
 
+docker pull opnfv/storperf:latest
+
 docker run -d --env-file `pwd`/job/admin.rc \
     -p 5000:5000 \
     -p 8000:8000 \
