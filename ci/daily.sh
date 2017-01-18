@@ -19,6 +19,8 @@ then
     sudo rm -rf $WORKSPACE/ci/job
 fi
 
+git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ci/job/releng
+
 virtualenv $WORKSPACE/ci/job/storperf_daily_venv
 source $WORKSPACE/ci/job/storperf_daily_venv/bin/activate
 
@@ -122,5 +124,7 @@ done
 
 echo "Deleting stack for cleanup"
 curl -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
+
+sudo chmod 777 -R $WORKSPACE/ci/job/carbon
 
 exit 0
