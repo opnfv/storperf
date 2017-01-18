@@ -39,7 +39,7 @@ export POD_NAME=$NODE_NAME
 
 sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
 
-export INSTALLER=`./detect_installer.sh`
+export INSTALLER=`$WORKSPACE/ci/detect_installer.sh`
 
 $WORKSPACE/ci/generate-admin-rc.sh
 $WORKSPACE/ci/generate-environment.sh

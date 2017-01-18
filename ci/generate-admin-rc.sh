@@ -38,7 +38,7 @@ esac
 
 if [ ! -z $INSTALLER_IP ]
 then
-    ../../releng/utils/fetch_os_creds.sh -i $INSTALLER -a $INSTALLER_IP -d job/openstack.rc
+    ./job/releng/utils/fetch_os_creds.sh -i $INSTALLER -a $INSTALLER_IP -d job/openstack.rc
     echo export OS_PROJECT_NAME=admin >> job/openstack.rc
 fi
 
