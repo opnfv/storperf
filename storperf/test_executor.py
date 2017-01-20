@@ -177,9 +177,9 @@ class TestExecutor(object):
     def terminate(self):
         self._terminated = True
         self.end_time = time.time()
-        return self._terminate_current_run()
+        return self.terminate_current_run()
 
-    def _terminate_current_run(self):
+    def terminate_current_run(self):
         self.logger.info("Terminating current run")
         terminated_hosts = []
         for workload in self._workload_executors:
@@ -243,7 +243,7 @@ class TestExecutor(object):
                     if self.deadline is not None \
                             and not workload_name.startswith("_"):
                         event = scheduler.enter(self.deadline * 60, 1,
-                                                self._terminate_current_run,
+                                                self.terminate_current_run,
                                                 ())
                         t = Thread(target=scheduler.run, args=())
                         t.start()

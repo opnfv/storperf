@@ -96,31 +96,21 @@ do
     | awk '/Status/ {print $2}' | sed 's/"//g'`
 done
 
-for WORKLOAD in ws wr rs rr rw
+export QUEUE_DEPTH=1,2,8
+export BLOCK_SIZE=2048,8192,16384
+export WORKLOAD=ws,wr,rs,rr,rw
+export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
+
+JOB=`$WORKSPACE/ci/start_job.sh \
+    | awk '/job_id/ {print $2}' | sed 's/"//g'`
+JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+    | awk '/Status/ {print $2}' | sed 's/"//g'`
+while [ "$JOB_STATUS" != "Completed" ]
 do
-    for BLOCK_SIZE in 2048 8192 16384
-    do
-        for QUEUE_DEPTH in 1 2 8
-        do
-            export QUEUE_DEPTH
-            export BLOCK_SIZE
-            export WORKLOAD
-            export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
-
-            JOB=`$WORKSPACE/ci/start_job.sh \
-                | awk '/job_id/ {print $2}' | sed 's/"//g'`
-            JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-                | awk '/Status/ {print $2}' | sed 's/"//g'`
-            while [ "$JOB_STATUS" != "Completed" ]
-            do
-                sleep 60
-                JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-                    | awk '/Status/ {print $2}' | sed 's/"//g'`
-            done
-        done
-    done
+    sleep 60
+    JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+        | awk '/Status/ {print $2}' | sed 's/"//g'`
 done
-
 
 echo "Deleting stack for cleanup"
 curl -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'

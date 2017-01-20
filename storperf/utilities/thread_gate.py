@@ -12,6 +12,7 @@ number of callers.
 """
 import logging
 import time
+from threading import Lock
 
 
 class FailureToReportException(Exception):
@@ -26,6 +27,7 @@ class ThreadGate(object):
         self._timeout = timeout
         self._registrants = {}
         self._creation_time = time.time()
+        self._lock = Lock()
 
     """
     Calling this method returns a true or false, indicating that enough
@@ -33,31 +35,33 @@ class ThreadGate(object):
     """
 
     def report(self, gate_id):
-        now = time.time()
-        self._registrants[gate_id] = now
-        ready = True
-        self.logger.debug("Gate report for %s", gate_id)
+        with self._lock:
+            now = time.time()
+            self._registrants[gate_id] = now
+            ready = True
+            self.logger.debug("Gate report for %s", gate_id)
 
-        total_missing = self._gate_size - len(self._registrants)
-        if total_missing > 0:
-            self.logger.debug("Not all registrants have reported in")
-            time_since_creation = now - self._creation_time
-            if (time_since_creation > (self._timeout * 2)):
-                self.logger.error("%s registrant(s) have never reported in",
-                                  total_missing)
-                raise FailureToReportException
-            return False
+            total_missing = self._gate_size - len(self._registrants)
+            if total_missing > 0:
+                self.logger.debug("Not all registrants have reported in")
+                time_since_creation = now - self._creation_time
+                if (time_since_creation > (self._timeout * 2)):
+                    self.logger.error(
+                        "%s registrant(s) have never reported in",
+                        total_missing)
+                    raise FailureToReportException
+                return False
 
-        for k, v in self._registrants.items():
-            time_since_last_report = now - v
-            if time_since_last_report > self._timeout:
-                self.logger.debug("Registrant %s last reported %s ago",
-                                  k, time_since_last_report)
-                ready = False
+            for k, v in self._registrants.items():
+                time_since_last_report = now - v
+                if time_since_last_report > self._timeout:
+                    self.logger.debug("Registrant %s last reported %s ago",
+                                      k, time_since_last_report)
+                    ready = False
 
-        self.logger.debug("Gate pass? %s", ready)
+            self.logger.debug("Gate pass? %s", ready)
 
-        if ready:
-            self._registrants.clear()
+            if ready:
+                self._registrants.clear()
 
-        return ready
+            return ready

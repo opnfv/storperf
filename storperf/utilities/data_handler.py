@@ -17,6 +17,7 @@ from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
 from time import sleep
 import time
+import json
 
 
 class DataHandler(object):
@@ -61,13 +62,21 @@ class DataHandler(object):
                     if not steady:
                         steady_state = False
 
-            executor.metadata['report_data'] = metrics
-            executor.metadata['steady_state'] = steady_state
+            workload = '.'.join(executor.current_workload.split('.')[1:6])
+
+            if 'report_data' not in executor.metadata:
+                executor.metadata['report_data'] = {}
+
+            if 'steady_state' not in executor.metadata:
+                executor.metadata['steady_state'] = {}
+
+            executor.metadata['report_data'][workload] = metrics
+            executor.metadata['steady_state'][workload] = steady_state
 
             workload_name = executor.current_workload.split('.')[1]
 
             if steady_state and not workload_name.startswith('_'):
-                executor.terminate()
+                executor.terminate_current_run()
 
     def _lookup_prior_data(self, executor, metric, io_type):
         workload = executor.current_workload
@@ -112,7 +121,7 @@ class DataHandler(object):
         duration = latest_timestamp - earliest_timestamp
         if (duration < 60 * self.samples):
             self.logger.debug("Only %s minutes of samples, ignoring" %
-                              (duration / 60,))
+                              ((duration / 60 + 1),))
             return False
 
         return SteadyState.steady_state(data_series)
@@ -160,6 +169,6 @@ class DataHandler(object):
                                                    scenario,
                                                    criteria,
                                                    build_tag,
-                                                   payload)
+                                                   json.dumps(payload))
             except:
                 self.logger.exception("Error pushing results into Database")

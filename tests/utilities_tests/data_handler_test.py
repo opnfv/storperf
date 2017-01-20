@@ -57,6 +57,9 @@ class DataHandlerTest(unittest.TestCase):
     def terminate(self):
         self._terminated = True
 
+    def terminate_current_run(self):
+        self._terminated = True
+
     @mock.patch("time.time")
     @mock.patch.dict(os.environ, {'TEST_DB_URL': 'mock'})
     @mock.patch("storperf.db.graphite_db.GraphiteDB.fetch_series")
@@ -163,18 +166,22 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual(False, self._terminated)
 
         self.assertEqual(expected_slope, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['range'])
         self.assertEqual(expected_average, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['average'])
         self.assertEqual(series, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['series'])
@@ -211,18 +218,22 @@ class DataHandlerTest(unittest.TestCase):
         self.data_handler.data_event(self)
 
         self.assertEqual(expected_slope, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['range'])
         self.assertEqual(expected_average, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['average'])
         self.assertEqual(series, self.metadata['report_data']
+                         ['rw.queue-depth.8.block-size.8192']
                          ['lat.mean']
                          ['read']
                          ['series'])
