@@ -35,6 +35,7 @@ docker run -d --env-file `pwd`/job/admin.rc \
     -p 5000:5000 \
     -p 8000:8000 \
     -v `pwd`/job/carbon:/opt/graphite/storage/whisper \
+    -v `pwd`/../../storperf:/home/opnfv/repos/storperf \
     --name storperf opnfv/storperf
 
 
