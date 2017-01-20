@@ -59,13 +59,13 @@ then
     openstack stack delete --yes --wait StorPerfAgentGroup
 fi
 
-echo Checking for Ubuntu 14.04 image in Glance
-IMAGE=`openstack image list | grep "Trusty x86_64"`
+echo Checking for Ubuntu 16.04 image in Glance
+IMAGE=`openstack image list | grep "Ubuntu 16.04 x86_64"`
 if [ -z $IMAGE ]
 then
-    wget https://cloud-images.ubuntu.com/releases/14.04/release/ubuntu-14.04-server-cloudimg-amd64-disk1.img
-    openstack image create "Trusty x86_64" --disk-format qcow2 --public \
-    --container-format bare --file ubuntu-14.04-server-cloudimg-amd64-disk1.img
+    wget https://cloud-images.ubuntu.com/releases/16.04/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img
+    openstack image create "Ubuntu 16.04 x86_64" --disk-format qcow2 --public \
+    --container-format bare --file ubuntu-16.04-server-cloudimg-amd64-disk1.img
 fi
 
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
@@ -79,7 +79,7 @@ do
 done
 
 echo Creating 1:1 stack
-$WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Trusty x86_64" $NETWORK
+$WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Ubuntu 16.04 x86_64" $NETWORK
 
 export QUEUE_DEPTH=8
 export BLOCK_SIZE=16384
@@ -91,7 +91,7 @@ WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&
     | awk '/Status/ {print $2}' | sed 's/"//g'`
 while [ "$WARM_UP_STATUS" != "Completed" ]
 do
-    sleep 10
+    sleep 60
     WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
     | awk '/Status/ {print $2}' | sed 's/"//g'`
 done
@@ -113,7 +113,7 @@ do
                 | awk '/Status/ {print $2}' | sed 's/"//g'`
             while [ "$JOB_STATUS" != "Completed" ]
             do
-                sleep 10
+                sleep 60
                 JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
                     | awk '/Status/ {print $2}' | sed 's/"//g'`
             done

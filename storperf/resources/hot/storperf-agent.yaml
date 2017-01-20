@@ -15,7 +15,7 @@ parameters:
     default: m1.small
   image:
     type: string
-    default: 'StorPerf Ubuntu 14.04'
+    default: 'Ubuntu 16.04'
   key_name:
     type: string
     default: StorPerf
