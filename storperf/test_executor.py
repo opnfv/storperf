@@ -105,6 +105,8 @@ class TestExecutor(object):
     def broadcast_event(self):
         for event_listener in self.event_listeners:
             try:
+                self.logger.debug("Notifying event listener %s", 
+                                  event_listener)
                 event_listener(self)
             except Exception, e:
                 self.logger.exception("While notifying listener %s", e)
@@ -197,6 +199,7 @@ class TestExecutor(object):
     def execute_workloads(self):
         self._terminated = False
         self.logger.info("Starting job %s" % (self.job_db.job_id))
+        self.event_listeners.clear()
         data_handler = DataHandler()
         self.register(data_handler.data_event)
 
@@ -284,6 +287,7 @@ class TestExecutor(object):
         self.end_time = time.time()
         self._terminated = True
         self.broadcast_event()
+        self.unregister(data_handler.data_event)
 
     def execute_on_node(self, workload):
 
@@ -296,5 +300,6 @@ class TestExecutor(object):
         self.job_db.start_workload(workload)
         workload.execute()
         self.job_db.end_workload(workload)
+        invoker.unregister(self.event)
 
         self.logger.info("Ended " + workload.fullname)
