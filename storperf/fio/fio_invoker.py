@@ -9,7 +9,6 @@
 
 import json
 import logging
-import subprocess
 from threading import Thread
 import paramiko
 
@@ -65,7 +64,7 @@ class FIOInvoker(object):
                                 "Event listener callback complete")
                 except Exception, e:
                     self.logger.error("Error parsing JSON: %s", e)
-        except ValueError:
+        except IOError:
             pass  # We might have read from the closed socket, ignore it
 
         stdout.close()
@@ -75,6 +74,14 @@ class FIOInvoker(object):
         self.logger.debug("Started")
         for line in iter(stderr.readline, b''):
             self.logger.error("FIO Error: %s", line.rstrip())
+
+            # Sometime, FIO gets stuck and will give us this message:
+            # fio: job 'sequential_read' hasn't exited in 60 seconds,
+            # it appears to be stuck. Doing forceful exit of this job.
+            # A second killall of fio will release it stuck process.
+
+            if 'it appears to be stuck' in line:
+                self.terminate()
 
         stderr.close()
         self.logger.debug("Finished")
@@ -121,24 +128,22 @@ class FIOInvoker(object):
 
     def terminate(self):
         self.logger.debug("Terminating fio on " + self.remote_host)
-        cmd = ['ssh', '-o', 'StrictHostKeyChecking=no',
-               '-o', 'UserKnownHostsFile=/dev/null',
-               '-o', 'LogLevel=error',
-               '-i', 'storperf/resources/ssh/storperf_rsa',
-               'storperf@' + self.remote_host,
-               'sudo', 'killall', '-9', 'fio']
 
-        kill_process = subprocess.Popen(cmd,
-                                        universal_newlines=True,
-                                        stdout=subprocess.PIPE,
-                                        stderr=subprocess.PIPE)
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(self.remote_host, username='storperf',
+                    key_filename='storperf/resources/ssh/storperf_rsa',
+                    timeout=2)
 
-        for line in iter(kill_process.stdout.readline, b''):
-            self.logger.debug("FIO Termination: " + line)
+        command = "sudo killall fio"
 
-        kill_process.stdout.close()
+        self.logger.debug("Executing on %s: %s" % (self.remote_host, command))
+        (_, stdout, stderr) = ssh.exec_command(command)
 
-        for line in iter(kill_process.stderr.readline, b''):
-            self.logger.debug("FIO Termination: " + line)
+        for line in stdout.readlines():
+            self.logger.debug(line.strip())
+        for line in stderr.readlines():
+            self.logger.error(line.strip())
 
-        kill_process.stderr.close()
+        stdout.close()
+        stderr.close()

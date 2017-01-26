@@ -35,6 +35,11 @@ docker run -d --env-file `pwd`/job/admin.rc \
     -p 5000:5000 \
     -p 8000:8000 \
     -v `pwd`/job/carbon:/opt/graphite/storage/whisper \
+    -v `pwd`/../../storperf:/home/opnfv/repos/storperf \
     --name storperf opnfv/storperf
 
-
+echo "Waiting for StorPerf to become active"
+while [ $(curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > /dev/null 2>&1;echo $?) -ne 0 ]
+do
+    sleep 1
+done
