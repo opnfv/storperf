@@ -43,3 +43,4 @@ then
 fi
 
 sed "s/export //" job/openstack.rc > job/admin.rc
+echo "INSTALLER_TYPE=${INSTALLER}" >> job/admin.rc

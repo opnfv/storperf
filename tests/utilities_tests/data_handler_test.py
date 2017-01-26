@@ -114,6 +114,10 @@ class DataHandlerTest(unittest.TestCase):
         series = [[4804559100, 205.345],
                   [4804559200, 201.59],
                   [4804559300, 205.76],
+                  [4804559400, 205.76],
+                  [4804559500, 205.76],
+                  [4804559600, 205.76],
+                  [4804559700, 205.76],
                   [4804560300, 219.37],
                   [4804560400, 219.28],
                   [4804560500, 217.75]]
@@ -199,15 +203,19 @@ class DataHandlerTest(unittest.TestCase):
         series = [[4804559100, 205.345],
                   [4804559200, 201.59],
                   [4804559300, 205.76],
+                  [4804559400, 205.76],
+                  [4804559500, 205.76],
+                  [4804559600, 205.76],
+                  [4804559700, 205.76],
                   [4804560300, 219.37],
                   [4804560400, 219.28],
                   [4804560500, 217.75]]
         mock_graphite_db.return_value = series
         mock_time.return_value = 4804560500 + 10
 
-        expected_slope = 0.011830471529818998
+        expected_slope = 0.01266822319352225
         expected_range = 17.78
-        expected_average = 211.51583333333335
+        expected_average = 209.2135
 
         self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s" %
                                  ("job_id",
@@ -240,4 +248,3 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual(True, self._terminated)
 
         self.assertEqual(False, self.pushed)
-        self.assertEqual(True, self._terminated)
