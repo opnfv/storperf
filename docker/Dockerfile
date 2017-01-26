@@ -83,6 +83,7 @@ RUN puppet module install gdsoperations-graphite
 
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa
 
+RUN pip install --upgrade setuptools==33.1.1
 RUN pip install -r ${repos_dir}/storperf/docker/requirements.pip
 
 COPY storperf.pp /etc/puppet/manifests/storperf.pp

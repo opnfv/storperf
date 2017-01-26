@@ -18,7 +18,7 @@ fi
 virtualenv $WORKSPACE/storperf_venv
 source $WORKSPACE/storperf_venv/bin/activate
 
-pip install setuptools
+pip install --upgrade setuptools==33.1.1
 pip install autoflake==0.6.6
 pip install autopep8==1.2.2
 pip install coverage==4.1
