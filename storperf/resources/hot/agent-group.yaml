@@ -16,7 +16,7 @@ parameters:
         - custom_constraint: neutron.network
   flavor:
     type: string
-    default: "m1.small"
+    default: "storperf"
   agent_image:
     type: string
     default: 'StorPerf Ubuntu 14.04'
@@ -38,7 +38,7 @@ parameters:
 resources:
   slaves:
     type: OS::Heat::ResourceGroup
-    depends_on: [storperf_subnet, storperf_network_router_interface, 
+    depends_on: [storperf_subnet, storperf_network_router_interface,
       storperf_open_security_group, storperf_key_pair]
     properties:
       count: {get_param: agent_count}

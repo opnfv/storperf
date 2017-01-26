@@ -24,7 +24,7 @@ class DataHandler(object):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.samples = 11
+        self.samples = 10
 
     """
     """
@@ -116,12 +116,9 @@ class DataHandler(object):
         self.logger.debug("Data series: %s" % data_series)
         if len(data_series) == 0:
             return False
-        earliest_timestamp = data_series[0][0]
-        latest_timestamp = data_series[-1][0]
-        duration = latest_timestamp - earliest_timestamp
-        if (duration < 60 * self.samples):
-            self.logger.debug("Only %s minutes of samples, ignoring" %
-                              ((duration / 60 + 1),))
+        number_of_samples = len(data_series)
+        if (number_of_samples < self.samples):
+            self.logger.debug("Only %s samples, ignoring" % number_of_samples)
             return False
 
         return SteadyState.steady_state(data_series)

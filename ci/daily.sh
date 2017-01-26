@@ -19,17 +19,17 @@ then
     sudo rm -rf $WORKSPACE/ci/job
 fi
 
-git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ci/job/releng
+git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 
 virtualenv $WORKSPACE/ci/job/storperf_daily_venv
 source $WORKSPACE/ci/job/storperf_daily_venv/bin/activate
 
-pip install --upgrade setuptools
-pip install functools32
-pip install pytz
-pip install osc_lib
-pip install python-openstackclient
-pip install python-heatclient
+pip install --upgrade setuptools==33.1.1
+pip install functools32==3.2.3.post2
+pip install pytz==2016.10
+pip install osc_lib==1.3.0
+pip install python-openstackclient==3.7.0
+pip install python-heatclient==1.7.0
 
 # This is set by Jenkins, but if we are running manually, just use the
 # current hostname.
@@ -41,45 +41,28 @@ export POD_NAME=$NODE_NAME
 
 sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
 
-export INSTALLER=`$WORKSPACE/ci/detect_installer.sh`
-
 $WORKSPACE/ci/generate-admin-rc.sh
 $WORKSPACE/ci/generate-environment.sh
 
 . $WORKSPACE/ci/job/environment.rc
-for env in `cat $WORKSPACE/ci/job/admin.rc`
+
+while read -r env
 do
-    export $env
-done
-
-echo "Checking for an existing stack"
-STACK_ID=`openstack stack list | grep StorPerfAgentGroup | awk '{print $2}'`
-if [ ! -z $STACK_ID ]
-then
-    openstack stack delete --yes --wait StorPerfAgentGroup
-fi
-
-echo Checking for Ubuntu 16.04 image in Glance
-IMAGE=`openstack image list | grep "Ubuntu 16.04 x86_64"`
-if [ -z $IMAGE ]
-then
-    wget https://cloud-images.ubuntu.com/releases/16.04/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img
-    openstack image create "Ubuntu 16.04 x86_64" --disk-format qcow2 --public \
-    --container-format bare --file ubuntu-16.04-server-cloudimg-amd64-disk1.img
-fi
+    export "$env"
+done < $WORKSPACE/ci/job/admin.rc
 
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
-echo "INSTALLER_TYPE=${INSTALLER}" >> $WORKSPACE/ci/job/admin.rc
+
+$WORKSPACE/ci/delete_stack.sh
+$WORKSPACE/ci/create_glance_image.sh
+$WORKSPACE/ci/create_storperf_flavor.sh
 $WORKSPACE/ci/launch_docker_container.sh
-
-echo "Waiting for StorPerf to become active"
-while [ $(curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > /dev/null 2>&1;echo $?) -ne 0 ]
-do
-    sleep 1
-done
-
-echo Creating 1:1 stack
 $WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Ubuntu 16.04 x86_64" $NETWORK
+
+
+echo ==========================================================================
+echo Starting warmup
+echo ==========================================================================
 
 export QUEUE_DEPTH=8
 export BLOCK_SIZE=16384
@@ -96,9 +79,14 @@ do
     | awk '/Status/ {print $2}' | sed 's/"//g'`
 done
 
-export QUEUE_DEPTH=1,2,8
-export BLOCK_SIZE=2048,8192,16384
+
+echo ==========================================================================
+echo Starting full matrix run
+echo ==========================================================================
+
 export WORKLOAD=ws,wr,rs,rr,rw
+export BLOCK_SIZE=2048,8192,16384
+export QUEUE_DEPTH=1,2,8
 export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
 
 JOB=`$WORKSPACE/ci/start_job.sh \
