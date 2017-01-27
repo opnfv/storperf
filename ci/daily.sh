@@ -53,12 +53,16 @@ done < $WORKSPACE/ci/job/admin.rc
 
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
 
+echo ==========================================================================
+echo Environment
+env | sort
+echo ==========================================================================
+
 $WORKSPACE/ci/delete_stack.sh
 $WORKSPACE/ci/create_glance_image.sh
 $WORKSPACE/ci/create_storperf_flavor.sh
 $WORKSPACE/ci/launch_docker_container.sh
 $WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Ubuntu 16.04 x86_64" $NETWORK
-
 
 echo ==========================================================================
 echo Starting warmup
@@ -88,6 +92,8 @@ export WORKLOAD=ws,wr,rs,rr,rw
 export BLOCK_SIZE=2048,8192,16384
 export QUEUE_DEPTH=1,2,8
 export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
+export VERSION
+export BUILD_TAG
 
 JOB=`$WORKSPACE/ci/start_job.sh \
     | awk '/job_id/ {print $2}' | sed 's/"//g'`
