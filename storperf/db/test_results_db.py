@@ -9,7 +9,6 @@
 
 import json
 import os
-
 import requests
 
 
@@ -29,17 +28,18 @@ def get_installer_type(logger=None):
 
 def push_results_to_db(db_url, project, case_name,
                        test_start, test_stop, logger, pod_name,
-                       version, scenario, criteria, build_tag, payload):
+                       version, scenario, criteria, build_tag, details):
     """
     POST results to the Result target DB
     """
     url = db_url + "/results"
     installer = get_installer_type(logger)
+
     params = {"project_name": project, "case_name": case_name,
-              "start_date": test_start, "stop_date": test_stop,
               "pod_name": pod_name, "installer": installer,
               "version": version, "scenario": scenario, "criteria": criteria,
-              "build_tag": build_tag, "details": payload}
+              "build_tag": build_tag, "start_date": test_start,
+              "stop_date": test_stop, "details": details}
 
     headers = {'Content-Type': 'application/json'}
     try:
@@ -56,5 +56,5 @@ def push_results_to_db(db_url, project, case_name,
         logger.error("Error [push_results_to_db('%s', '%s', '%s', " +
                      "'%s', '%s', '%s', '%s', '%s', '%s')]:" %
                      (db_url, project, case_name, pod_name, version,
-                      scenario, criteria, build_tag, payload[:512]), e)
+                      scenario, criteria, build_tag, details[:512]), e)
         return False

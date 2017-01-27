@@ -13,17 +13,23 @@ cat << EOF > body.json
    "block_sizes": "${BLOCK_SIZE}",
    "nowarm": "string",
    "nossd": "string",
-   "deadline": 600,
+   "deadline": 1200,
    "queue_depths": "${QUEUE_DEPTH}",
    "workload": "${WORKLOAD}",
     "metadata": {
-       "disk_type": "SSD",
-      "pod_name": "${POD_NAME}",
-      "scenario_name": "${SCENARIO_NAME}",
-      "storage_node_count": ${CINDER_NODES}
+        "disk_type": "${DISK_TYPE}",
+        "pod_name": "${POD_NAME}",
+        "scenario_name": "${SCENARIO_NAME}",
+        "storage_node_count": ${CINDER_NODES},
+        "version": "${VERSION}",
+        "build_tag": "${BUILD_TAG}",
+        "test_case": "${TEST_CASE}"
    }
 }
 EOF
 
-curl -s -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
+cat body.json
+
+curl -s -X POST --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
     -d @body.json http://127.0.0.1:5000/api/v1.0/jobs

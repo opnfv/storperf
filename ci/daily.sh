@@ -14,11 +14,6 @@ then
     WORKSPACE=`pwd`
 fi
 
-if [ -d $WORKSPACE/ci/job ]
-then
-    sudo rm -rf $WORKSPACE/ci/job
-fi
-
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 
 virtualenv $WORKSPACE/ci/job/storperf_daily_venv
@@ -39,9 +34,21 @@ then
 fi
 export POD_NAME=$NODE_NAME
 
+# Unless we get a job that automatically deploys Apex or other installers,
+# we have to rely on there being a value written into a file to tell us
+# what scenario was deployed.  This file needs to tell us:
+# DEPLOYED_SCENARIO
+# DISK_TYPE
+if [ -f ~/jenkins-env.rc ]
+then
+    . ~/jenkins-env.rc
+fi
+export SCENARIO_NAME=$DEPLOYED_SCENARIO
+
 sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
 
 $WORKSPACE/ci/generate-admin-rc.sh
+echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
 $WORKSPACE/ci/generate-environment.sh
 
 . $WORKSPACE/ci/job/environment.rc
@@ -51,7 +58,7 @@ do
     export "$env"
 done < $WORKSPACE/ci/job/admin.rc
 
-echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
+export VERSION=`echo ${BUILD_TAG#*daily-} | cut -d- -f1`
 
 echo ==========================================================================
 echo Environment
@@ -71,7 +78,6 @@ echo ==========================================================================
 export QUEUE_DEPTH=8
 export BLOCK_SIZE=16384
 export WORKLOAD=_warm_up
-export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
 WARM_UP=`$WORKSPACE/ci/start_job.sh | awk '/job_id/ {print $2}' | sed 's/"//g'`
 
 WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
@@ -91,9 +97,7 @@ echo ==========================================================================
 export WORKLOAD=ws,wr,rs,rr,rw
 export BLOCK_SIZE=2048,8192,16384
 export QUEUE_DEPTH=1,2,8
-export SCENARIO_NAME="${CINDER_BACKEND}_${WORKLOAD}"
-export VERSION
-export BUILD_TAG
+export TEST_CASE=snia_steady_state
 
 JOB=`$WORKSPACE/ci/start_job.sh \
     | awk '/job_id/ {print $2}' | sed 's/"//g'`

@@ -44,6 +44,7 @@ class DataHandlerTest(unittest.TestCase):
         self.job_db = mock
         self.pushed = False
         self.current_workload = None
+        self.db_results = None
         pass
 
     @property
@@ -52,6 +53,7 @@ class DataHandlerTest(unittest.TestCase):
 
     def push_results_to_db(self, *args):
         self.pushed = True
+        self.db_results = args
         pass
 
     def terminate(self):
@@ -131,6 +133,13 @@ class DataHandlerTest(unittest.TestCase):
         self._terminated = True
         mock_results_db.side_effect = self.push_results_to_db
         mock_graphite_db.side_effect = MockGraphiteDB
+        self.metadata = {
+            "steady_state": {
+                "rr.queue-depth.8.block-size.16384": True,
+                "rr.queue-depth.8.block-size.2048": False,
+                "rr.queue-depth.8.block-size.8192": True,
+            },
+        }
 
         self.data_handler.data_event(self)
         self.assertEqual(True, self.pushed)
@@ -248,3 +257,30 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual(True, self._terminated)
 
         self.assertEqual(False, self.pushed)
+
+    @mock.patch.dict(os.environ, {'TEST_DB_URL': 'mock'})
+    @mock.patch("storperf.db.test_results_db.push_results_to_db")
+    def test_playload_report(self,
+                             mock_results_db):
+        mock_results_db.side_effect = self.push_results_to_db
+        self.start_time = 1504559100
+        self.end_time = 1504560000
+        self.metadata = {
+            "scenario_name": "ceph_ws,wr,rs,rr,rw",
+            "status": "OK",
+            "steady_state": {
+                "rr.queue-depth.8.block-size.16384": True,
+                "rr.queue-depth.8.block-size.2048": False,
+                "rr.queue-depth.8.block-size.8192": True,
+            },
+            "storage_node_count": 5,
+            "volume_size": 10
+        }
+        self.data_handler._push_to_db(self)
+        self.assertEqual('FAIL', self.db_results[9],
+                         'Expected FAIL in criteria')
+        self.assertEqual('2017-09-04 21:05:00', self.db_results[3],
+                         'Start time')
+        self.assertEqual('2017-09-04 21:20:00', self.db_results[4],
+                         'End time')
+

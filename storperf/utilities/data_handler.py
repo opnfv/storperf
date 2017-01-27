@@ -124,42 +124,55 @@ class DataHandler(object):
         return SteadyState.steady_state(data_series)
 
     def _push_to_db(self, executor):
+
+        pod_name = dictionary.get_key_from_dict(executor.metadata,
+                                                'pod_name',
+                                                'Unknown')
+        version = dictionary.get_key_from_dict(executor.metadata,
+                                               'version',
+                                               'Unknown')
+        scenario = dictionary.get_key_from_dict(executor.metadata,
+                                                'scenario_name',
+                                                'Unknown')
+        build_tag = dictionary.get_key_from_dict(executor.metadata,
+                                                 'build_tag',
+                                                 'Unknown')
+        test_case = dictionary.get_key_from_dict(executor.metadata,
+                                                 'test_case',
+                                                 'Unknown')
+        duration = executor.end_time - executor.start_time
+
+        payload = executor.metadata
+
+        steady_state = True
+        for _, value in executor.metadata['steady_state'].items():
+            steady_state = steady_state and value
+
+        payload['timestart'] = executor.start_time
+        payload['duration'] = duration
+        graphite_db = GraphiteDB()
+        payload['metrics'] = graphite_db.fetch_averages(
+            executor.job_db.job_id)
+        if steady_state:
+            criteria = 'PASS'
+        else:
+            criteria = 'FAIL'
+
+        start_time = time.strftime('%Y-%m-%d %H:%M:%S',
+                                   time.gmtime(executor.start_time))
+
+        end_time = time.strftime('%Y-%m-%d %H:%M:%S',
+                                 time.gmtime(executor.end_time))
+
         test_db = os.environ.get('TEST_DB_URL')
-
         if test_db is not None:
-            pod_name = dictionary.get_key_from_dict(executor.metadata,
-                                                    'pod_name',
-                                                    'Unknown')
-            version = dictionary.get_key_from_dict(executor.metadata,
-                                                   'version',
-                                                   'Unknown')
-            scenario = dictionary.get_key_from_dict(executor.metadata,
-                                                    'scenario_name',
-                                                    'Unknown')
-            build_tag = dictionary.get_key_from_dict(executor.metadata,
-                                                     'build_tag',
-                                                     'Unknown')
-            duration = executor.end_time - executor.start_time
-
             self.logger.info("Pushing results to %s" % (test_db))
-
-            payload = executor.metadata
-            payload['timestart'] = executor.start_time
-            payload['duration'] = duration
-            payload['status'] = 'OK'
-            graphite_db = GraphiteDB()
-            payload['metrics'] = graphite_db.fetch_averages(
-                executor.job_db.job_id)
-            criteria = {}
-            criteria['block_sizes'] = executor.block_sizes
-            criteria['queue_depths'] = executor.queue_depths
-
             try:
                 test_results_db.push_results_to_db(test_db,
                                                    "storperf",
-                                                   "Latency Test",
-                                                   executor.start_time,
-                                                   executor.end_time,
+                                                   test_case,
+                                                   start_time,
+                                                   end_time,
                                                    self.logger,
                                                    pod_name,
                                                    version,
