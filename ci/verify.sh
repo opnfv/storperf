@@ -41,7 +41,7 @@ pip install python-keystoneclient==1.6.0
 pip install python-neutronclient==2.6.0
 pip install python-novaclient==2.28.1
 pip install pyyaml==3.10
-pip install requests==2.9.1
+pip install requests==2.13.0
 pip install scp==0.10.2
 pip install six==1.10.0
 

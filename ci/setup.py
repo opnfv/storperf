@@ -32,7 +32,7 @@ setup(
                       "python-neutronclient==2.6.0",
                       "python-novaclient==2.28.1",
                       "pyyaml==3.10",
-                      "requests==2.9.1",
+                      "requests==2.13.0",
                       "six==1.10.0"
                       ],
     entry_points={
