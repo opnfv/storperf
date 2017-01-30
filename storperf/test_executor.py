@@ -42,6 +42,7 @@ class TestExecutor(object):
         self.start_time = None
         self.end_time = None
         self.current_workload = None
+        self.workload_status = {}
         self._queue_depths = [1, 4, 8]
         self._block_sizes = [512, 4096, 16384]
         self.event_listeners = set()
@@ -188,13 +189,17 @@ class TestExecutor(object):
         return terminated_hosts
 
     def execution_status(self, job_id):
-        if self.job_db.job_id != job_id:
-            return "Completed"
 
-        if (self._terminated is False):
-            return "Running"
+        result = {}
+        status = "Completed"
 
-        return "Completed"
+        if self.job_db.job_id == job_id and self._terminated is False:
+            status = "Running"
+
+        result['Status'] = status
+        result['Workloads'] = self.workload_status
+
+        return result
 
     def execute_workloads(self):
         self._terminated = False
@@ -204,6 +209,18 @@ class TestExecutor(object):
         self.register(data_handler.data_event)
 
         self.start_time = time.time()
+
+        self.workload_status = {}
+        # Prepare stats list
+        for workload_module in self.workload_modules:
+            workload_name = getattr(workload_module, "__name__")
+            blocksizes = self._block_sizes
+            iodepths = self._queue_depths
+            for blocksize in blocksizes:
+                for iodepth in iodepths:
+                    name = '%s.%s.queue-depth.%s.block-size.%s' % \
+                        (self.job_db.job_id, workload_name, iodepth, blocksize)
+                    self.workload_status[name] = "Pending"
 
         for workload_module in self.workload_modules:
             workload_name = getattr(workload_module, "__name__")
@@ -238,6 +255,7 @@ class TestExecutor(object):
                          blocksize))
 
                     self.logger.info("Starting run %s" % self.current_workload)
+                    self.workload_status[self.current_workload] = "Running"
 
                     scheduler = sched.scheduler(time.time, time.sleep)
                     if self.deadline is not None \
@@ -278,6 +296,7 @@ class TestExecutor(object):
 
                     self.logger.info("Completed run %s" %
                                      self.current_workload)
+                    self.workload_status[self.current_workload] = "Completed"
                     self._workload_executors = []
                     self.current_workload = None
 

@@ -28,7 +28,7 @@ cat << EOF > body.json
 }
 EOF
 
-cat body.json
+cat body.json 1>&2
 
 curl -s -X POST --header 'Content-Type: application/json' \
     --header 'Accept: application/json' \

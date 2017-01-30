@@ -81,12 +81,13 @@ export WORKLOAD=_warm_up
 WARM_UP=`$WORKSPACE/ci/start_job.sh | awk '/job_id/ {print $2}' | sed 's/"//g'`
 
 WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
-    | awk '/Status/ {print $2}' | sed 's/"//g'`
+    | awk '/Status/ {print $2}' | cut -d\" -f2`
 while [ "$WARM_UP_STATUS" != "Completed" ]
 do
     sleep 60
+    curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status"
     WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
-    | awk '/Status/ {print $2}' | sed 's/"//g'`
+    | awk '/Status/ {print $2}' | cut -d\" -f2`
 done
 
 
@@ -102,12 +103,13 @@ export TEST_CASE=snia_steady_state
 JOB=`$WORKSPACE/ci/start_job.sh \
     | awk '/job_id/ {print $2}' | sed 's/"//g'`
 JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-    | awk '/Status/ {print $2}' | sed 's/"//g'`
+    | awk '/Status/ {print $2}' | cut -d\" -f2`
 while [ "$JOB_STATUS" != "Completed" ]
 do
     sleep 60
+    curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status"
     JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-        | awk '/Status/ {print $2}' | sed 's/"//g'`
+    | awk '/Status/ {print $2}' | cut -d\" -f2`
 done
 
 echo "Deleting stack for cleanup"
