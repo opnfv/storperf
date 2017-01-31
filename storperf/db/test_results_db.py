@@ -44,9 +44,10 @@ def push_results_to_db(db_url, project, case_name,
     headers = {'Content-Type': 'application/json'}
     try:
         if logger:
+            jsonified_params = json.dumps(params)
             logger.info("Pushing results to %s" % (url))
-            logger.debug("Parameters: %s" % params)
-        r = requests.post(url, data=json.dumps(params), headers=headers)
+            logger.debug("Parameters: %s" % jsonified_params[:1024])
+        r = requests.post(url, data=jsonified_params, headers=headers)
         if logger:
             logger.debug(r)
             logger.debug(r.status_code)
@@ -56,5 +57,5 @@ def push_results_to_db(db_url, project, case_name,
         logger.error("Error [push_results_to_db('%s', '%s', '%s', " +
                      "'%s', '%s', '%s', '%s', '%s', '%s')]:" %
                      (db_url, project, case_name, pod_name, version,
-                      scenario, criteria, build_tag, details[:512]), e)
+                      scenario, criteria, build_tag, details), e)
         return False

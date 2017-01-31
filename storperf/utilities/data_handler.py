@@ -17,7 +17,6 @@ from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
 from time import sleep
 import time
-import json
 
 
 class DataHandler(object):
@@ -179,6 +178,6 @@ class DataHandler(object):
                                                    scenario,
                                                    criteria,
                                                    build_tag,
-                                                   json.dumps(payload))
+                                                   payload)
             except:
                 self.logger.exception("Error pushing results into Database")
