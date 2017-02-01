@@ -52,10 +52,10 @@ def push_results_to_db(db_url, project, case_name,
             logger.debug(r)
             logger.debug(r.status_code)
             logger.debug(r.content)
-        return True
+        return json.loads(r.content)
     except Exception, e:
         logger.error("Error [push_results_to_db('%s', '%s', '%s', " +
                      "'%s', '%s', '%s', '%s', '%s', '%s')]:" %
                      (db_url, project, case_name, pod_name, version,
                       scenario, criteria, build_tag, details), e)
-        return False
+        return None

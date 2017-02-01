@@ -7,11 +7,11 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from sqlite3 import OperationalError
-from threading import Lock
 import calendar
 import logging
+from sqlite3 import OperationalError
 import sqlite3
+from threading import Lock
 import time
 import uuid
 
@@ -53,6 +53,14 @@ class JobDB(object):
                 self.logger.debug("Created job_params table")
             except OperationalError:
                 self.logger.debug("Job params table exists")
+
+            try:
+                cursor.execute('''CREATE TABLE job_summary
+                (job_id text,
+                summary text)''')
+                self.logger.debug("Created job table")
+            except OperationalError:
+                self.logger.debug("Job table exists")
 
             cursor.execute('SELECT * FROM jobs')
             cursor.execute('SELECT * FROM job_params')

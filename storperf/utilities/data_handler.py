@@ -9,14 +9,15 @@
 
 import logging
 import os
+from time import sleep
+import time
+
 from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
 from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import dictionary
 from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
-from time import sleep
-import time
 
 
 class DataHandler(object):
@@ -167,17 +168,18 @@ class DataHandler(object):
         if test_db is not None:
             self.logger.info("Pushing results to %s" % (test_db))
             try:
-                test_results_db.push_results_to_db(test_db,
-                                                   "storperf",
-                                                   test_case,
-                                                   start_time,
-                                                   end_time,
-                                                   self.logger,
-                                                   pod_name,
-                                                   version,
-                                                   scenario,
-                                                   criteria,
-                                                   build_tag,
-                                                   payload)
+                response = test_results_db.push_results_to_db(test_db,
+                                                              "storperf",
+                                                              test_case,
+                                                              start_time,
+                                                              end_time,
+                                                              self.logger,
+                                                              pod_name,
+                                                              version,
+                                                              scenario,
+                                                              criteria,
+                                                              build_tag,
+                                                              payload)
+                executor.result_url = response['href']
             except:
                 self.logger.exception("Error pushing results into Database")

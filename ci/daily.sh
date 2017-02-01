@@ -90,7 +90,6 @@ do
     | awk '/Status/ {print $2}' | cut -d\" -f2`
 done
 
-
 echo ==========================================================================
 echo Starting full matrix run
 echo ==========================================================================
@@ -112,9 +111,14 @@ do
     | awk '/Status/ {print $2}' | cut -d\" -f2`
 done
 
+HREF=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+    | awk '/TestResultURL/ {print $2}' | cut -d\" -f2 | cut -d/ -f4-`
+
 echo "Deleting stack for cleanup"
 curl -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
 
 sudo chmod 777 -R $WORKSPACE/ci/job/carbon
+
+echo "Results published to: http://testresults.opnfv.org/test/$HREF"
 
 exit 0

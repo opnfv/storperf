@@ -43,6 +43,7 @@ class TestExecutor(object):
         self.end_time = None
         self.current_workload = None
         self.workload_status = {}
+        self.result_url = None
         self._queue_depths = [1, 4, 8]
         self._block_sizes = [512, 4096, 16384]
         self.event_listeners = set()
@@ -198,6 +199,7 @@ class TestExecutor(object):
 
         result['Status'] = status
         result['Workloads'] = self.workload_status
+        result['TestResultURL'] = self.result_url
 
         return result
 
@@ -302,6 +304,9 @@ class TestExecutor(object):
 
             self.logger.info("Completed workload %s" % (workload_name))
         self.logger.info("Completed job %s" % (self.job_db.job_id))
+
+        if self.result_url is not None:
+            self.logger.info("Results can be found at %s" % self.result_url)
 
         self.end_time = time.time()
         self._terminated = True

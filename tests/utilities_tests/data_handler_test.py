@@ -8,10 +8,11 @@
 ##############################################################################
 
 import os
-from storperf.utilities.data_handler import DataHandler
 import unittest
 
 import mock
+
+from storperf.utilities.data_handler import DataHandler
 
 
 class MockGraphiteDB(object):
@@ -54,7 +55,8 @@ class DataHandlerTest(unittest.TestCase):
     def push_results_to_db(self, *args):
         self.pushed = True
         self.db_results = args
-        pass
+        results = {"href": "http://localhost/api/result/uuid-that-is-long"}
+        return results
 
     def terminate(self):
         self._terminated = True
@@ -283,4 +285,3 @@ class DataHandlerTest(unittest.TestCase):
                          'Start time')
         self.assertEqual('2017-09-04 21:20:00', self.db_results[4],
                          'End time')
-
