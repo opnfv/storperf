@@ -14,6 +14,7 @@ import time
 
 from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
+from storperf.db.job_db import JobDB
 from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import dictionary
 from storperf.utilities import math as math
@@ -25,6 +26,7 @@ class DataHandler(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.samples = 10
+        self.job_db = JobDB()
 
     """
     """
@@ -43,6 +45,8 @@ class DataHandler(object):
                     metrics[metric][io_type] = {}
 
                     series = self._lookup_prior_data(executor, metric, io_type)
+                    series = self._convert_timestamps_to_samples(
+                        executor, series)
                     steady = self._evaluate_prior_data(series)
 
                     self.logger.debug("Steady state for %s %s: %s"
@@ -112,11 +116,26 @@ class DataHandler(object):
 
         return data_series
 
+    def _convert_timestamps_to_samples(self, executor, series):
+        workload_record = self.job_db.fetch_workloads(
+            executor.current_workload)
+        start_time = int(workload_record[0][1])
+
+        normalized_series = []
+
+        for item in series:
+            elapsed = (item[0] - start_time)
+            sample_number = (elapsed / 60) + 1
+            normalized_series.append([sample_number, item[1]])
+
+        return normalized_series
+
     def _evaluate_prior_data(self, data_series):
         self.logger.debug("Data series: %s" % data_series)
-        if len(data_series) == 0:
-            return False
         number_of_samples = len(data_series)
+
+        if number_of_samples == 0:
+            return False
         if (number_of_samples < self.samples):
             self.logger.debug("Only %s samples, ignoring" % number_of_samples)
             return False
@@ -124,7 +143,6 @@ class DataHandler(object):
         return SteadyState.steady_state(data_series)
 
     def _push_to_db(self, executor):
-
         pod_name = dictionary.get_key_from_dict(executor.metadata,
                                                 'pod_name',
                                                 'Unknown')
