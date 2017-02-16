@@ -21,6 +21,7 @@ class FIOInvoker(object):
         self.event_callback_ids = set()
         self._remote_host = None
         self.callback_id = None
+        self.terminated = False
 
     @property
     def remote_host(self):
@@ -51,17 +52,19 @@ class FIOInvoker(object):
                         json_metric = json.loads(self.json_body)
                         self.json_body = ""
 
-                        for event_listener in self.event_listeners:
-                            try:
+                        if not self.terminated:
+                            for event_listener in self.event_listeners:
+                                try:
+                                    self.logger.debug(
+                                        "Event listener callback")
+                                    event_listener(
+                                        self.callback_id, json_metric)
+                                except Exception, e:
+                                    self.logger.exception(
+                                        "Notifying listener %s: %s",
+                                        self.callback_id, e)
                                 self.logger.debug(
-                                    "Event listener callback")
-                                event_listener(self.callback_id, json_metric)
-                            except Exception, e:
-                                self.logger.exception(
-                                    "Notifying listener %s: %s",
-                                    self.callback_id, e)
-                            self.logger.debug(
-                                "Event listener callback complete")
+                                    "Event listener callback complete")
                 except Exception, e:
                     self.logger.error("Error parsing JSON: %s", e)
         except IOError:
@@ -128,6 +131,7 @@ class FIOInvoker(object):
 
     def terminate(self):
         self.logger.debug("Terminating fio on " + self.remote_host)
+        self.terminated = True
 
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())

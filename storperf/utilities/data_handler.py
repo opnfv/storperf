@@ -125,7 +125,7 @@ class DataHandler(object):
 
         for item in series:
             elapsed = (item[0] - start_time)
-            sample_number = (elapsed / 60) + 1
+            sample_number = int(round(float(elapsed) / 60))
             normalized_series.append([sample_number, item[1]])
 
         return normalized_series

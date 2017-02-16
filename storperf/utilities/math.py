@@ -6,6 +6,7 @@
 # which accompanies this distribution, and is available at
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
+import copy
 
 
 def slope(data_series):
@@ -20,7 +21,7 @@ def slope(data_series):
     [[x1,y1], [x2,y2], ..., [xm,ym]].
     If this data pattern were to change, the data_treatement function
     should be adjusted to ensure compatibility with the rest of the
-    Steady State Dectection module.
+    Steady State Detection module.
     """
 
     # In the particular case of an empty data series
@@ -28,6 +29,7 @@ def slope(data_series):
         beta2 = None
 
     else:  # The general case
+        data_series = copy.deepcopy(data_series)
         m = len(data_series)
         # To make sure at least one element is a float number so the result
         # of the algorithm be a float number

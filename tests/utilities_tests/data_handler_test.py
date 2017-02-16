@@ -167,7 +167,7 @@ class DataHandlerTest(unittest.TestCase):
              [1480456050, 217.75]]
         mock_graphite_db.return_value = series
         mock_time.return_value = series[-1][0] + 10
-        expected_slope = 11.48297119140625
+        expected_slope = 12.292030334472656
         expected_range = 17.78
         expected_average = 212.49777777777774
 
@@ -222,19 +222,19 @@ class DataHandlerTest(unittest.TestCase):
                   [4804560400, 219.28],
                   [4804560500, 217.75]]
         report_data = [[2, 205.345],
-                       [4, 201.59],
-                       [6, 205.76],
+                       [3, 201.59],
+                       [5, 205.76],
                        [7, 205.76],
-                       [9, 205.76],
-                       [11, 205.76],
+                       [8, 205.76],
+                       [10, 205.76],
                        [12, 205.76],
                        [22, 219.37],
-                       [24, 219.28],
-                       [26, 217.75]]
+                       [23, 219.28],
+                       [25, 217.75]]
         mock_graphite_db.return_value = series
         mock_time.return_value = 4804560500 + 10
 
-        expected_slope = 0.7318639667704995
+        expected_slope = 0.7419522662249607
         expected_range = 17.78
         expected_average = 209.2135
 
