@@ -13,7 +13,7 @@ cat << EOF > body.json
    "block_sizes": "${BLOCK_SIZE}",
    "nowarm": "string",
    "nossd": "string",
-   "deadline": 1200,
+   "deadline": 20,
    "queue_depths": "${QUEUE_DEPTH}",
    "workload": "${WORKLOAD}",
     "metadata": {

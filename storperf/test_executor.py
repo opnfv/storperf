@@ -9,6 +9,7 @@
 
 import copy
 import imp
+import json
 import logging
 from os import listdir
 import os
@@ -170,6 +171,7 @@ class TestExecutor(object):
         self.job_db.create_job_id()
         self.job_db.record_workload_params(metadata)
         self.metadata = metadata
+        self.metadata['metrics'] = {}
         self._workload_thread = Thread(target=self.execute_workloads,
                                        args=(),
                                        name="Workload thread")
@@ -310,8 +312,11 @@ class TestExecutor(object):
 
         self.end_time = time.time()
         self._terminated = True
+        report = {'report': json.dumps(self.metadata)}
+        self.job_db.record_workload_params(report)
         self.broadcast_event()
         self.unregister(data_handler.data_event)
+        self.job_db.job_id = None
 
     def execute_on_node(self, workload):
 

@@ -37,6 +37,10 @@ class DataHandler(object):
         if executor.terminated:
             self._push_to_db(executor)
         else:
+            workload = '.'.join(executor.current_workload.split('.')[1:6])
+            if 'metrics' not in executor.metadata:
+                executor.metadata['metrics'] = {}
+
             steady_state = True
             metrics = {}
             for metric in ('lat.mean', 'iops', 'bw'):
@@ -60,13 +64,14 @@ class DataHandler(object):
                         math.slope(treated_data['slope_data'])
                     metrics[metric][io_type]['range'] = \
                         math.range_value(treated_data['range_data'])
-                    metrics[metric][io_type]['average'] = \
-                        math.average(treated_data['average_data'])
+                    average = math.average(treated_data['average_data'])
+                    metrics[metric][io_type]['average'] = average
+
+                    metrics_key = '%s.%s.%s' % (workload, io_type, metric)
+                    executor.metadata['metrics'][metrics_key] = average
 
                     if not steady:
                         steady_state = False
-
-            workload = '.'.join(executor.current_workload.split('.')[1:6])
 
             if 'report_data' not in executor.metadata:
                 executor.metadata['report_data'] = {}
@@ -168,9 +173,7 @@ class DataHandler(object):
 
         payload['timestart'] = executor.start_time
         payload['duration'] = duration
-        graphite_db = GraphiteDB()
-        payload['metrics'] = graphite_db.fetch_averages(
-            executor.job_db.job_id)
+
         if steady_state:
             criteria = 'PASS'
         else:

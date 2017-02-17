@@ -58,9 +58,9 @@ class JobDB(object):
                 cursor.execute('''CREATE TABLE job_summary
                 (job_id text,
                 summary text)''')
-                self.logger.debug("Created job table")
+                self.logger.debug("Created job summary table")
             except OperationalError:
-                self.logger.debug("Job table exists")
+                self.logger.debug("Job summary table exists")
 
             cursor.execute('SELECT * FROM jobs')
             cursor.execute('SELECT * FROM job_params')
@@ -250,6 +250,5 @@ class JobDB(object):
                 if (row is None):
                     break
                 params[row[0]] = row[1]
-
             db.close()
         return params

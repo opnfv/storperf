@@ -8,6 +8,7 @@
 ##############################################################################
 
 from datetime import datetime
+import json
 import logging
 import os
 import socket
@@ -22,7 +23,6 @@ from scp import SCPClient
 
 import heatclient.client as heatclient
 from storperf.db.configuration_db import ConfigurationDB
-from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
 
@@ -323,8 +323,14 @@ class StorPerfMaster(object):
         return self._test_executor.terminate()
 
     def fetch_results(self, job_id):
-        graphite_db = GraphiteDB()
-        return graphite_db.fetch_averages(job_id)
+        if self._test_executor.job_db.job_id == job_id:
+            return self._test_executor.metadata['metrics']
+
+        workload_params = self.job_db.fetch_workload_params(job_id)
+        if 'report' in workload_params:
+            report = json.loads(workload_params['report'])
+            return report['metrics']
+        return {}
 
     def fetch_metadata(self, job_id):
         return self.job_db.fetch_workload_params(job_id)

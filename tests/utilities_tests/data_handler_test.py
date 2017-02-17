@@ -18,12 +18,7 @@ from storperf.utilities.data_handler import DataHandler
 class MockGraphiteDB(object):
 
     def __init__(self):
-        self.called = False
         self.series = []
-
-    def fetch_averages(self, job_id):
-        self.called = True
-        return None
 
     def fetch_series(self, job_id, timeframe):
         return self.series
