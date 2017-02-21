@@ -1,26 +1,43 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
-.. (c) OPNFV, Intel Corporation, AT&T and others.
+.. (c) OPNFV, Dell EMC and others.
 
-.. OPNFV StorPerf Documentation master file.
-
-======
+========
 StorPerf
-======
-
+========
+StorPerf is an OPNFV testing project aimed to measure the performance
+of the Cinder subsystem.
 
 
 * Project Wiki: https://wiki.opnfv.org/display/storperf
-* Project Repository: https://gerrit.opnfv.org/gerrit/#/q/storperf
+* Project Repository: https://git.opnfv.org/storperf
+* Project Artifacts: https://hub.docker.com/r/opnfv/storperf/
 * Continuous Integration https://build.opnfv.org/ci/view/storperf/
 
+******************************
+StorPerf Installation Guide
+******************************
+
 .. toctree::
-   :maxdepth: 3
+   :caption: StorPerf  Installation Guide
+   :maxdepth: 5
    :numbered: 5
 
-   ./userguide/index.rst
+   ./release/installation/installation.rst
+
+******************************
+StorPerf User Guide
+******************************
+
+.. toctree::
+   :caption: StorPerf User Guide
+   :maxdepth: 5
+   :numbered: 5
+
+   ./release/userguide/introduction.rst
+   ./release/userguide/test-usage.rst
+
 
 Indices
 =======
 * :ref:`search`
-
