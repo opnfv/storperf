@@ -1,6 +1,6 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 .. http://creativecommons.org/licenses/by/4.0
-.. (c) OPNFV, Intel Corporation, AT&T and others.
+.. (c) OPNFV, Dell EMC and others.
 
 ===========================
 StorPerf Installation Guide
@@ -8,20 +8,23 @@ StorPerf Installation Guide
 
 OpenStack Prerequisites
 ===========================
-If you do not have an Ubuntu 14.04 image in Glance, you will need to add one.
-A key pair for launching agents is also required.
+If you do not have an Ubuntu 16.04 image in Glance, you will need to add one.
+There are scripts in storperf/ci directory to assist, or you can use the follow
+code snippets:
 
-.. code-block:: console
+.. code-block:: bash
 
     # Put an Ubuntu Image in glance
-    wget https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
-    glance image-create --name 'Ubuntu 14.04' --visibility public --disk-format=qcow2 --container-format=bare --file=trusty-server-cloudimg-amd64-disk1.img
+    wget -q https://cloud-images.ubuntu.com/releases/16.04/release/ubuntu-16.04-server-cloudimg-amd64-disk1.img
+    openstack image create "Ubuntu 16.04 x86_64" --disk-format qcow2 --public \
+        --container-format bare --file ubuntu-16.04-server-cloudimg-amd64-disk1.img
 
-    # Create a key pair for the agents.
-    nova keypair-add StorPerf > StorPerf.pem
-
-    # Or, if you have access to the StorPerf repository you may import the StorPerf key
-    nova keypair-add --pub_key storperf_rsa.pub StorPerf
+    # Create StorPerf flavor
+    openstack flavor create storperf \
+        --id auto \
+        --ram 8192 \
+        --disk 4 \
+        --vcpus 2
 
 
 Planning
@@ -86,6 +89,15 @@ The following procedure will install Docker on Ubuntu 14.04.
 
 Pulling StorPerf Container
 ==========================
+
+Danube
+~~~~~~
+
+The tag for the latest stable Danube will be:
+
+.. code-block: console
+
+    docker pull opnfv/storperf:danube.0.1
 
 Colorado
 ~~~~~~~~
