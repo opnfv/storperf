@@ -186,7 +186,7 @@ class JobDBTest(unittest.TestCase):
         self.assertEqual(start_time, row[3], "Did not expect " + str(row[3]))
 
     def test_job_params(self):
-        expected = {"a": "1", "b": "2"}
+        expected = {u"a": 1, u"b": 2}
         self.job.job_id = "ABCD"
         self.job.record_workload_params(expected)
         actual = self.job.fetch_workload_params(self.job.job_id)

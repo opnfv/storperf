@@ -8,6 +8,7 @@
 ##############################################################################
 
 import calendar
+import json
 import logging
 from sqlite3 import OperationalError
 import sqlite3
@@ -249,6 +250,10 @@ class JobDB(object):
                 row = cursor.fetchone()
                 if (row is None):
                     break
-                params[row[0]] = row[1]
+                try:
+                    data = json.loads(row[1])
+                except:
+                    data = row[1]
+                params[row[0]] = data
             db.close()
         return params
