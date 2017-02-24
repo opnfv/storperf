@@ -101,24 +101,35 @@ export TEST_CASE=snia_steady_state
 
 JOB=`$WORKSPACE/ci/start_job.sh \
     | awk '/job_id/ {print $2}' | sed 's/"//g'`
-JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-    | awk '/Status/ {print $2}' | cut -d\" -f2`
+curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+    -o $WORKSPACE/ci/job/status.json
+
+JOB_STATUS=`cat $WORKSPACE/ci/job/status.json | awk '/Status/ {print $2}' | cut -d\" -f2`
 while [ "$JOB_STATUS" != "Completed" ]
 do
-    sleep 60
-    curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status"
-    JOB_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-    | awk '/Status/ {print $2}' | cut -d\" -f2`
+    sleep 600
+    mv $WORKSPACE/ci/job/status.json $WORKSPACE/ci/job/old-status.json
+    curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
+        -o $WORKSPACE/ci/job/status.json
+    JOB_STATUS=`cat $WORKSPACE/ci/job/status.json | awk '/Status/ {print $2}' | cut -d\" -f2`
+    diff $WORKSPACE/ci/job/status.json $WORKSPACE/ci/job/old-status.json >/dev/null
+    if [ $? -eq 1 ]
+    then
+        cat $WORKSPACE/ci/job/status.json
+    fi
 done
 
-HREF=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
-    | awk '/TestResultURL/ {print $2}' | cut -d\" -f2 | cut -d/ -f4-`
-
 echo "Deleting stack for cleanup"
-curl -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
+curl -s -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
 
 sudo chmod 777 -R $WORKSPACE/ci/job/carbon
 
-echo "Results published to: http://testresults.opnfv.org/test/$HREF"
+curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=metadata" \
+    -o $WORKSPACE/ci/job/report.json
+
+echo ==========================================================================
+echo Final report
+echo ==========================================================================
+cat $WORKSPACE/ci/job/report.json
 
 exit 0
