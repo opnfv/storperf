@@ -167,28 +167,12 @@ class StorPerfMaster(object):
         self._test_executor.filename = value
 
     @property
-    def precondition(self):
-        return self._test_executor.precondition
-
-    @precondition.setter
-    def precondition(self, value):
-        self._test_executor.precondition = value
-
-    @property
     def deadline(self):
         return self._test_executor.deadline
 
     @deadline.setter
     def deadline(self, value):
         self._test_executor.deadline = value
-
-    @property
-    def warm_up(self):
-        return self._test_executor.warm
-
-    @warm_up.setter
-    def warm_up(self, value):
-        self._test_executor.warm = value
 
     @property
     def queue_depths(self):

@@ -36,9 +36,7 @@ class TestExecutor(object):
         self.logger = logging.getLogger(__name__)
         self.workload_modules = []
         self.filename = None
-        self.precondition = True
         self.deadline = None
-        self.warm = True
         self.metadata = {}
         self.start_time = None
         self.end_time = None
@@ -133,12 +131,6 @@ class TestExecutor(object):
                     workloads.append(mname)
         else:
             workloads = workloads.split(',')
-
-        if (self.warm is True):
-            workloads.insert(0, "_warm_up")
-
-        if (self.precondition is True):
-            workloads.insert(0, "_ssd_preconditioning")
 
         for workload in workloads:
             try:

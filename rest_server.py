@@ -336,10 +336,6 @@ prior to running any further tests,
                 storperf.filename = request.json['target']
             if ('deadline' in request.json):
                 storperf.deadline = request.json['deadline']
-            if ('nossd' in request.json):
-                storperf.precondition = False
-            if ('nowarm' in request.json):
-                storperf.warm_up = False
             if ('queue_depths' in request.json):
                 storperf.queue_depths = request.json['queue_depths']
             if ('block_sizes' in request.json):

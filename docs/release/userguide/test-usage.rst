@@ -78,8 +78,6 @@ takes a JSON payload as follows.
 .. code-block:: json
 
    {
-      "nowarm": "false",
-      "nossd": "false",
       "workload": "_warm_up"
    }
 
@@ -137,8 +135,6 @@ remaining workloads will continue to execute in order.
 
    {
       "block_sizes": "2048,16384,
-      "nowarm": "false",
-      "nossd": "false",
       "deadline": 20,
       "queue_depths": "2,4",
       "workload": "wr,rr,rw",
