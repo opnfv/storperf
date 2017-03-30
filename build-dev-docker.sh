@@ -8,12 +8,17 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+cd `dirname $0`
+
 echo "Creating a docker image from the current working directory..."
 
-sed "s|RUN git clone https://gerrit.opnfv.org/gerrit/storperf.*$|COPY . \${repos_dir}/storperf|" docker/Dockerfile > Dockerfile
-sed -i  "s|COPY storperf.pp|COPY docker/storperf.pp|" Dockerfile
-sed -i  "s|COPY supervisord.conf|COPY docker/supervisord.conf|" Dockerfile
+cp docker/Dockerfile Dockerfile.dev
+sed -i "s|COPY |COPY docker\/|" Dockerfile.dev
+sed -i "s|ADD |ADD docker\/|" Dockerfile.dev
+sed -i "s|RUN git clone.*https://gerrit.opnfv.org/gerrit/storperf.*$|COPY . \${repos_dir}/storperf|" Dockerfile.dev
 
-docker build -t opnfv/storperf:dev .
+diff docker/Dockerfile Dockerfile.dev
 
-rm -f Dockerfile
+docker build -t opnfv/storperf:dev -f Dockerfile.dev .
+
+rm -f Dockerfile.dev

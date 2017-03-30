@@ -26,6 +26,7 @@ LABEL version="0.1" description="OPNFV Storperf Docker container"
 ARG BRANCH=master
 
 ENV repos_dir /home/opnfv/repos
+ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /home/opnfv
 
@@ -65,6 +66,35 @@ RUN mkdir -p ${repos_dir}
 RUN mkdir -p /root/.ssh
 RUN chmod 700 /root/.ssh
 
+# Graphite installation
+RUN echo 'deb http://us.archive.ubuntu.com/ubuntu/ trusty universe' >> /etc/apt/sources.list
+RUN apt-get -y update
+
+# Install required packages
+RUN apt-get -y install python-ldap python-cairo python-django python-twisted python-django-tagging python-simplejson python-memcache python-pysqlite2 python-support python-tz python-pip gunicorn supervisor nginx-light
+RUN pip install whisper==0.9.15
+RUN pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/lib" carbon==0.9.15
+RUN pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/webapp" graphite-web==0.9.15
+
+# Add system service config
+ADD graphite/nginx.conf /etc/nginx/nginx.conf
+ADD graphite/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Add graphite config
+ADD graphite/initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
+ADD graphite/local_settings.py /var/lib/graphite/webapp/graphite/local_settings.py
+ADD graphite/carbon.conf /var/lib/graphite/conf/carbon.conf
+ADD graphite/storage-schemas.conf /var/lib/graphite/conf/storage-schemas.conf
+RUN mkdir -p /opt/graphite/storage
+RUN ln -s /var/lib/graphite/storage/whisper /opt/graphite/storage/whisper
+RUN touch /var/lib/graphite/storage/graphite.db /var/lib/graphite/storage/index
+RUN chown -R www-data /var/lib/graphite/storage
+RUN chmod 0775 /var/lib/graphite/storage /var/lib/graphite/storage/whisper
+RUN chmod 0664 /var/lib/graphite/storage/graphite.db
+RUN cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
+
+# Git configuration
+
 RUN git config --global http.sslVerify false
 RUN git clone --depth 1 -b $BRANCH https://gerrit.opnfv.org/gerrit/storperf ${repos_dir}/storperf
 RUN git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
@@ -79,17 +109,12 @@ RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
 RUN cd ${repos_dir}/fio && make -j 6 install
 
-RUN puppet module install gdsoperations-graphite
 
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa
 
 RUN pip install --upgrade setuptools==33.1.1
 RUN pip install -r ${repos_dir}/storperf/docker/requirements.pip
 
-COPY storperf.pp /etc/puppet/manifests/storperf.pp
-RUN puppet apply /etc/puppet/manifests/storperf.pp
-
-RUN ln -s /opt/graphite/lib/whisper* /usr/lib/python2.7/
 
 # Open access to SSH if desired
 EXPOSE 22
