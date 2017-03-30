@@ -78,7 +78,6 @@ RUN pip install --install-option="--prefix=/var/lib/graphite" --install-option="
 
 # Add system service config
 ADD graphite/nginx.conf /etc/nginx/nginx.conf
-ADD graphite/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Add graphite config
 ADD graphite/initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
