@@ -122,10 +122,11 @@ done
 echo "Deleting stack for cleanup"
 curl -s -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
 
-sudo chmod 777 -R $WORKSPACE/ci/job/carbon
-
 curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=metadata" \
     -o $WORKSPACE/ci/job/report.json
+
+docker rm -f storperf
+sudo rm -rf $WORKSPACE/ci/job/carbon
 
 echo ==========================================================================
 echo Final report
