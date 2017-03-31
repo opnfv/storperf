@@ -23,7 +23,7 @@ StorPerf Installation Guide
    :maxdepth: 5
    :numbered: 5
 
-   ./release/installation/installation.rst
+   ./user/installation.rst
 
 ******************************
 StorPerf User Guide
@@ -34,8 +34,8 @@ StorPerf User Guide
    :maxdepth: 5
    :numbered: 5
 
-   ./release/userguide/introduction.rst
-   ./release/userguide/test-usage.rst
+   ./user/introduction.rst
+   ./user/test-usage.rst
 
 
 Indices

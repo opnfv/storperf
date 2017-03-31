@@ -97,7 +97,7 @@ The tag for the latest stable Danube will be:
 
 .. code-block:: bash
 
-   docker pull opnfv/storperf:danube.0.1
+   docker pull opnfv/storperf:danube.1.0
 
 Colorado
 ~~~~~~~~
