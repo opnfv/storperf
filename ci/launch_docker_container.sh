@@ -29,13 +29,13 @@ then
     sudo chown 33:33 job/carbon
 fi
 
-docker pull opnfv/storperf:latest
+docker pull opnfv/storperf:stable
 
 docker run -d --env-file `pwd`/job/admin.rc \
     -p 5000:5000 \
     -p 8000:8000 \
     -v `pwd`/job/carbon:/opt/graphite/storage/whisper \
-    --name storperf opnfv/storperf
+    --name storperf opnfv/storperf:stable
 #    -v `pwd`/../../storperf:/home/opnfv/repos/storperf \
 
 echo "Waiting for StorPerf to become active"
