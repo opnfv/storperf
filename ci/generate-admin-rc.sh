@@ -42,5 +42,5 @@ then
     echo export OS_PROJECT_NAME=admin >> job/openstack.rc
 fi
 
-sed "s/export //" job/openstack.rc > job/admin.rc
+grep "export" job/openstack.rc | sed "s/export //"  > job/admin.rc
 echo "INSTALLER_TYPE=${INSTALLER}" >> job/admin.rc
