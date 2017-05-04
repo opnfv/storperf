@@ -100,6 +100,7 @@ RUN git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/rele
 
 # Third party git fetches
 RUN git clone https://github.com/swagger-api/swagger-ui.git ${repos_dir}/swagger-ui
+RUN cd ${repos_dir}/swagger-ui && git checkout tags/v2.2.9
 RUN mkdir -p ${repos_dir}/storperf/storperf/resources/html/swagger
 RUN cp -r ${repos_dir}/swagger-ui/dist/* ${repos_dir}/storperf/storperf/resources/html/swagger
 RUN sed -i 's|url = "http://petstore.swagger.io/v2/swagger.json";|url = window.location.protocol+"//"+window.location.host+"/api/spec.json";|' ${repos_dir}/storperf/storperf/resources/html/swagger/index.html
