@@ -11,19 +11,18 @@ from datetime import datetime
 import logging
 import os
 import socket
+from storperf.db.configuration_db import ConfigurationDB
+from storperf.db.job_db import JobDB
+from storperf.test_executor import TestExecutor
 from threading import Thread
 from time import sleep
 
 from cinderclient import client as cinderclient
+import heatclient.client as heatclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 import paramiko
 from scp import SCPClient
-
-import heatclient.client as heatclient
-from storperf.db.configuration_db import ConfigurationDB
-from storperf.db.job_db import JobDB
-from storperf.test_executor import TestExecutor
 
 
 class ParameterError(Exception):
@@ -387,12 +386,17 @@ class StorPerfMaster(object):
                 "username": os.environ.get('OS_USERNAME'),
                 "password": os.environ.get('OS_PASSWORD'),
                 "auth_url": os.environ.get('OS_AUTH_URL'),
-                "project_name": os.environ.get('OS_PROJECT_NAME'),
+                "project_domain_name":
+                    os.environ.get('OS_PROJECT_DOMAIN_NAME'),
                 "project_id": os.environ.get('OS_PROJECT_ID'),
+                "project_name": os.environ.get('OS_PROJECT_NAME'),
                 "tenant_name": os.environ.get('OS_TENANT_NAME'),
                 "tenant_id": os.environ.get("OS_TENANT_ID"),
-                "user_domain_id": os.environ.get('OS_USER_DOMAIN_ID')
+                "user_domain_id": os.environ.get('OS_USER_DOMAIN_ID'),
+                "user_domain_name": os.environ.get('OS_USER_DOMAIN_NAME')
             }
+
+            self.logger.debug("Creds: %s" % creds)
 
             loader = loading.get_plugin_loader('password')
             auth = loader.load_from_options(**creds)
