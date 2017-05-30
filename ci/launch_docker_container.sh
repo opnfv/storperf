@@ -29,7 +29,12 @@ then
     sudo chown 33:33 job/carbon
 fi
 
-docker pull opnfv/storperf:latest
+if [ -z $DOCKER_TAG ]
+then
+    DOCKER_TAG=latest
+fi
+
+docker pull opnfv/storperf:$DOCKER_TAG
 
 docker run -d --env-file `pwd`/job/admin.rc \
     -p 5000:5000 \

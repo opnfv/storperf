@@ -13,6 +13,7 @@ import os
 import sys
 
 from flask import abort, Flask, request, jsonify, send_from_directory
+from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
 
@@ -22,6 +23,7 @@ from storperf.storperf_master import StorPerfMaster
 
 
 app = Flask(__name__, static_url_path="")
+CORS(app)
 api = swagger.docs(Api(app), apiVersion='1.0')
 
 storperf = StorPerfMaster()
