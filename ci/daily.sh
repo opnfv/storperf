@@ -14,6 +14,23 @@ then
     WORKSPACE=`pwd`
 fi
 
+export AGENT_COUNT=${AGENT_COUNT:-$CINDER_NODES}
+export VOLUME_SIZE=${VOLUME_SIZE:-2}
+export WORKLOADS=${WORKLOADS:-ws,wr,rs,rr,rw}
+export BLOCK_SIZES=${BLOCK_SIZES:-1024,16384}
+export QUEUE_DEPTHS=${QUEUE_DEPTHS:-1,4}
+export STEADY_STATE_SAMPLES=${STEADY_STATE_SAMPLES:-10}
+export DEADLINE=${DEADLINE:-`expr $STEADY_STATE_SAMPLES \* 3`}
+export TEST_CASE=${TEST_CASE:-snia_steady_state}
+export SCENARIO_NAME=${DEPLOY_SCENARIO:-none}
+export DISK_TYPE=${DISK_TYPE:-unspecified}
+
+# This is set by Jenkins, but if we are running manually, just use the
+# current hostname.
+export POD_NAME={$NODE_NAME:-`hostname`}
+
+exit
+
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 
 virtualenv $WORKSPACE/ci/job/storperf_daily_venv
@@ -25,25 +42,6 @@ pip install pytz==2016.10
 pip install osc_lib==1.3.0
 pip install python-openstackclient==3.7.0
 pip install python-heatclient==1.7.0
-
-# This is set by Jenkins, but if we are running manually, just use the
-# current hostname.
-if [ -z "$NODE_NAME" ]
-then
-    NODE_NAME=`hostname`
-fi
-export POD_NAME=$NODE_NAME
-
-# Unless we get a job that automatically deploys Apex or other installers,
-# we have to rely on there being a value written into a file to tell us
-# what scenario was deployed.  This file needs to tell us:
-# DEPLOYED_SCENARIO
-# DISK_TYPE
-if [ -f ~/jenkins-env.rc ]
-then
-    . ~/jenkins-env.rc
-fi
-export SCENARIO_NAME=$DEPLOYED_SCENARIO
 
 sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
 
@@ -69,35 +67,15 @@ $WORKSPACE/ci/delete_stack.sh
 $WORKSPACE/ci/create_glance_image.sh
 $WORKSPACE/ci/create_storperf_flavor.sh
 $WORKSPACE/ci/launch_docker_container.sh
-$WORKSPACE/ci/create_stack.sh $CINDER_NODES 10 "Ubuntu 16.04 x86_64" $NETWORK
+$WORKSPACE/ci/create_stack.sh $AGENT_COUNT $VOLUME_SIZE "Ubuntu 16.04 x86_64" $NETWORK
+
+export WORKLOAD=_warm_up,$WORKLOADS
+export BLOCK_SIZE=$BLOCK_SIZES
+export QUEUE_DEPTH=$QUEUE_DEPTHS
 
 echo ==========================================================================
-echo Starting warmup
+echo Starting run of $WORKLOAD $BLOCK_SIZE $QUEUE_DEPTH
 echo ==========================================================================
-
-export QUEUE_DEPTH=8
-export BLOCK_SIZE=16384
-export WORKLOAD=_warm_up
-WARM_UP=`$WORKSPACE/ci/start_job.sh | awk '/job_id/ {print $2}' | sed 's/"//g'`
-
-WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
-    | awk '/Status/ {print $2}' | cut -d\" -f2`
-while [ "$WARM_UP_STATUS" != "Completed" ]
-do
-    sleep 60
-    curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status"
-    WARM_UP_STATUS=`curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$WARM_UP&type=status" \
-    | awk '/Status/ {print $2}' | cut -d\" -f2`
-done
-
-echo ==========================================================================
-echo Starting full matrix run
-echo ==========================================================================
-
-export WORKLOAD=ws,wr,rs,rr,rw
-export BLOCK_SIZE=2048,8192,16384
-export QUEUE_DEPTH=1,2,8
-export TEST_CASE=snia_steady_state
 
 JOB=`$WORKSPACE/ci/start_job.sh \
     | awk '/job_id/ {print $2}' | sed 's/"//g'`
