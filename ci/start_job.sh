@@ -11,7 +11,8 @@
 cat << EOF > body.json
 {
    "block_sizes": "${BLOCK_SIZE}",
-   "deadline": 30,
+   "deadline": ${DEADLINE},
+   "steady_state_samples": ${STEADY_STATE_SAMPLES},
    "queue_depths": "${QUEUE_DEPTH}",
    "workload": "${WORKLOAD}",
     "metadata": {
