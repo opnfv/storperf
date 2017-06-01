@@ -27,7 +27,7 @@ export DISK_TYPE=${DISK_TYPE:-unspecified}
 
 # This is set by Jenkins, but if we are running manually, just use the
 # current hostname.
-export POD_NAME={$NODE_NAME:-`hostname`}
+export POD_NAME=${NODE_NAME:-`hostname`}
 
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 
