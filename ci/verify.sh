@@ -23,6 +23,7 @@ pip install autoflake==0.6.6
 pip install autopep8==1.2.2
 pip install coverage==4.1
 pip install flask==0.10
+pip install flask_cors==3.0.2
 pip install flask-restful==0.3.5
 pip install flask-restful-swagger==0.19
 pip install flask-swagger==0.2.12
