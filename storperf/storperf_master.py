@@ -174,6 +174,14 @@ class StorPerfMaster(object):
         self._test_executor.deadline = value
 
     @property
+    def steady_state_samples(self):
+        return self._test_executor.steady_state_samples
+
+    @steady_state_samples.setter
+    def steady_state_samples(self, value):
+        self._test_executor.steady_state_samples = value
+
+    @property
     def queue_depths(self):
         return self._test_executor.queue_depths
 
@@ -386,6 +394,8 @@ class StorPerfMaster(object):
                 "username": os.environ.get('OS_USERNAME'),
                 "password": os.environ.get('OS_PASSWORD'),
                 "auth_url": os.environ.get('OS_AUTH_URL'),
+                "project_domain_id":
+                    os.environ.get('OS_PROJECT_DOMAIN_ID'),
                 "project_domain_name":
                     os.environ.get('OS_PROJECT_DOMAIN_NAME'),
                 "project_id": os.environ.get('OS_PROJECT_ID'),

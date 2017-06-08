@@ -14,20 +14,6 @@ then
     WORKSPACE=`pwd`
 fi
 
-export AGENT_COUNT=${AGENT_COUNT:-$CINDER_NODES}
-export VOLUME_SIZE=${VOLUME_SIZE:-2}
-export WORKLOADS=${WORKLOADS:-ws,wr,rs,rr,rw}
-export BLOCK_SIZES=${BLOCK_SIZES:-1024,16384}
-export QUEUE_DEPTHS=${QUEUE_DEPTHS:-1,4}
-export STEADY_STATE_SAMPLES=${STEADY_STATE_SAMPLES:-10}
-export DEADLINE=${DEADLINE:-`expr $STEADY_STATE_SAMPLES \* 3`}
-export TEST_CASE=${TEST_CASE:-snia_steady_state}
-export SCENARIO_NAME=${DEPLOY_SCENARIO:-none}
-export DISK_TYPE=${DISK_TYPE:-unspecified}
-
-# This is set by Jenkins, but if we are running manually, just use the
-# current hostname.
-export POD_NAME=${NODE_NAME:-`hostname`}
 
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 
@@ -54,7 +40,18 @@ do
     export "$env"
 done < $WORKSPACE/ci/job/admin.rc
 
+export AGENT_COUNT=${AGENT_COUNT:-$CINDER_NODES}
+export BLOCK_SIZES=${BLOCK_SIZES:-1024,16384}
+export DEADLINE=${DEADLINE:-`expr $STEADY_STATE_SAMPLES \* 3`}
+export DISK_TYPE=${DISK_TYPE:-unspecified}
+export QUEUE_DEPTHS=${QUEUE_DEPTHS:-1,4}
+export POD_NAME=${NODE_NAME:-`hostname`}
+export SCENARIO_NAME=${DEPLOY_SCENARIO:-none}
+export STEADY_STATE_SAMPLES=${STEADY_STATE_SAMPLES:-10}
+export TEST_CASE=${TEST_CASE:-snia_steady_state}
 export VERSION=`echo ${BUILD_TAG#*daily-} | cut -d- -f1`
+export VOLUME_SIZE=${VOLUME_SIZE:-2}
+export WORKLOADS=${WORKLOADS:-ws,wr,rs,rr,rw}
 
 echo ==========================================================================
 echo Environment

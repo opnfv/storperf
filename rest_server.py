@@ -10,15 +10,14 @@
 import json
 import logging.config
 import os
+from storperf.db.job_db import JobDB
+from storperf.plot.barchart import Barchart
+from storperf.storperf_master import StorPerfMaster
 import sys
 
 from flask import abort, Flask, request, jsonify, send_from_directory
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
-
-from storperf.db.job_db import JobDB
-from storperf.plot.barchart import Barchart
-from storperf.storperf_master import StorPerfMaster
 
 
 app = Flask(__name__, static_url_path="")
@@ -215,9 +214,8 @@ class Configure(Resource):
 class WorkloadModel:
     resource_fields = {
         'target': fields.String,
-        'nossd': fields.String,
-        'nowarm': fields.String,
         'deadline': fields.Integer,
+        "steady_state_samples": fields.Integer,
         'workload': fields.String,
         'queue_depths': fields.String,
         'block_sizes': fields.String
@@ -300,12 +298,6 @@ following parameters:
 "deadline": if specified, the maximum duration in minutes
 for any single test iteration.
 
-"nossd": Do not fill the target with random
-data prior to running the test,
-
-"nowarm": Do not refill the target with data
-prior to running any further tests,
-
 "workload":if specified, the workload to run. Defaults to all.
                 """,
                 "required": True,
@@ -336,6 +328,9 @@ prior to running any further tests,
                 storperf.filename = request.json['target']
             if ('deadline' in request.json):
                 storperf.deadline = request.json['deadline']
+            if ('steady_state_samples' in request.json):
+                storperf.steady_state_samples = request.json[
+                    'steady_state_samples']
             if ('queue_depths' in request.json):
                 storperf.queue_depths = request.json['queue_depths']
             if ('block_sizes' in request.json):

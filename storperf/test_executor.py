@@ -15,15 +15,14 @@ from os import listdir
 import os
 from os.path import isfile, join
 import sched
-from threading import Thread
-import time
-
 from storperf.carbon.converter import Converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
 from storperf.db.job_db import JobDB
 from storperf.fio.fio_invoker import FIOInvoker
 from storperf.utilities.data_handler import DataHandler
 from storperf.utilities.thread_gate import ThreadGate
+from threading import Thread
+import time
 
 
 class UnknownWorkload(Exception):
@@ -37,6 +36,7 @@ class TestExecutor(object):
         self.workload_modules = []
         self.filename = None
         self.deadline = None
+        self.steady_state_samples = 10
         self.metadata = {}
         self.start_time = None
         self.end_time = None

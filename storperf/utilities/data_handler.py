@@ -9,9 +9,6 @@
 
 import logging
 import os
-from time import sleep
-import time
-
 from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
@@ -19,13 +16,14 @@ from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import dictionary
 from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
+from time import sleep
+import time
 
 
 class DataHandler(object):
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.samples = 10
         self.job_db = JobDB()
 
     """
@@ -51,7 +49,8 @@ class DataHandler(object):
                     series = self._lookup_prior_data(executor, metric, io_type)
                     series = self._convert_timestamps_to_samples(
                         executor, series)
-                    steady = self._evaluate_prior_data(series)
+                    steady = self._evaluate_prior_data(
+                        series, executor.steady_state_samples)
 
                     self.logger.debug("Steady state for %s %s: %s"
                                       % (io_type, metric, steady))
@@ -94,7 +93,7 @@ class DataHandler(object):
         # A bit of a hack here as Carbon might not be finished storing the
         # data we just sent to it
         now = int(time.time())
-        backtime = 60 * (self.samples + 2)
+        backtime = 60 * (executor.steady_state_samples + 2)
         data_series = graphite_db.fetch_series(workload,
                                                metric,
                                                io_type,
@@ -135,13 +134,13 @@ class DataHandler(object):
 
         return normalized_series
 
-    def _evaluate_prior_data(self, data_series):
+    def _evaluate_prior_data(self, data_series, samples):
         self.logger.debug("Data series: %s" % data_series)
         number_of_samples = len(data_series)
 
         if number_of_samples == 0:
             return False
-        if (number_of_samples < self.samples):
+        if (number_of_samples < samples):
             self.logger.debug("Only %s samples, ignoring" % number_of_samples)
             return False
 
