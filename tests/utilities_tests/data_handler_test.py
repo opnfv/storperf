@@ -8,11 +8,10 @@
 ##############################################################################
 
 import os
+from storperf.utilities.data_handler import DataHandler
 import unittest
 
 import mock
-
-from storperf.utilities.data_handler import DataHandler
 
 
 class MockGraphiteDB(object):
@@ -32,6 +31,7 @@ class DataHandlerTest(unittest.TestCase):
         self._terminated = False
         self.args = None
         self.start_time = 0
+        self.steady_state_samples = 10
         self.end_time = 1
         self.metadata = {}
         self.block_sizes = "1"
@@ -96,7 +96,8 @@ class DataHandlerTest(unittest.TestCase):
                   [1480456040, 219.28],
                   [1480456050, 217.75]]
 
-        actual = self.data_handler._evaluate_prior_data(series)
+        actual = self.data_handler._evaluate_prior_data(
+            series, self.steady_state_samples)
         self.assertEqual(False, actual)
 
     def test_long_not_steady_sample(self):
@@ -106,7 +107,8 @@ class DataHandlerTest(unittest.TestCase):
                   [4804560300, 21937],
                   [4804560400, 21928],
                   [4804560500, 21775]]
-        actual = self.data_handler._evaluate_prior_data(series)
+        actual = self.data_handler._evaluate_prior_data(
+            series, self.steady_state_samples)
         self.assertEqual(False, actual)
 
     def test_long_steady_sample(self):
@@ -120,7 +122,8 @@ class DataHandlerTest(unittest.TestCase):
                   [4804560300, 219.37],
                   [4804560400, 219.28],
                   [4804560500, 217.75]]
-        actual = self.data_handler._evaluate_prior_data(series)
+        actual = self.data_handler._evaluate_prior_data(
+            series, self.steady_state_samples)
         self.assertEqual(True, actual)
 
     @mock.patch.dict(os.environ, {'TEST_DB_URL': 'mock'})
