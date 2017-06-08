@@ -14,7 +14,7 @@ class _base_workload(object):
 
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.default_filesize = "100%"
+        self.default_filesize = "1G"
         self.filename = '/dev/vdb'
         self.options = {
             'ioengine': 'libaio',
