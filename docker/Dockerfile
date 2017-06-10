@@ -45,7 +45,6 @@ wget \
 puppet \
 build-essential \
 python-dev \
-python-matplotlib \
 python-pip \
 --no-install-recommends
 
@@ -107,7 +106,7 @@ RUN sed -i 's|url = "http://petstore.swagger.io/v2/swagger.json";|url = window.l
 
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
-RUN cd ${repos_dir}/fio && make -j 6 install
+RUN cd ${repos_dir}/fio && make install
 
 
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa

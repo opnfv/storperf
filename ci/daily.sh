@@ -64,6 +64,7 @@ $WORKSPACE/ci/create_storperf_flavor.sh
 $WORKSPACE/ci/launch_docker_container.sh
 $WORKSPACE/ci/create_stack.sh $AGENT_COUNT $VOLUME_SIZE "Ubuntu 16.04 x86_64" $NETWORK
 
+
 export WORKLOAD=_warm_up,$WORKLOADS
 export BLOCK_SIZE=$BLOCK_SIZES
 export QUEUE_DEPTH=$QUEUE_DEPTHS

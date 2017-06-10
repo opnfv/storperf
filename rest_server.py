@@ -10,8 +10,6 @@
 import json
 import logging.config
 import os
-from storperf.db.job_db import JobDB
-from storperf.plot.barchart import Barchart
 from storperf.storperf_master import StorPerfMaster
 import sys
 
@@ -31,92 +29,6 @@ storperf = StorPerfMaster()
 @app.route('/swagger/<path:path>')
 def send_swagger(path):
     return send_from_directory('storperf/resources/html/swagger', path)
-
-
-@app.route('/results/<path:job_id>')
-def results_page(job_id):
-
-    job_db = JobDB()
-
-    params = job_db.fetch_workload_params(job_id)
-
-    results = storperf.fetch_results(job_id)
-    workloads = []
-    block_sizes = []
-    queue_depths = []
-
-    for key, value in results.iteritems():
-        workload = key.split('.')[0]
-        queue_depth = int(key.split('.')[2])
-        block_size = int(key.split('.')[4])
-        if workload not in workloads:
-            workloads.append(workload)
-        if queue_depth not in queue_depths:
-            queue_depths.append(queue_depth)
-        if block_size not in block_sizes:
-            block_sizes.append(block_size)
-
-    queue_depths.sort()
-    block_sizes.sort()
-
-    read_latencies = []
-    write_latencies = []
-#    for workload in workloads:
-    workload = "rw"
-
-    for queue_depth in queue_depths:
-        rlatencies = []
-        read_latencies.append(rlatencies)
-        wlatencies = []
-        write_latencies.append(wlatencies)
-        for block_size in block_sizes:
-
-            key = "%s.queue-depth.%s.block-size.%s.read.latency" % \
-                (workload, queue_depth, block_size)
-            if key in results:
-                rlatencies.append(results[key] / 1000)
-            else:
-                rlatencies.append(0)
-
-            key = "%s.queue-depth.%s.block-size.%s.write.latency" % \
-                (workload, queue_depth, block_size)
-            if key in results:
-                wlatencies.append(results[key] / 1000)
-            else:
-                wlatencies.append(0)
-
-    chart = Barchart()
-    chart.barchart3d(queue_depths, block_sizes, read_latencies, 'g',
-                     'Read Latency (ms)')
-    readchart = chart.to_base64_image()
-
-    chart.barchart3d(queue_depths, block_sizes, write_latencies, 'r',
-                     'Write Latency (ms)')
-    writechart = chart.to_base64_image()
-
-    metadata = "<table>"
-    for key, value in params.iteritems():
-        metadata += "<TR><TD>" + key + "<TD>" + value + "</TR>"
-    metadata += "</table>"
-
-    html = """<html><body>%s <BR>
-    Number of VMs: %s <BR>
-    Cinder volume size per VM: %s (GB) <BR>
-    Metadata: <BR>
-    %s<BR>
-    <center>Read Latency Report <BR>
-    <img src="data:image/png;base64,%s"/>
-    <center>Write Latency Report <BR>
-    <img src="data:image/png;base64,%s"/>
-    </body></html>""" % (job_id,
-                         params['agent_count'],
-                         params['volume_size'],
-                         metadata,
-                         readchart,
-                         writechart,
-                         )
-
-    return html
 
 
 @swagger.model
