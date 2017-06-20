@@ -10,13 +10,14 @@
 import json
 import logging.config
 import os
-from storperf.storperf_master import StorPerfMaster
 import sys
 
 from flask import abort, Flask, request, jsonify, send_from_directory
-from flask_cors import CORS, cross_origin
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
+
+from flask_cors import CORS, cross_origin
+from storperf.storperf_master import StorPerfMaster
 
 
 app = Flask(__name__, static_url_path="")
@@ -24,11 +25,6 @@ CORS(app)
 api = swagger.docs(Api(app), apiVersion='1.0')
 
 storperf = StorPerfMaster()
-
-
-@app.route('/swagger/<path:path>')
-def send_swagger(path):
-    return send_from_directory('storperf/resources/html/swagger', path)
 
 
 @swagger.model
