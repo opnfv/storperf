@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_de1425f7",
+        "filename": "docker/docker-compose-dev.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:31:46Z",
+      "side": 1,
+      "message": "Don\u0027t think this file is really needed.",
+      "revId": "00d5fbe04c59208f194dfe58cb344dfa1e8af9fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_5e5275de",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:31:46Z",
+      "side": 1,
+      "message": "Mind the whitespace.  Check under Preferences -\u003e General -\u003e Editors -\u003e AnyEdit tools and see if Remove Trailing Whitespace is checked.  I thought that was the default, but if not, I need to add that to the wiki.",
+      "revId": "00d5fbe04c59208f194dfe58cb344dfa1e8af9fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_fe0561c2",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:31:46Z",
+      "side": 1,
+      "message": "you should use ${TAG} as an environment variable.  See https://docs.docker.com/compose/environment-variables/#setting-environment-variables-in-containers",
+      "revId": "00d5fbe04c59208f194dfe58cb344dfa1e8af9fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_fe5ec1e8",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:31:46Z",
+      "side": 1,
+      "message": "Why stdin_open: true?  What does that do and why did you choose to include it?",
+      "revId": "00d5fbe04c59208f194dfe58cb344dfa1e8af9fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_be0fe9e0",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:31:46Z",
+      "side": 1,
+      "message": "You are also missing the env_file from the normal docker run command.  We need to give storperf container a bunch of OpenStack environment variables, and that is done this way.",
+      "revId": "00d5fbe04c59208f194dfe58cb344dfa1e8af9fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
