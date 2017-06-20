@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_1e3ddd8f",
+        "filename": "rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-20T20:20:32Z",
+      "side": 1,
+      "message": "LiClipse claims cross_origin is an unused import.  Is it not really used?",
+      "revId": "6837f3b4851c238e9eb8c0adb183eded634ab98e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
