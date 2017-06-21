@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5aaae553_12add188",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-21T14:02:56Z",
+      "side": 1,
+      "message": "Same comments from prior version apply: Trim whitespace",
+      "revId": "613c145bc8ee0fae14eb18986ba245296965cb88",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_72a0c590",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-21T14:02:56Z",
+      "side": 1,
+      "message": "Use ${TAG}",
+      "revId": "613c145bc8ee0fae14eb18986ba245296965cb88",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_52a3499e",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-21T14:02:56Z",
+      "side": 1,
+      "message": "Explain why you chose to add tty and stdin_open",
+      "revId": "613c145bc8ee0fae14eb18986ba245296965cb88",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5aaae553_b29e3d55",
+        "filename": "docker/docker-compose.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-21T14:02:56Z",
+      "side": 1,
+      "message": "Please add the env_file, or document how to get the required environment variables into the storperf container.",
+      "revId": "613c145bc8ee0fae14eb18986ba245296965cb88",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
