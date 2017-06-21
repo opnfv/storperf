@@ -15,7 +15,7 @@ cat << EOF > body.json
    "steady_state_samples": ${STEADY_STATE_SAMPLES},
    "queue_depths": "${QUEUE_DEPTH}",
    "workload": "${WORKLOAD}",
-    "metadata": {
+   "metadata": {
         "disk_type": "${DISK_TYPE}",
         "pod_name": "${POD_NAME}",
         "scenario_name": "${SCENARIO_NAME}",

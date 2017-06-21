@@ -138,6 +138,23 @@ class StorPerfMaster(object):
             value)
 
     @property
+    def agent_flavor(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'agent_flavor')
+
+    @agent_flavor.setter
+    def agent_flavor(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change flavor after stack is created")
+
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'agent_flavor',
+            value)
+
+    @property
     def stack_id(self):
         return self.configuration_db.get_configuration_value(
             'stack',
@@ -380,6 +397,7 @@ class StorPerfMaster(object):
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_size'] = self.volume_size
         heat_parameters['agent_image'] = self.agent_image
+        heat_parameters['agent_flavor'] = self.agent_flavor
         return heat_parameters
 
     def _attach_to_openstack(self):

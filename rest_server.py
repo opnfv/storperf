@@ -12,7 +12,7 @@ import logging.config
 import os
 import sys
 
-from flask import abort, Flask, request, jsonify, send_from_directory
+from flask import abort, Flask, request, jsonify
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
 
@@ -41,6 +41,7 @@ class ConfigurationRequestModel:
 class ConfigurationResponseModel:
     resource_fields = {
         'agent_count': fields.Integer,
+        'agent_flavor': fields.String,
         'agent_image': fields.String,
         'public_network': fields.String,
         'stack_created': fields.Boolean,
@@ -62,6 +63,7 @@ class Configure(Resource):
     )
     def get(self):
         return jsonify({'agent_count': storperf.agent_count,
+                        'agent_flavor': storperf.agent_flavor,
                         'agent_image': storperf.agent_image,
                         'public_network': storperf.public_network,
                         'volume_size': storperf.volume_size,
@@ -92,6 +94,8 @@ class Configure(Resource):
         try:
             if ('agent_count' in request.json):
                 storperf.agent_count = request.json['agent_count']
+            if ('agent_flavor' in request.json):
+                storperf.agent_flavor = request.json['agent_flavor']
             if ('agent_image' in request.json):
                 storperf.agent_image = request.json['agent_image']
             if ('public_network' in request.json):
@@ -102,6 +106,7 @@ class Configure(Resource):
             storperf.create_stack()
 
             return jsonify({'agent_count': storperf.agent_count,
+                            'agent_flavor': storperf.agent_flavor,
                             'agent_image': storperf.agent_image,
                             'public_network': storperf.public_network,
                             'volume_size': storperf.volume_size,
@@ -154,16 +159,16 @@ class Job(Resource):
                 "description": "The UUID of the workload in the format "
                 "NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN",
                 "required": True,
-                "type": "string",
+                "metrics_type": "string",
                 "allowMultiple": False,
                 "paramType": "query"
             },
             {
-                "name": "type",
-                "description": "The type of metrics to report.  May be "
+                "name": "metrics_type",
+                "description": "The metrics_type of metrics to report.  May be "
                 "metrics (default), or metadata",
                 "required": False,
-                "type": "string",
+                "metrics_type": "string",
                 "allowMultiple": False,
                 "paramType": "query"
             }
@@ -181,19 +186,19 @@ class Job(Resource):
     )
     def get(self):
 
-        type = "metrics"
-        if request.args.get('type'):
-            type = request.args.get('type')
+        metrics_type = "metrics"
+        if request.args.get('metrics_type'):
+            metrics_type = request.args.get('metrics_type')
 
         workload_id = request.args.get('id')
 
-        if type == "metrics":
+        if metrics_type == "metrics":
             return jsonify(storperf.fetch_results(workload_id))
 
-        if type == "metadata":
+        if metrics_type == "metadata":
             return jsonify(storperf.fetch_metadata(workload_id))
 
-        if type == "status":
+        if metrics_type == "status":
             return jsonify(storperf.fetch_job_status(workload_id))
 
     @swagger.operation(

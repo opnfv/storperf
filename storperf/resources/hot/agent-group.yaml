@@ -14,7 +14,7 @@ parameters:
     type: string
     constraints:
         - custom_constraint: neutron.network
-  flavor:
+  agent_flavor:
     type: string
     default: "storperf"
   agent_image:
@@ -47,7 +47,7 @@ resources:
         properties: {
           public_network: {get_param: public_network},
           agent_network: {get_resource: storperf_network},
-          flavor: {get_param: flavor},
+          flavor: {get_param: agent_flavor},
           image: {get_param: agent_image},
           storperf_open_security_group: {get_resource: storperf_open_security_group},
           key_name: {get_resource: storperf_key_pair},
