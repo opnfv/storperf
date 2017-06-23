@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_26879811",
+        "filename": "reporting/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-23T15:56:33Z",
+      "side": 1,
+      "message": "So you\u0027re going to use python as the web server for everything?  I thought you were looking at others.",
+      "revId": "8ccaf17b9f234df392a2de1cc2c104d9d885f6c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_06829c00",
+        "filename": "reporting/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-23T15:56:33Z",
+      "side": 1,
+      "message": "Looks like you\u0027re missing app.py from the review.",
+      "revId": "8ccaf17b9f234df392a2de1cc2c104d9d885f6c7",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
