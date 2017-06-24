@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_894a1d54",
+        "filename": "reporting/docker/Dockerfile",
+        "patchSetId": 2
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-06-24T05:22:55Z",
+      "side": 1,
+      "message": "I think Ubuntu might be too big os for graphing module. Since we have to update Storperf to Alpine, it might be a good idea to develop this new container with Alpine. Need comments from Mark. If we are going by ubuntu, I suggest sticking to a specific ubuntu version.",
+      "range": {
+        "startLine": 18,
+        "startChar": 11,
+        "endLine": 18,
+        "endChar": 12
+      },
+      "revId": "bbc45a8d469d969ecace7969be6c79d915f13724",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_a947d94a",
+        "filename": "reporting/docker/app.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-06-24T05:22:55Z",
+      "side": 1,
+      "message": "Specify a port. Let us decide all the ports for different services in Storperf in next meeting.",
+      "revId": "bbc45a8d469d969ecace7969be6c79d915f13724",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
