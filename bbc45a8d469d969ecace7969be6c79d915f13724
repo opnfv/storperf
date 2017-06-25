@@ -39,6 +39,24 @@
       "revId": "bbc45a8d469d969ecace7969be6c79d915f13724",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_49b665de",
+        "filename": "reporting/docker/app.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-25T13:10:15Z",
+      "side": 1,
+      "message": "The internal port (as this is a container) can be anything.  We do need to decide what it gets exposed as though.\n\nI was thinking that it might make sense (if we move to nginx or something like that) for this to be the main front end for all HTTP requests to StorPerf, and it redirects as needed.  Thoughts?",
+      "parentUuid": "1aa4ed85_a947d94a",
+      "revId": "bbc45a8d469d969ecace7969be6c79d915f13724",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
