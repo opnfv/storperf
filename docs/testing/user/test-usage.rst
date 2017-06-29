@@ -39,6 +39,7 @@ The following pieces of information are required to prepare the environment:
 - The number of VMs/Cinder volumes to create
 - The Glance image that holds the VM operating system to use.  StorPerf has
   only been tested with Ubuntu 16.04
+- The OpenStack flavor to use when creating the VMs
 - The name of the public network that agents will use
 - The size, in gigabytes, of the Cinder volumes to create
 
@@ -49,6 +50,7 @@ takes a JSON payload as follows.
 
    {
      "agent_count": int,
+     "agent_flavor": string
      "agent_image": string,
      "public_network": string,
      "volume_size": int
