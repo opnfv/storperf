@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 ##############################################################################
 # Copyright (c) 2016 EMC and others.
 #
@@ -9,42 +9,40 @@
 ##############################################################################
 
 cd `dirname $0`
+ci=`pwd`
 
-storperf_container=`docker ps -a -q -f name=storperf`
+cd ${ci}/../docker-compose
 
-if [ ! -z $storperf_container ]
+export TAG=${DOCKER_TAG:-latest}
+export ENV_FILE=${ci}/job/admin.rc
+export CARBON_DIR=${ci}/job/carbon/
+
+docker-compose down
+
+for container in storperf swagger-ui http-front-end
+do
+    container=`docker ps -a -q -f name=$container`
+    if [ ! -z $container ]
+    then
+        echo "Stopping any existing $container container"
+        docker rm -fv $container
+    fi
+done
+
+if [ ! -d ${ci}/job/carbon ]
 then
-    echo "Stopping any existing StorPerf container"
-    docker rm -fv $storperf_container
+    mkdir ${ci}/job/carbon
+    sudo chown 33:33 ${ci}/job/carbon
 fi
 
-if [ ! -f job/admin.rc ]
-then
-    ./generate-admin-rc.sh
-fi
-
-if [ ! -d job/carbon ]
-then
-    mkdir job/carbon
-    sudo chown 33:33 job/carbon
-fi
-
-if [ -z $DOCKER_TAG ]
-then
-    DOCKER_TAG=latest
-fi
-
-docker pull opnfv/storperf:$DOCKER_TAG
-
-docker run -d --env-file `pwd`/job/admin.rc \
-    -p 5000:5000 \
-    -p 8000:8000 \
-    -v `pwd`/job/carbon:/opt/graphite/storage/whisper \
-    --name storperf opnfv/storperf
-#    -v `pwd`/../../storperf:/home/opnfv/repos/storperf \
+docker-compose -f ../docker-compose/docker-compose.yaml up -d
 
 echo "Waiting for StorPerf to become active"
-while [ $(curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > /dev/null 2>&1;echo $?) -ne 0 ]
+curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
+while [ `grep 'agent_count' test.html | wc -l` == "0" ]
 do
     sleep 1
+    curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
 done
+
+rm -f test.html
