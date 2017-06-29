@@ -11,7 +11,7 @@ Planning
 
 There are some ports that the container can expose:
 
-    * 22 for SSHD. Username and password are root/storperf. This is used for CLI access only
+    * Deprecated: 22 for SSHD. Username and password are root/storperf. This is used for CLI access only
     * 5000 for StorPerf ReST API.
     * 8000 for StorPerf's Graphite Web Server
 
@@ -37,17 +37,14 @@ For V3 authentication, use the following:
 .. code-block:: console
 
    OS_AUTH_URL=http://10.13.182.243:5000/v3
-   OS_PROJECT_ID=32ae78a844bc4f108b359dd7320463e5
    OS_PROJECT_NAME=admin
    OS_USER_DOMAIN_NAME=Default
    OS_USERNAME=admin
    OS_PASSWORD=admin
    OS_REGION_NAME=RegionOne
-   OS_INTERFACE=public
-   OS_IDENTITY_API_VERSION=3
 
 Additionally, if you want your results published to the common OPNFV Test Results
- DB, add the following:
+DB, add the following:
 
 .. code-block:: console
 
@@ -56,46 +53,104 @@ Additionally, if you want your results published to the common OPNFV Test Result
 Running StorPerf Container
 ==========================
 
-You might want to have the local disk used for storage as the default size of the docker
-container is only 10g. This is done with the -v option, mounting under
-/opt/graphite/storage/whisper
+As of Euphrates (development) release (June 2017), StorPerf has changed to use
+docker-compose in order to start its services.  Two files are needed in order
+to start StorPerf:
+
+#. docker-compose.yaml
+#. nginx.conf
+
+Copy and paste the following into a terminal to create the docker-compose.yaml
 
 .. code-block:: console
 
-    mkdir -p ~/carbon
-    sudo chown 33:33 ~/carbon
+    cat << EOF > docker-compose.yaml
+    version: '2'
+    services:
+        storperf:
+            container_name: "storperf"
+            image: "opnfv/storperf:${TAG}"
+            ports:
+                - "8000:8000"
+            env_file: ${ENV_FILE}
+            volumes:
+                - ${CARBON_DIR}:/opt/graphite/storage/whisper
+        swagger-ui:
+            container_name: "swagger-ui"
+            image: "schickling/swagger-ui"
+        http-front-end:
+            container_name: "http-front-end"
+            image: nginx:stable-alpine
+            ports:
+                - "5000:5000"
+            volumes:
+                - ./nginx.conf:/etc/nginx/nginx.conf:ro
+            links:
+                - storperf
+                - swagger-ui
+    EOF
 
-The recommended method of running StorPerf is to expose only the ReST and Graphite
-ports.  The command line below shows how to run the container with local disk for
-the carbon database.
+Copy and paste the following into a terminal to create the nginx.conf
 
 .. code-block:: console
 
-    docker run -t --env-file admin-rc -p 5000:5000 -p 8000:8000 -v ~/carbon:/opt/graphite/storage/whisper --name storperf opnfv/storperf
+    cat << EOF > nginx.conf
+    http {
+        include            mime.types;
+        default_type       application/octet-stream;
+        sendfile           on;
+        keepalive_timeout  65;
+        map $args $containsurl {
+            default 0;
+            "~(^|&)url=[^&]+($|&)" 1;  
+        }
+        server {
+            listen 5000;
+            location /api/ {
+                proxy_pass http://storperf:5000;
+                proxy_set_header Host $host:$proxy_port;
+            }
+            location /swagger/ {
+                if ($containsurl = 0) {
+                    return 302 $scheme://$host:$server_port$uri?url=http://$host:$server_port/api/spec.json$args;
+                }
+                proxy_pass http://swagger-ui:80/;
+            }
+        }
+    }
+    events {
+        worker_connections 1024;
+    }
+
+    EOF
+
+Local disk used for the Carbon DB storage as the default size of the docker
+container is only 10g. Here is an example of how to create a local storage 
+directory and set its permissions so that StorPerf can write to it:
+
+.. code-block:: console
+
+    mkdir -p ./carbon
+    sudo chown 33:33 ./carbon
+
+
+The following command will start all the StorPerf services:
+
+.. code-block:: console
+    
+    TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+You can now view the StorPerf SwaggerUI at:
+
+``http://127.0.0.1:5000/swagger``
 
 
 Docker Exec
 ~~~~~~~~~~~
 
-Instead of exposing port 5022 externally, you can use the exec method in docker.  This
-provides a slightly more secure method of running StorPerf container without having to
-expose port 22.
-
-If needed, the container can be entered with docker exec.  This is not normally required.
+If needed, the container can be entered with docker exec.  This is not normally
+required.
 
 .. code-block:: console
 
     docker exec -it storperf bash
-
-Container with SSH
-~~~~~~~~~~~~~~~~~~
-
-Running the StorPerf Container with all ports open and a local disk for the result
-storage.  This is not recommended as the SSH port is open.
-
-.. code-block:: console
-
-    docker run -t --env-file admin-rc -p 5022:22 -p 5000:5000 -p 8000:8000 -v ~/carbon:/opt/graphite/storage/whisper --name storperf opnfv/storperf
-
-This will then permit ssh to localhost port 5022 for CLI access.
-
