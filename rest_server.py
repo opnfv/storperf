@@ -31,6 +31,7 @@ storperf = StorPerfMaster()
 class ConfigurationRequestModel:
     resource_fields = {
         'agent_count': fields.Integer,
+        'agent_flavor': fields.String,
         'agent_image': fields.String,
         'public_network': fields.String,
         'volume_size': fields.Integer
@@ -72,7 +73,7 @@ class Configure(Resource):
 
     @swagger.operation(
         notes='''Set the current agent configuration and create a stack in
-        the controller.  Returns once the stack request is submitted.''',
+        the controller.  Returns once the stack create is completed.''',
         parameters=[
             {
                 "name": "configuration",
