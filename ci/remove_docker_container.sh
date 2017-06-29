@@ -17,20 +17,14 @@ export TAG=${DOCKER_TAG:-latest}
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
 
-if [ ! -d ${ci}/job/carbon ]
-then
-    mkdir ${ci}/job/carbon
-    sudo chown 33:33 ${ci}/job/carbon
-fi
+docker-compose down
 
-docker-compose -f ../docker-compose/docker-compose.yaml up -d
-
-echo "Waiting for StorPerf to become active"
-curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
-while [ `grep 'agent_count' test.html | wc -l` == "0" ]
+for container_name in storperf swagger-ui http-front-end
 do
-    sleep 1
-    curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
+    container=`docker ps -a -q -f name=$container_name`
+    if [ ! -z $container ]
+    then
+        echo "Stopping any existing $container_name container"
+        docker rm -fv $container
+    fi
 done
-
-rm -f test.html

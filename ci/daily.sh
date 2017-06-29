@@ -27,8 +27,6 @@ pip install osc_lib==1.3.0
 pip install python-openstackclient==3.7.0
 pip install python-heatclient==1.7.0
 
-sudo find $WORKSPACE/ -name '*.db' -exec rm -fv {} \;
-
 $WORKSPACE/ci/generate-admin-rc.sh
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> $WORKSPACE/ci/job/admin.rc
 $WORKSPACE/ci/generate-environment.sh
@@ -42,12 +40,12 @@ done < $WORKSPACE/ci/job/admin.rc
 
 export AGENT_COUNT=${AGENT_COUNT:-$CINDER_NODES}
 export BLOCK_SIZES=${BLOCK_SIZES:-1024,16384}
+export STEADY_STATE_SAMPLES=${STEADY_STATE_SAMPLES:-10}
 export DEADLINE=${DEADLINE:-`expr $STEADY_STATE_SAMPLES \* 3`}
 export DISK_TYPE=${DISK_TYPE:-unspecified}
 export QUEUE_DEPTHS=${QUEUE_DEPTHS:-1,4}
 export POD_NAME=${NODE_NAME:-`hostname`}
 export SCENARIO_NAME=${DEPLOY_SCENARIO:-none}
-export STEADY_STATE_SAMPLES=${STEADY_STATE_SAMPLES:-10}
 export TEST_CASE=${TEST_CASE:-snia_steady_state}
 export VERSION=`echo ${BUILD_TAG#*daily-} | cut -d- -f1`
 export VOLUME_SIZE=${VOLUME_SIZE:-2}
@@ -58,12 +56,12 @@ echo Environment
 env | sort
 echo ==========================================================================
 
+$WORKSPACE/ci/remove_docker_container.sh
 $WORKSPACE/ci/delete_stack.sh
 $WORKSPACE/ci/create_glance_image.sh
 $WORKSPACE/ci/create_storperf_flavor.sh
 $WORKSPACE/ci/launch_docker_container.sh
 $WORKSPACE/ci/create_stack.sh $AGENT_COUNT $VOLUME_SIZE "Ubuntu 16.04 x86_64" $NETWORK
-
 
 export WORKLOAD=_warm_up,$WORKLOADS
 export BLOCK_SIZE=$BLOCK_SIZES
@@ -99,7 +97,8 @@ curl -s -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api
 curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=metadata" \
     -o $WORKSPACE/ci/job/report.json
 
-docker rm -f storperf
+$WORKSPACE/ci/remove_docker_container.sh
+
 sudo rm -rf $WORKSPACE/ci/job/carbon
 
 echo ==========================================================================

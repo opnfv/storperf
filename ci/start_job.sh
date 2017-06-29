@@ -32,3 +32,5 @@ cat body.json 1>&2
 curl -s -X POST --header 'Content-Type: application/json' \
     --header 'Accept: application/json' \
     -d @body.json http://127.0.0.1:5000/api/v1.0/jobs
+
+rm body.json
