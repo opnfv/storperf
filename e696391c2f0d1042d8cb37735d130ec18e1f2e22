@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_f11feb07",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 6769
+      },
+      "writtenOn": "2017-06-30T12:50:59Z",
+      "side": 1,
+      "message": "I recommend just providing the command to create the flavor. If they use a larger flavor that is fine.\n\nnova flavor-create ubuntu-flavor auto 8192 4 1",
+      "revId": "e696391c2f0d1042d8cb37735d130ec18e1f2e22",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_111de70f",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 6769
+      },
+      "writtenOn": "2017-06-30T12:50:59Z",
+      "side": 1,
+      "message": "This is good but also at some time i\u0027d like to see us transition to the saying download the Openstack RC file from horizon under project-\u003eAccess \u0026 Security-\u003e API Access-\u003eDownload Openstack RC File (v2 or v3).  Unfortunately, I don\u0027t know how to download it from CLI.  \n\nIf we have more to add then we can say add the following to the downloaded file.",
+      "revId": "e696391c2f0d1042d8cb37735d130ec18e1f2e22",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
