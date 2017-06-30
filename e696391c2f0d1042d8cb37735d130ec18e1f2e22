@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "1aa4ed85_51111fab",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-30T19:05:31Z",
+      "side": 1,
+      "message": "Here is the command to create the flavor.",
+      "revId": "e696391c2f0d1042d8cb37735d130ec18e1f2e22",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aa4ed85_111de70f",
         "filename": "docs/testing/user/installation.rst",
         "patchSetId": 6
@@ -30,6 +47,24 @@
       "writtenOn": "2017-06-30T12:50:59Z",
       "side": 1,
       "message": "This is good but also at some time i\u0027d like to see us transition to the saying download the Openstack RC file from horizon under project-\u003eAccess \u0026 Security-\u003e API Access-\u003eDownload Openstack RC File (v2 or v3).  Unfortunately, I don\u0027t know how to download it from CLI.  \n\nIf we have more to add then we can say add the following to the downloaded file.",
+      "revId": "e696391c2f0d1042d8cb37735d130ec18e1f2e22",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_f125ab0a",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 6
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-06-30T19:05:31Z",
+      "side": 1,
+      "message": "The problem with downloading the RC file from Horizon is that you need the user name and password, along with the project.  At this point, you almost have everything needed to create the file.  It\u0027s a bit of a chicken and egg problem.\n\nAlso, the RC file that is downloaded is actually a script that prompts you to enter your password.  It doesn\u0027t keep a copy of it.\n\nOverall good food for thought.",
+      "parentUuid": "1aa4ed85_111de70f",
       "revId": "e696391c2f0d1042d8cb37735d130ec18e1f2e22",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
