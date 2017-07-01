@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_5526ea69",
+        "filename": "docker-compose/docker-compose.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-07-01T17:27:36Z",
+      "side": 1,
+      "message": "https://gerrit.opnfv.org/gerrit/#/c/36275/\nI have put the docker-compose file in docker/ \nIf we are putting the changes in a new docker-compose directory, we can discard above commit.",
+      "revId": "2c95b01efa53c7e7d4ea7d73fde0da6099938e50",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
