@@ -23,7 +23,8 @@ then
     sudo chown 33:33 ${ci}/job/carbon
 fi
 
-docker-compose -f ../docker-compose/docker-compose.yaml up -d
+docker-compose pull
+docker-compose up -d
 
 echo "Waiting for StorPerf to become active"
 curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1

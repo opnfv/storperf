@@ -338,4 +338,4 @@ if __name__ == "__main__":
     setup_logging()
     logging.getLogger("storperf").setLevel(logging.DEBUG)
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
