@@ -188,8 +188,8 @@ class Job(Resource):
     def get(self):
 
         metrics_type = "metrics"
-        if request.args.get('metrics_type'):
-            metrics_type = request.args.get('metrics_type')
+        if request.args.get('type'):
+            metrics_type = request.args.get('type')
 
         workload_id = request.args.get('id')
 
@@ -338,4 +338,4 @@ if __name__ == "__main__":
     setup_logging()
     logging.getLogger("storperf").setLevel(logging.DEBUG)
 
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=True, threaded=True)
