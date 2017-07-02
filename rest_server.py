@@ -14,7 +14,7 @@ from storperf.storperf_master import StorPerfMaster
 import sys
 
 from flask import abort, Flask, request, jsonify, send_from_directory
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
 
@@ -104,6 +104,8 @@ class Configure(Resource):
                 storperf.volume_size = request.json['volume_size']
 
             storperf.create_stack()
+            if storperf.stack_id is None:
+                abort(400, "Stack creation failed")
 
             return jsonify({'agent_count': storperf.agent_count,
                             'agent_image': storperf.agent_image,
