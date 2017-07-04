@@ -22,6 +22,30 @@
       "revId": "a229cba7fb4d4f33e81effc5c561c1bf5a4efeb4",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_a4092e97",
+        "filename": "rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 108,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-04T16:38:13Z",
+      "side": 1,
+      "message": "To quote:\n\nThe server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing)\n\nI reviewed all the other HTTP return codes and this really does seem to be the best.\n\nThe next step would be to query the Heat client API to see if there is a reason we can give to go along with the 400.",
+      "parentUuid": "1aa4ed85_be637bb0",
+      "range": {
+        "startLine": 108,
+        "startChar": 22,
+        "endLine": 108,
+        "endChar": 25
+      },
+      "revId": "a229cba7fb4d4f33e81effc5c561c1bf5a4efeb4",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
