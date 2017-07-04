@@ -19,7 +19,6 @@ from flask_restful_swagger import swagger
 from flask_cors import CORS
 from storperf.storperf_master import StorPerfMaster
 
-
 app = Flask(__name__, static_url_path="")
 CORS(app)
 api = swagger.docs(Api(app), apiVersion='1.0')
@@ -105,6 +104,8 @@ class Configure(Resource):
                 storperf.volume_size = request.json['volume_size']
 
             storperf.create_stack()
+            if storperf.stack_id is None:
+                abort(400, "Stack creation failed")
 
             return jsonify({'agent_count': storperf.agent_count,
                             'agent_flavor': storperf.agent_flavor,
