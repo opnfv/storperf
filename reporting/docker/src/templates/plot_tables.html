@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Chart | Storperf</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/jquery-2.1.3.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.bootpag.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/plotly-latest.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+    <style>
+        .table td {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="content"><strong>Loading...</strong>
+        </div>
+        <center>
+            <div id="page-selection"></div>
+        </center>
+    </div>
+    <script>
+        data = {{ data | tojson | safe }};
+        page = [];
+        results = data.results;
+        if (results == undefined) {
+            details = data.details;
+        } else {
+            details = results[0].details;
+        }
+        metrics = details.metrics;
+        report_data = details.report_data;
+        for (var key in report_data) {
+            for (var test in report_data[key]) {
+                var text = "";
+                var series = [];
+                var average;
+                for (var status in report_data[key][test]) {
+                    text = '<div class="row text-center lead">';
+                    text += "<h3>" + key + "</h3>" + "<br>";
+                    text += "<strong><u>" + test + "</strong>" + "<br>";
+                    text += "<strong>" + status + "</strong>" + "<br>";
+                    text += "<table class=' table table-striped'>";
+                    for (var values in report_data[key][test][status]) {
+                        text += "<tr>";
+                        value_data = report_data[key][test][status][values];
+                        if (values == "average") {
+                            average = value_data;
+                            text += "<td width='50%'>" + values + "</td><td width='50%'>" + value_data + "</td>";
+                        } else if (values == "series") {
+                            text += "<td width='50%'>" + values + "</td><td width='50%'> ";
+                            var len = value_data.length;
+                            series = value_data;
+                            for (var i = 0; i < len; i++) {
+                                text += "[" + value_data[i] + "]";
+                                if (i != len - 1)
+                                    text += ",";
+                            }
+                            text += "</td>";
+                        } else {
+                            text += "<td width='50%'>" + values + "</td><td width='50%'>" + value_data + "</td>";
+                        }
+                        text += "</tr>";
+                    }
+                    page.push([text, series, average]);
+                }
+            }
+        }
+
+        function content_display(num) {
+            var text = page[num - 1][0];
+            var array = page[num - 1][1];
+            var average = page[num - 1][2];
+            var final_array = [];
+            var graph_label = []
+            for (var i = 0; i < array.length; i++) {
+                graph_label = graph_label.concat(i + 1);
+            }
+            for (var i = 0; i < array.length; i++) {
+                final_array = final_array.concat(array[i][1]);
+            }
+            var index = num - 1;
+            var graphID = "graph" + index;
+            text += "<tr><td>Graph</td><td><div id='" + graphID + "' style='display: block; height:400px; width 400px;'></div></td></tr>";
+            text += "</table></div>";
+            $("#content").html(text);
+            var plot = {
+                x: graph_label,
+                y: final_array,
+                type: "lines",
+                name: "Plot"
+            };
+            var avg_plus = {
+                x: graph_label,
+                y: Array(array.length).fill(1.2 * average),
+                type: "lines",
+                name: "avg_plus",
+                line: {
+                    dash: "dashdot",
+                    width: 2
+                }
+            };
+            var avg_minus = {
+                x: graph_label,
+                y: Array(array.length).fill(0.8 * average),
+                type: "lines",
+                name: "avg_minus",
+                line: {
+                    dash: "dashdot",
+                    width: 2
+                }
+            };
+            Plotly.newPlot(graphID, [plot, avg_plus, avg_minus]);
+        }
+        content_display(1);
+        $('#page-selection').bootpag({
+            total: page.length
+        }).on("page", function(event, num) {
+            content_display(num);
+        });
+    </script>
+</body>
+
+</html>
