@@ -161,7 +161,7 @@ class Job(Resource):
                 "description": "The UUID of the workload in the format "
                 "NNNNNNNN-NNNN-NNNN-NNNN-NNNNNNNNNNNN",
                 "required": True,
-                "metrics_type": "string",
+                "type": "string",
                 "allowMultiple": False,
                 "paramType": "query"
             },
