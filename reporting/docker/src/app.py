@@ -5,14 +5,14 @@ app = Flask(__name__)
 app.secret_key = 'storperf_graphing_module'
 #global url
 
-@app.route('/success/')
+@app.route('/reporting/success/')
 def success():
     header = {'x-requested-with': 'XMLHttpRequest'}
     data = urllib.urlopen(session["url"]).read()
     data = json.loads(data)
     return render_template('plot_tables.html', data = data)
 
-@app.route('/url',methods = ['POST', 'GET'])
+@app.route('/reporting/url',methods = ['POST', 'GET'])
 def url():
     if request.method == 'POST':
 #      global url 
@@ -20,7 +20,7 @@ def url():
       session["url"] = url
       return redirect(url_for('success'))
 
-@app.route('/')
+@app.route('/reporting/')
 def index():
     return render_template('index.html')
 
