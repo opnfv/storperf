@@ -21,14 +21,13 @@ LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 
 ARG BRANCH=master
 
-ENV repos_dir /home/opnfv/repos
-WORKDIR /home/opnfv
-
 RUN apk add --update python py-pip
 
-COPY . /app
-WORKDIR /app
-RUN pip install -r requirements.txt
+COPY storperf-reporting /home/opnfv/storperf-reporting
+WORKDIR /home/opnfv/storperf-reporting
+
+RUN pip install -r /home/opnfv/storperf-reporting/requirements.txt
 ENTRYPOINT ["python"]
-CMD ["./src/app.py"]
+CMD ["/home/opnfv/storperf-reporting/src/app.py"]
+
 EXPOSE 5000

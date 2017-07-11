@@ -45,19 +45,32 @@ pip install requests==2.13.0
 pip install scp==0.10.2
 pip install six==1.10.0
 
-python ci/setup.py develop
+final_rc=0
 
-flake8 storperf
-
+flake8 docker/storperf-*
 flake8rc=$?
 
-nosetests --with-xunit \
-         --with-coverage \
-         --cover-package=storperf\
-         --cover-xml \
-         --cover-html \
-         tests
-rc=$?
+for testdir in docker/storperf-*
+do
+    if [ -d $testdir/tests ]
+    then
+        cwd=$(pwd)
+        cd $testdir
+
+        nosetests --with-xunit \
+                 --with-coverage \
+                 --cover-package=storperf\
+                 --cover-xml \
+                 --cover-html \
+                 tests
+        rc=$?
+        if [ $rc -ne 0 ]
+        then
+            final_rc=$rc
+        fi
+        cd $cwd
+    fi
+done
 
 deactivate
 
@@ -67,4 +80,4 @@ then
     exit $flake8rc
 fi
 
-exit $rc
+exit $final_rc
