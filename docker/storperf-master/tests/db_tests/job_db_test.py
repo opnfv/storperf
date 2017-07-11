@@ -20,13 +20,18 @@ from storperf.workloads.rr import rr
 class JobDBTest(unittest.TestCase):
 
     def setUp(self):
-
         JobDB.db_name = __name__ + '.db'
         try:
             os.remove(JobDB.db_name)
         except OSError:
             pass
         self.job = JobDB()
+
+    def tearDown(self):
+        try:
+            os.remove(JobDB.db_name)
+        except OSError:
+            pass
 
     @mock.patch("uuid.uuid4")
     def test_create_job(self, mock_uuid):
