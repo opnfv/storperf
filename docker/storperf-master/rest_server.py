@@ -167,7 +167,7 @@ class Job(Resource):
             },
             {
                 "name": "metrics_type",
-                "description": "The metrics_type of metrics to report.  May be "
+                "description": "The metrics_type of metrics to report. May be "
                 "metrics (default), or metadata",
                 "required": False,
                 "metrics_type": "string",
@@ -309,7 +309,7 @@ class Quota(Resource):
         return jsonify({'quota': quota})
 
 
-def setup_logging(default_path='storperf/logging.json',
+def setup_logging(default_path='logging.json',
                   default_level=logging.INFO, env_key='LOG_CFG'):
     """Setup logging configuration
     """

@@ -10,15 +10,23 @@
 from storperf.db.configuration_db import ConfigurationDB
 import os
 import unittest
-import sqlite3
 
 
 class ConfigurationDBTest(unittest.TestCase):
 
     def setUp(self):
-        ConfigurationDB.db_name = "file::memory:?cache=shared"
-        db = sqlite3.connect(ConfigurationDB.db_name)
+        ConfigurationDB.db_name = __name__ + '.db'
+        try:
+            os.remove(ConfigurationDB.db_name)
+        except OSError:
+            pass
         self.config_db = ConfigurationDB()
+
+    def tearDown(self):
+        try:
+            os.remove(ConfigurationDB.db_name)
+        except OSError:
+            pass
 
     def test_create_key(self):
         expected = "ABCDE-12345"
