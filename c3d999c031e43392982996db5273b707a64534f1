@@ -16,6 +16,24 @@
       "revId": "c3d999c031e43392982996db5273b707a64534f1",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0164a220",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-07-12T20:25:13Z",
+      "side": 1,
+      "message": "I was facing the same question. So I decided to put it up for review and then discuss the source. There can be two ways:\n\n1) Put the docker-compose.yml in the repo and make the tool transform it (which is the assumed present case).\n\n2) Use the tool to download the file and then apply transforms. The question is where will the file be present remotely. \n\nWhat is most preferred? Or is there another better way to handle this?",
+      "parentUuid": "1aa4ed85_c19f6a02",
+      "revId": "c3d999c031e43392982996db5273b707a64534f1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
