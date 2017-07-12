@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_c19f6a02",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-12T20:14:49Z",
+      "side": 1,
+      "message": "Question - where does docker-compose.yaml come from?  Does the user need to wget it as well as this file?\n\nIf so, what exactly does this add?",
+      "revId": "c3d999c031e43392982996db5273b707a64534f1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
