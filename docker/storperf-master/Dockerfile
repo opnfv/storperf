@@ -72,7 +72,7 @@ RUN cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
 RUN git config --global http.sslVerify false
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
-#RUN cd ${repos_dir}/fio && make install
+RUN cd ${repos_dir}/fio && make install
 
 
 # Install StorPerf
