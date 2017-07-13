@@ -34,6 +34,24 @@
       "revId": "c3d999c031e43392982996db5273b707a64534f1",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_1c31655a",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-13T01:37:05Z",
+      "side": 1,
+      "message": "If we\u0027re going to have the content of the file generated, maybe have it as a \u003c\u003c here document in the script?",
+      "parentUuid": "1aa4ed85_0164a220",
+      "revId": "c3d999c031e43392982996db5273b707a64534f1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
