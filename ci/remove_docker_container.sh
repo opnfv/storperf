@@ -11,15 +11,15 @@
 cd `dirname $0`
 ci=`pwd`
 
-cd ${ci}/../docker-compose
+cd ${ci}/../docker
 
 export TAG=${DOCKER_TAG:-latest}
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
 
-docker-compose down
+docker-compose -f local-docker-compose.yaml down
 
-for container_name in storperf swagger-ui http-front-end
+for container_name in storperf storperf-master storperf-swaggerui storperf-httpfrontend storperf-reporting
 do
     container=`docker ps -a -q -f name=$container_name`
     if [ ! -z $container ]

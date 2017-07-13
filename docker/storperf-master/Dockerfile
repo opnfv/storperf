@@ -19,8 +19,6 @@ FROM ubuntu:14.04
 MAINTAINER Jose Lausuch <jose.lausuch@ericsson.com>
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
-ARG BRANCH=master
-
 ENV repos_dir /home/opnfv/repos
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -69,14 +67,9 @@ RUN chmod 0664 /var/lib/graphite/storage/graphite.db
 RUN cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
 
 
-# Git configuration
-
-RUN git config --global http.sslVerify false
-RUN git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng ${repos_dir}/releng
-
-
 # Third party git fetches
 
+RUN git config --global http.sslVerify false
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
 RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
 #RUN cd ${repos_dir}/fio && make install
@@ -84,11 +77,11 @@ RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
 
 # Install StorPerf
 
-COPY storperf-master ${repos_dir}/storperf
+COPY . ${repos_dir}/storperf
 RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa
 RUN pip install --upgrade setuptools==33.1.1
 RUN pip install -r ${repos_dir}/storperf/requirements.pip
-COPY storperf-master/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Graphite
 EXPOSE 8000
