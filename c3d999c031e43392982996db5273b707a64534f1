@@ -52,6 +52,24 @@
       "revId": "c3d999c031e43392982996db5273b707a64534f1",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_c6121bb4",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-07-13T13:15:33Z",
+      "side": 1,
+      "message": "Yes. That is a good idea to generate the file entirely from the script. I will update in next revision.",
+      "parentUuid": "1aa4ed85_1c31655a",
+      "revId": "c3d999c031e43392982996db5273b707a64534f1",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
