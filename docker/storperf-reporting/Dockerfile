@@ -19,15 +19,12 @@ FROM alpine:3.1
 MAINTAINER Mark Beierl <mark.beierl@dell.com>
 LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 
-ARG BRANCH=master
-
 RUN apk add --update python py-pip
 
-COPY storperf-reporting /home/opnfv/storperf-reporting
+COPY . /home/opnfv/storperf-reporting
 WORKDIR /home/opnfv/storperf-reporting
-
 RUN pip install -r /home/opnfv/storperf-reporting/requirements.txt
-ENTRYPOINT ["python"]
-CMD ["/home/opnfv/storperf-reporting/src/app.py"]
+
+CMD ["python", "app.py"]
 
 EXPOSE 5000

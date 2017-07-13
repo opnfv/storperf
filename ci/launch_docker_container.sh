@@ -11,9 +11,8 @@
 cd `dirname $0`
 ci=`pwd`
 
-cd ${ci}/../docker-compose
+cd ${ci}/../docker
 
-export TAG=${DOCKER_TAG:-latest}
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
 
@@ -23,15 +22,11 @@ then
     sudo chown 33:33 ${ci}/job/carbon
 fi
 
-docker-compose pull
-docker-compose up -d
+docker-compose -f local-docker-compose.yaml up -d
 
 echo "Waiting for StorPerf to become active"
-curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
-while [ `grep 'agent_count' test.html | wc -l` == "0" ]
+
+while [ $(curl -s -o /dev/null -I -w "%{http_code}" -X GET http://127.0.0.1:5000/api/v1.0/configurations) != "200" ]
 do
     sleep 1
-    curl -X GET 'http://127.0.0.1:5000/api/v1.0/configurations' > test.html 2>&1
 done
-
-rm -f test.html

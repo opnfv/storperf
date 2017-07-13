@@ -9,20 +9,24 @@
 
 version: '2'
 services:
+
     storperf-master:
         container_name: "storperf-master"
-        image: "opnfv/storperf-master:${TAG}"
+        build: storperf-master
         ports:
             - "8000:8000"
         env_file: ${ENV_FILE}
         volumes:
             - ${CARBON_DIR}:/opt/graphite/storage/whisper
+            - ./storperf-master/:/home/opnfv/repos/storperf
 
     storperf-reporting:
         container_name: "storperf-reporting"
-        image: "opnfv/storperf-reporting:${TAG}"
+        build: storperf-reporting
         ports:
             - "5080:5000"
+        volumes:
+            - ./storperf-reporting/:/home/opnfv/storperf-reporting
 
     storperf-swaggerui:
         container_name: "storperf-swaggerui"
@@ -30,7 +34,7 @@ services:
 
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"
-        image: "opnfv/storperf-httpfrontend:${TAG}"
+        build: storperf-httpfrontend
         ports:
             - "5000:5000"
         links:
