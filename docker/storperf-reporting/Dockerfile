@@ -22,7 +22,8 @@ LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 RUN apk add --update python py-pip
 
 COPY . /home/opnfv/storperf-reporting
-WORKDIR /home/opnfv/storperf-reporting
+WORKDIR /home/opnfv/storperf-reporting/src
+
 RUN pip install -r /home/opnfv/storperf-reporting/requirements.txt
 
 CMD ["python", "app.py"]
