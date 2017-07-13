@@ -105,7 +105,7 @@ class Configure(Resource):
 
             storperf.create_stack()
             if storperf.stack_id is None:
-                abort(400, "Stack creation failed")
+                abort(400, storperf.status_reason)
 
             return jsonify({'agent_count': storperf.agent_count,
                             'agent_flavor': storperf.agent_flavor,

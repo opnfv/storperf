@@ -273,6 +273,7 @@ class StorPerfMaster(object):
                 self.stack_id = None
                 return True
             if (status == u'CREATE_FAILED'):
+                self.status_reason = getattr(stack, 'stack_status_reason')
                 sleep(5)
                 self._heat_client.stacks.delete(stack_id=self.stack_id)
             sleep(2)
