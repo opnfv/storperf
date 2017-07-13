@@ -100,6 +100,7 @@ curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=metadata" \
 $WORKSPACE/ci/remove_docker_container.sh
 
 sudo rm -rf $WORKSPACE/ci/job/carbon
+sudo find $WORKSPACE/docker --name '*.db' -exec rm -fv {} \;
 
 echo ==========================================================================
 echo Final report

@@ -22,6 +22,7 @@ then
     sudo chown 33:33 ${ci}/job/carbon
 fi
 
+docker-compose -f local-docker-compose.yaml build
 docker-compose -f local-docker-compose.yaml up -d
 
 echo "Waiting for StorPerf to become active"
