@@ -136,10 +136,10 @@ remaining workloads will continue to execute in order.
 .. code-block:: json
 
    {
-      "block_sizes": "2048,16384,
+      "block_sizes": "2048,16384",
       "deadline": 20,
       "queue_depths": "2,4",
-      "workload": "wr,rr,rw",
+      "workload": "wr,rr,rw"
    }
 
 Metadata
