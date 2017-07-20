@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_7b55ec1b",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-20T19:51:45Z",
+      "side": 1,
+      "message": "This might be too aggressive.  It looks like it is removing all pending entries.  Can you write a unit test to demonstrate what this does?\n\nI think the real issue is in test_executor.py lines 211-219 where I create all the \"pending\" entries.  It does not use the same logic as lines 221-235 where _warm_up gets explicitly filtered out and set to one execution type only.",
+      "revId": "c41bc1d37cb4529259f528af47f45a4214b74c6a",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
