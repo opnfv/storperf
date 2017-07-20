@@ -12,6 +12,7 @@ import logging.config
 import os
 import sys
 
+from copy import deepcopy
 from flask import abort, Flask, request, jsonify
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
@@ -201,7 +202,12 @@ class Job(Resource):
             return jsonify(storperf.fetch_metadata(workload_id))
 
         if metrics_type == "status":
-            return jsonify(storperf.fetch_job_status(workload_id))
+            status = storperf.fetch_job_status(workload_id)
+            temp_status = deepcopy(status)
+            for key, values in status["Workloads"].iteritems():
+                if values == "Pending":
+                    temp_status["Workloads"].pop(key)
+            return jsonify(temp_status)
 
     @swagger.operation(
         parameters=[
