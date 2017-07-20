@@ -73,7 +73,7 @@ DB, add the following:
 
 
 Planning
-===========================
+========
 
 StorPerf is delivered as a series of Docker containers managed by
 docker-compose.  There are two possible methods for installation:
@@ -89,6 +89,17 @@ Requirements:
 * Host has access to the OpenStack Controller API
 * Host must have internet connectivity for downloading docker image
 * Enough OpenStack floating IPs must be available to match your agent count
+* A local directory for holding the Carbon DB Whisper files
+
+Local disk used for the Carbon DB storage as the default size of the docker
+container is only 10g. Here is an example of how to create a local storage
+directory and set its permissions so that StorPerf can write to it:
+
+.. code-block:: console
+
+    mkdir -p ./carbon
+    sudo chown 33:33 ./carbon
+
 
 .. _sudo: https://docs.docker.com/engine/reference/run/#general-form
 
@@ -108,98 +119,62 @@ Running StorPerf Container
 **As of Euphrates (development) release (June 2017), StorPerf has
 changed to use docker-compose in order to start its services.**
 
-Two files are needed in order
-to start StorPerf:
+Docker compose requires a local file to be created in order to define the
+services that make up the full StorPerf application.  This file can be:
 
-#. docker-compose.yaml
-#. nginx.conf
+* Manually created
+* Downloaded from the StorPerf git repo, or
+* Create via a helper script from the StorPerf git repo
 
-Copy and paste the following into a terminal to create the docker-compose.yaml
+Manual creation involves taking the sample in the StorPerf git repo and typing
+in the contents by hand on your target system.
 
-.. code-block:: console
-
-    cat << 'EOF' > docker-compose.yaml
-    version: '2'
-    services:
-        storperf:
-            container_name: "storperf"
-            image: "opnfv/storperf:${TAG}"
-            ports:
-                - "8000:8000"
-            env_file: ${ENV_FILE}
-            volumes:
-                - ${CARBON_DIR}:/opt/graphite/storage/whisper
-        swagger-ui:
-            container_name: "swagger-ui"
-            image: "schickling/swagger-ui"
-        http-front-end:
-            container_name: "http-front-end"
-            image: nginx:stable-alpine
-            ports:
-                - "5000:5000"
-            volumes:
-                - ./nginx.conf:/etc/nginx/nginx.conf:ro
-            links:
-                - storperf
-                - swagger-ui
-    EOF
-
-Copy and paste the following into a terminal to create the nginx.conf
+Downloading From Git Repo
+=========================
 
 .. code-block:: console
 
-    cat << 'EOF' > nginx.conf
-    http {
-        include            mime.types;
-        default_type       application/octet-stream;
-        sendfile           on;
-        keepalive_timeout  65;
-        proxy_send_timeout 600;
-        proxy_read_timeout 600;
-        send_timeout       600;
-        map $args $containsurl {
-            default 0;
-            "~(^|&)url=[^&]+($|&)" 1;
-        }
-        server {
-            listen 5000;
-            location /api/ {
-                proxy_pass http://storperf:5000;
-                proxy_set_header Host $host:$proxy_port;
-            }
-            location /swagger/ {
-                if ($containsurl = 0) {
-                    return 302 $scheme://$host:$server_port$uri?url=http://$host:$server_port/api/spec.json$args;
-                }
-                proxy_pass http://swagger-ui:80/;
-            }
-        }
-    }
-    events {
-        worker_connections 1024;
-    }
-    EOF
+     wget https://raw.githubusercontent.com/opnfv/storperf/master/docker-compose/docker-compose.yaml
+     sha256sum docker-compose.yaml
 
-Local disk used for the Carbon DB storage as the default size of the docker
-container is only 10g. Here is an example of how to create a local storage
-directory and set its permissions so that StorPerf can write to it:
+which should result in:
 
 .. code-block:: console
 
-    mkdir -p ./carbon
-    sudo chown 33:33 ./carbon
+     968c0c2d7c0e24f6777c33b37d9b4fd885575155069fb760405ec8214b2eb672  docker-compose.yaml
 
+To run, you must specify two environment variables:
+
+* ENV_FILE, which points to your OpenStack admin.rc as noted above
+* CARBON_DIR, which points to a directory that will be mounted to store the raw metrics.
 
 The following command will start all the StorPerf services:
 
 .. code-block:: console
 
-    TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
-    TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
 
-You can now view the StorPerf SwaggerUI at:
+StorPerf is now available at http://docker-host:5000/
 
-``http://127.0.0.1:5000/swagger``
+
+Downloading Helper Tool
+=======================
+
+A tool to help you get started with the docker-compose.yaml can be downloaded
+from:
+
+.. code-block:: console
+
+     wget https://raw.githubusercontent.com/opnfv/storperf/master/docker-compose/create-compose.py
+     sha256sum create-compose.py
+
+which should result in:
+
+.. code-block:: console
+
+     00649e02237d27bf0b40d1a66160a68a56c9f5e1ceb78d7858e30715cf4350e3  create-compose.py
+
 
 
 Docker Exec
@@ -210,7 +185,7 @@ required.
 
 .. code-block:: console
 
-    docker exec -it storperf bash
+    docker exec -it storperf-master bash
 
 
 
@@ -225,10 +200,13 @@ pulling the latest master Euphrates container is:
 
 .. code-block:: bash
 
-   docker pull opnfv/storperf:master
+   docker pull opnfv/storperf-master:latest
+   docker pull opnfv/storperf-reporting:latest
+   docker pull opnfv/storperf-httpfrontend:latest
 
 However, by itself, this will no longer provide full functionality.  Full
-instructions are provided in the Introduction document.
+instructions are provided in the Running StorPerf Container section of this
+document.
 
 
 Danube
@@ -238,7 +216,7 @@ The tag for the latest stable Danube is be:
 
 .. code-block:: bash
 
-   docker pull opnfv/storperf:danube.2.0
+   docker pull opnfv/storperf:danube.3.0
 
 Colorado
 ~~~~~~~~
