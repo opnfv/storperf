@@ -152,8 +152,8 @@ The following command will start all the StorPerf services:
 
 .. code-block:: console
 
-     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
-     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+     TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+     TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
 
 StorPerf is now available at http://docker-host:5000/
 
