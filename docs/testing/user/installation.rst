@@ -145,15 +145,16 @@ which should result in:
 
 To run, you must specify two environment variables:
 
-* ENV_FILE, which points to your OpenStack admin.rc as noted above
+* ENV_FILE, which points to your OpenStack admin.rc as noted above.
 * CARBON_DIR, which points to a directory that will be mounted to store the raw metrics.
+* TAG, which specified the Docker tag for the build (ie: latest, danube.3.0, etc).
 
 The following command will start all the StorPerf services:
 
 .. code-block:: console
 
-     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
-     ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+     TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+     TAG=latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
 
 StorPerf is now available at http://docker-host:5000/
 
