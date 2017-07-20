@@ -37,6 +37,24 @@
     },
     {
       "key": {
+        "uuid": "1aa4ed85_164e0f70",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-07-20T20:30:54Z",
+      "side": 1,
+      "message": "Right. I tested it on my pc. I wrote the tool to make it compatible with both python2 and python3. So for the input function to be compatible with python2, I imported input from builtins, which is by default not present. A run via python3 should work though.",
+      "parentUuid": "1aa4ed85_36054b11",
+      "revId": "c6f42400f4964e1a0ca30580dbcb58a1130966c9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aa4ed85_761ae36f",
         "filename": "docs/testing/user/installation.rst",
         "patchSetId": 1
