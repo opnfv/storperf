@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_8e13c3b7",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-24T18:55:53Z",
+      "side": 1,
+      "message": "Should this not still be returned as a JSON result?",
+      "revId": "d1d7369cf8da75fcc4dad3a4911f3e21419dc4c8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
