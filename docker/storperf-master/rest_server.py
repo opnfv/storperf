@@ -194,14 +194,17 @@ class Job(Resource):
 
         workload_id = request.args.get('id')
 
-        if metrics_type == "metrics":
-            return jsonify(storperf.fetch_results(workload_id))
+        if workload_id:
+            if metrics_type == "metrics":
+                return jsonify(storperf.fetch_results(workload_id))
 
-        if metrics_type == "metadata":
-            return jsonify(storperf.fetch_metadata(workload_id))
+            if metrics_type == "metadata":
+                return jsonify(storperf.fetch_metadata(workload_id))
 
-        if metrics_type == "status":
-            return jsonify(storperf.fetch_job_status(workload_id))
+            if metrics_type == "status":
+                return jsonify(storperf.fetch_job_status(workload_id))
+        else:
+            return storperf.fetch_all_jobs()
 
     @swagger.operation(
         parameters=[

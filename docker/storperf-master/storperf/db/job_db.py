@@ -233,6 +233,19 @@ class JobDB(object):
             db.commit()
             db.close()
 
+    def fetch_jobs(self):
+        jobs = []
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
+        cursor.execute("select distinct job_id from jobs")
+        while (True):
+            row = cursor.fetchone()
+            if row is None:
+                break
+            jobs.append(row[0])
+        db.close()
+        return jobs
+
     def fetch_workload_params(self, job_id):
         """
         """
