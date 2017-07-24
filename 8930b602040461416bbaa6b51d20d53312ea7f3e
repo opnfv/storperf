@@ -51,6 +51,24 @@
       "revId": "8930b602040461416bbaa6b51d20d53312ea7f3e",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0ef91380",
+        "filename": "docker/storperf-master/storperf/db/job_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-24T18:44:08Z",
+      "side": 1,
+      "message": "Right, because each workload is recorded independently.  Is the syntax \n\n  select distinct job_id from jobs\n\nvalid in SQLite?  I think it is from a quick check on it.",
+      "parentUuid": "1aa4ed85_4eff0b68",
+      "revId": "8930b602040461416bbaa6b51d20d53312ea7f3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
