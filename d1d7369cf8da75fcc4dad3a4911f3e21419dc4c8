@@ -16,6 +16,24 @@
       "revId": "d1d7369cf8da75fcc4dad3a4911f3e21419dc4c8",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_0e27d313",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-07-24T18:59:32Z",
+      "side": 1,
+      "message": "Is it necessary ? Is it because everything else is JSON ? So you had want to maintain the same format for all objects returned ?",
+      "parentUuid": "1aa4ed85_8e13c3b7",
+      "revId": "d1d7369cf8da75fcc4dad3a4911f3e21419dc4c8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
