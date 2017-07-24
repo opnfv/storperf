@@ -233,6 +233,21 @@ class JobDB(object):
             db.commit()
             db.close()
 
+    def fetch_jobs(self):
+        jobs = {}
+        count = 0
+        db = sqlite3.connect(JobDB.db_name)
+        cursor = db.cursor()
+        cursor.execute("select job_id from jobs")
+        while (True):
+            row = cursor.fetchone()
+            if row is None:
+                break
+            jobs[count] = row[0]
+            count += 1
+        db.close()
+        return jobs
+
     def fetch_workload_params(self, job_id):
         """
         """
