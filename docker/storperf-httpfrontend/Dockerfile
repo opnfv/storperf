@@ -17,6 +17,8 @@ FROM nginx:stable-alpine
 MAINTAINER Mark Beierl <mark.beierl@dell.com>
 LABEL version="3.1" description="OPNFV Storperf HTTP Front End Container"
 
+ARG BRANCH=master
+
 COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./html /etc/nginx/html
 
