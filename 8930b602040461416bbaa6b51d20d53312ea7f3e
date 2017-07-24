@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_cec45b42",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-24T18:04:08Z",
+      "side": 1,
+      "message": "Nice!",
+      "revId": "8930b602040461416bbaa6b51d20d53312ea7f3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_eebfd7a8",
+        "filename": "docker/storperf-master/storperf/db/job_db.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-24T18:04:08Z",
+      "side": 1,
+      "message": "I think it would be better to have jobs be an array/list instead of a dict.  Then you can just use jobs.append(row[0]) and the result would be a list of job ids, rather than:\n \n{ \n  \"0\": \"JOB-ID-1\",\n  \"1\": \"JOB-ID-2\"\n}",
+      "revId": "8930b602040461416bbaa6b51d20d53312ea7f3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
