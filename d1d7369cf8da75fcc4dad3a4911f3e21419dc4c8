@@ -34,6 +34,24 @@
       "revId": "d1d7369cf8da75fcc4dad3a4911f3e21419dc4c8",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_ce20dbf9",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 207,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-24T19:03:59Z",
+      "side": 1,
+      "message": "It\u0027s the same ReST API where all the others return JSON.  So, rather than returning plain text, yes, it should be retuned as JSON.  Unless Flask automatically converts it to JSON?",
+      "parentUuid": "1aa4ed85_0e27d313",
+      "revId": "d1d7369cf8da75fcc4dad3a4911f3e21419dc4c8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
