@@ -19,6 +19,8 @@ FROM ubuntu:14.04
 MAINTAINER Jose Lausuch <jose.lausuch@ericsson.com>
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
+ARG BRANCH=master
+
 ENV repos_dir /home/opnfv/repos
 ENV DEBIAN_FRONTEND noninteractive
 

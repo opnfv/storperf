@@ -19,6 +19,8 @@ FROM alpine:3.1
 MAINTAINER Mark Beierl <mark.beierl@dell.com>
 LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 
+ARG BRANCH=master
+
 RUN apk add --update python py-pip
 
 COPY . /home/opnfv/storperf-reporting
