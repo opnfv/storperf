@@ -8,6 +8,7 @@
 ##############################################################################
 
 from flask import Flask, redirect, url_for, request, render_template, session
+from flask import send_from_directory
 import urllib
 import json
 app = Flask(__name__)
@@ -27,6 +28,16 @@ def url():
         url = request.form['url']
         session["url"] = url
         return redirect(url_for('success'))
+
+
+@app.route('/reporting/js/<path:path>')
+def js(path):
+    return send_from_directory('static/js/', path)
+
+
+@app.route('/reporting/css/<path:path>')
+def css(path):
+    return send_from_directory('static/css/', path)
 
 
 @app.route('/reporting/')
