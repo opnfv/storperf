@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_df6c039f",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-25T15:39:05Z",
+      "side": 1,
+      "message": "Jose, don\u0027t know your new email address, so I just changed this to me, although I don\u0027t know that it is actually used anywhere.  Should this be removed or is it still important to have in the image?",
+      "revId": "60c206a582105b4154986f94e6c02a56c0603719",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1aa4ed85_ff677fb5",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-25T15:39:05Z",
+      "side": 1,
+      "message": "This comment is not correct.  It is still going to be FROM alpine:3.5.  Will create a new patch with better comment.",
+      "revId": "60c206a582105b4154986f94e6c02a56c0603719",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
