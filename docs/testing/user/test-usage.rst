@@ -232,6 +232,15 @@ remain to be executed.
 
   curl -X DELETE --header 'Accept: application/json' http://StorPerf:5000/api/v1.0/jobs
 
+List all Jobs
+=============
+A list of all Jobs can also be queried. You just need to issue a GET request without any
+Job ID.
+
+.. code-block:: bash
+
+  curl -X GET --header 'Accept: application/json' http://StorPerf/api/v1.0/jobs
+
 Delete the Environment
 ======================
 After you are done testing, you can have StorPerf delete the Heat stack by
