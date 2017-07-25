@@ -15,48 +15,98 @@
 #    $ docker build -t opnfv/storperf-master:tag .
 #
 
-FROM ubuntu:14.04
-MAINTAINER Jose Lausuch <jose.lausuch@ericsson.com>
+FROM alpine:3.5 as fio-builder
+
+MAINTAINER Mark Beierl <mark.beierl@dell.com>
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
 ARG BRANCH=master
 
 ENV repos_dir /home/opnfv/repos
-ENV DEBIAN_FRONTEND noninteractive
 
-WORKDIR /home/opnfv
+RUN apk --no-cache add --update \
+    python-dev \
+    git \
+    alpine-sdk \
+    linux-headers \
+    libaio \
+    libaio-dev \
+    zlib-dev
 
-# Needed for Graphite installation
-RUN echo 'deb http://us.archive.ubuntu.com/ubuntu/ trusty universe' >> /etc/apt/sources.list
+# Third party git fetches
 
-# Packaged dependencies
-RUN apt-get update && apt-get install -y \
-libaio1 \
-libaio-dev \
-zlib1g-dev \
-supervisor \
-libssl-dev \
-libffi-dev \
-git \
-build-essential \
-python-dev \
-python-pip \
---no-install-recommends
+RUN git config --global http.sslVerify false
+RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
+RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
+RUN cd ${repos_dir}/fio && EXTFLAGS="-static" make install
 
-RUN mkdir -p /root/.ssh
-RUN chmod 700 /root/.ssh
+# StorPerf Master Builder
 
-# Install required packages
+FROM alpine:3.5 as storperf-builder
 
-RUN apt-get -y install python-ldap python-cairo python-django python-twisted python-django-tagging python-simplejson python-memcache python-pysqlite2 python-support python-tz python-pip gunicorn supervisor nginx-light
+RUN apk --no-cache add --update \
+    libffi-dev \
+    libressl-dev \
+    python \
+    py-pip \
+    python-dev \
+    alpine-sdk \
+    linux-headers \
+    bash
+
+# Install StorPerf
+
+COPY requirements.pip /storperf/
+RUN pip install --upgrade setuptools==33.1.1
+RUN pip install -r /storperf/requirements.pip
+
+# Change FROM once we get rid of internal Graphite
+
+FROM alpine:3.5 as storperf-master
+
+RUN apk --no-cache add --update \
+    python \
+    bash
+
+COPY --from=storperf-builder /usr/lib/python2.7/site-packages /usr/lib/python2.7/site-packages
+COPY --from=fio-builder /usr/local/bin/fio /usr/local/bin/fio
+COPY . /storperf
+
+WORKDIR /storperf
+RUN chmod 600 storperf/resources/ssh/storperf_rsa
+
+# ReST API
+
+EXPOSE 5000
+
+#Graphite
+RUN apk --no-cache add --update \
+    python \
+    py-pip \
+    python-dev \
+    alpine-sdk \
+    py-tz \
+    nginx \
+    cairo \
+    supervisor
+
+RUN deluser xfs
+
+RUN pip install \
+    gunicorn==17.5 \
+    Django==1.6.11 \
+    django-tagging==0.3.1 \
+    cairocffi \
+    constants \
+    zope.interface
+
+RUN adduser -S -g www-data -u 33 www-data
+
 RUN pip install whisper==0.9.15
 RUN pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/lib" carbon==0.9.15
 RUN pip install --install-option="--prefix=/var/lib/graphite" --install-option="--install-lib=/var/lib/graphite/webapp" graphite-web==0.9.15
 
-# Add graphite config
-
 ADD graphite/nginx.conf /etc/nginx/nginx.conf
-ADD graphite/initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
 ADD graphite/local_settings.py /var/lib/graphite/webapp/graphite/local_settings.py
 ADD graphite/carbon.conf /var/lib/graphite/conf/carbon.conf
 ADD graphite/storage-schemas.conf /var/lib/graphite/conf/storage-schemas.conf
@@ -66,29 +116,17 @@ RUN touch /var/lib/graphite/storage/graphite.db /var/lib/graphite/storage/index
 RUN chown -R www-data /var/lib/graphite/storage
 RUN chmod 0775 /var/lib/graphite/storage /var/lib/graphite/storage/whisper
 RUN chmod 0664 /var/lib/graphite/storage/graphite.db
+
+RUN cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
+ADD graphite/initial_data.json /var/lib/graphite/webapp/graphite/initial_data.json
 RUN cd /var/lib/graphite/webapp/graphite && python manage.py syncdb --noinput
 
+RUN mkdir -p /var/log/supervisor
 
-# Third party git fetches
-
-RUN git config --global http.sslVerify false
-RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
-RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
-RUN cd ${repos_dir}/fio && make install
-
-
-# Install StorPerf
-
-COPY . ${repos_dir}/storperf
-RUN chmod 600 ${repos_dir}/storperf/storperf/resources/ssh/storperf_rsa
-RUN pip install --upgrade setuptools==33.1.1
-RUN pip install -r ${repos_dir}/storperf/requirements.pip
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Graphite
 EXPOSE 8000
 
-# ReST API
-EXPOSE 5000
+# Entry point
 
 CMD ["/usr/bin/supervisord"]

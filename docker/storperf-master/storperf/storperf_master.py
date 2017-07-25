@@ -381,19 +381,8 @@ class StorPerfMaster(object):
                     timeout=2)
 
         scp = SCPClient(ssh.get_transport())
-        logger.debug("Transferring libaio.so.1 to %s" % slave)
-        scp.put('/lib/x86_64-linux-gnu/libaio.so.1', '~/')
         logger.debug("Transferring fio to %s" % slave)
         scp.put('/usr/local/bin/fio', '~/')
-
-        cmd = 'sudo cp -v libaio.so.1 /lib/x86_64-linux-gnu/libaio.so.1'
-        logger.debug("Executing on %s: %s" % (slave, cmd))
-        (_, stdout, stderr) = ssh.exec_command(cmd)
-
-        for line in stdout.readlines():
-            logger.debug(line.strip())
-        for line in stderr.readlines():
-            logger.error(line.strip())
 
     def _make_parameters(self):
         heat_parameters = {}
