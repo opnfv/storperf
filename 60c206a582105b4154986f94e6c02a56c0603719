@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "1aa4ed85_5f9a5364",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 459
+      },
+      "writtenOn": "2017-07-25T16:45:59Z",
+      "side": 1,
+      "message": "I didn\u0027t know this was possible. Not sure if can apply this in Functest as all the libraries are needed by the tests. I will add Cedric to the thread.",
+      "parentUuid": "1aa4ed85_1f961b4d",
+      "revId": "60c206a582105b4154986f94e6c02a56c0603719",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aa4ed85_ff677fb5",
         "filename": "docker/storperf-master/Dockerfile",
         "patchSetId": 1
