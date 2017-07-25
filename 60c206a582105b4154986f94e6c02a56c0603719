@@ -90,6 +90,24 @@
     },
     {
       "key": {
+        "uuid": "1aa4ed85_1fa4dba4",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-07-25T16:55:38Z",
+      "side": 1,
+      "message": "If the libraries are built as part of the pip install, then just \n\n  COPY --from\u003dname-of-build-step /usr/lib/python2.7/site-packages /usr/lib/python2.7/site-packages\n\nwill bring the python and binaries forward.  Otherwise, you would need to start bringing /usr/lib/whatever forward and that could get very ugly.",
+      "parentUuid": "1aa4ed85_5f9a5364",
+      "revId": "60c206a582105b4154986f94e6c02a56c0603719",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1aa4ed85_ff677fb5",
         "filename": "docker/storperf-master/Dockerfile",
         "patchSetId": 1
