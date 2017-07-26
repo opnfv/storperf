@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1aa4ed85_945e6d75",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-07-26T21:12:28Z",
+      "side": 1,
+      "message": "Typo?",
+      "range": {
+        "startLine": 109,
+        "startChar": 25,
+        "endLine": 109,
+        "endChar": 41
+      },
+      "revId": "68c9978c5085e79592d4d67683eed73040c31d37",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
