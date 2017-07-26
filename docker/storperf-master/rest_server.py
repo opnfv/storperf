@@ -33,7 +33,8 @@ class ConfigurationRequestModel:
         'agent_flavor': fields.String,
         'agent_image': fields.String,
         'public_network': fields.String,
-        'volume_size': fields.Integer
+        'volume_size': fields.Integer,
+        'availability_zone': fields.String
     }
 
 
@@ -46,7 +47,8 @@ class ConfigurationResponseModel:
         'public_network': fields.String,
         'stack_created': fields.Boolean,
         'stack_id': fields.String,
-        'volume_size': fields.Integer
+        'volume_size': fields.Integer,
+        'availability_zone': fields.String
     }
 
 
@@ -68,6 +70,7 @@ class Configure(Resource):
                         'public_network': storperf.public_network,
                         'volume_size': storperf.volume_size,
                         'stack_created': storperf.is_stack_created,
+                        'availability_zone': storperf.availability_zone,
                         'stack_id': storperf.stack_id})
 
     @swagger.operation(
@@ -102,6 +105,8 @@ class Configure(Resource):
                 storperf.public_network = request.json['public_network']
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
+            if ('availability_zone' in request.json):
+                storperf.availabilti_zone = request.json['availability_zone']
 
             storperf.create_stack()
             if storperf.stack_id is None:
@@ -112,6 +117,7 @@ class Configure(Resource):
                             'agent_image': storperf.agent_image,
                             'public_network': storperf.public_network,
                             'volume_size': storperf.volume_size,
+                            'availability_zone': storperf.availability_zone,
                             'stack_id': storperf.stack_id})
 
         except Exception as e:

@@ -39,6 +39,9 @@ parameters:
     type: string
     constraints:
         - custom_constraint: neutron.network
+  agent_zone:
+    type: string
+    default: nova
 resources:
 
   storperf_agent:
@@ -52,6 +55,7 @@ resources:
         - port: { get_resource: storperf_agent_port }
       user_data: { get_resource: storperf_agent_config }
       user_data_format: RAW
+      availability_zone: { get_param: agent_zone}
 
   storperf_agent_config:
     type: "OS::Heat::CloudConfig"
