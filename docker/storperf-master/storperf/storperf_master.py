@@ -168,6 +168,19 @@ class StorPerfMaster(object):
             value)
 
     @property
+    def availability_zone(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'availability_zone')
+
+    @availability_zone.setter
+    def availability_zone(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'availability_zone',
+            value)
+
+    @property
     def volume_quota(self):
         self._attach_to_openstack()
         quotas = self._cinder_client.quotas.get(
