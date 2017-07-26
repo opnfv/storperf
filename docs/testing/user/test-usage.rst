@@ -42,6 +42,7 @@ The following pieces of information are required to prepare the environment:
 - The OpenStack flavor to use when creating the VMs
 - The name of the public network that agents will use
 - The size, in gigabytes, of the Cinder volumes to create
+- The availability zone (optional) in which the VM is to be launched. Defaults to **nova**.
 
 The ReST API is a POST to http://StorPerf:5000/api/v1.0/configurations and
 takes a JSON payload as follows.
@@ -53,7 +54,8 @@ takes a JSON payload as follows.
      "agent_flavor": string
      "agent_image": string,
      "public_network": string,
-     "volume_size": int
+     "volume_size": int,
+     "availability_zone": string
    }
 
 This call will block until the stack is created, at which point it will return
