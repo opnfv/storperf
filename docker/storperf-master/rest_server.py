@@ -166,11 +166,11 @@ class Job(Resource):
                 "paramType": "query"
             },
             {
-                "name": "metrics_type",
-                "description": "The metrics_type of metrics to report. May be "
-                "metrics (default), or metadata",
+                "name": "type",
+                "description": "The type of metrics to report. May be "
+                "metrics (default), metadata, or status",
                 "required": False,
-                "metrics_type": "string",
+                "type": "string",
                 "allowMultiple": False,
                 "paramType": "query"
             }
