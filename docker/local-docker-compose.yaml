@@ -18,7 +18,7 @@ services:
         env_file: ${ENV_FILE}
         volumes:
             - ${CARBON_DIR}:/opt/graphite/storage/whisper
-            - ./storperf-master/:/home/opnfv/repos/storperf
+            - ./storperf-master/:/storperf
 
     storperf-reporting:
         container_name: "storperf-reporting"
