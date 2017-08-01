@@ -40,6 +40,11 @@ def css(path):
     return send_from_directory('static/css/', path)
 
 
+@app.route('/reporting/images/<path:path>')
+def images(path):
+    return send_from_directory('static/images/', path)
+
+
 @app.route('/reporting/')
 def index():
     return render_template('index.html')
