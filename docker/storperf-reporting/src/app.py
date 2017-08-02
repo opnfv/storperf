@@ -8,7 +8,7 @@
 ##############################################################################
 
 from flask import Flask, redirect, url_for, request, render_template, session
-from flask import send_from_directory
+from flask import send_from_directory, flash
 import urllib
 import json
 app = Flask(__name__)
@@ -17,9 +17,12 @@ app.secret_key = 'storperf_graphing_module'
 
 @app.route('/reporting/success/')
 def success():
-    data = urllib.urlopen(session["url"]).read()
-    data = json.loads(data)
-    return render_template('plot_tables.html', data=data)
+    try:
+        data = urllib.urlopen(session["url"]).read()
+        data = json.loads(data)
+        return render_template('plot_tables.html', data=data)
+    except:
+        return redirect(url_for('file_not_found'))
 
 
 @app.route('/reporting/url', methods=['POST', 'GET'])
@@ -28,6 +31,12 @@ def url():
         url = request.form['url']
         session["url"] = url
         return redirect(url_for('success'))
+
+
+@app.route('/reporting/file_not_found/')
+def file_not_found():
+    flash("JSON file not found on the given URL")
+    return redirect(url_for('index'))
 
 
 @app.route('/reporting/js/<path:path>')
