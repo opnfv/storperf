@@ -15,7 +15,7 @@
 #    $ docker build -t opnfv/storperf-master:tag .
 #
 
-FROM alpine:3.5 as fio-builder
+FROM alpine:3.5 as storperf-builder
 
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
@@ -24,7 +24,6 @@ ARG BRANCH=master
 ENV repos_dir /home/opnfv/repos
 
 RUN apk --no-cache add --update \
-    python-dev \
     git \
     alpine-sdk \
     linux-headers \
@@ -33,15 +32,12 @@ RUN apk --no-cache add --update \
     zlib-dev
 
 # Third party git fetches
-
 RUN git config --global http.sslVerify false
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
-RUN cd ${repos_dir}/fio && git checkout tags/fio-2.2.10
+RUN cd ${repos_dir}/fio && git checkout tags/fio-2.99
 RUN cd ${repos_dir}/fio && EXTFLAGS="-static" make install
 
-# StorPerf Master Builder
-
-FROM alpine:3.5 as storperf-builder
+# Build StorPerf
 
 RUN apk --no-cache add --update \
     libffi-dev \
@@ -68,7 +64,7 @@ RUN apk --no-cache add --update \
     bash
 
 COPY --from=storperf-builder /usr/lib/python2.7/site-packages /usr/lib/python2.7/site-packages
-COPY --from=fio-builder /usr/local/bin/fio /usr/local/bin/fio
+COPY --from=storperf-builder /usr/local/bin/fio /usr/local/bin/fio
 COPY . /storperf
 
 WORKDIR /storperf
