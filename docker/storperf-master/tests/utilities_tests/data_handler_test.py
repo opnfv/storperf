@@ -183,7 +183,7 @@ class DataHandlerTest(unittest.TestCase):
 
         self.assertEqual(expected_slope, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']
@@ -248,7 +248,7 @@ class DataHandlerTest(unittest.TestCase):
 
         self.assertEqual(expected_slope, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']

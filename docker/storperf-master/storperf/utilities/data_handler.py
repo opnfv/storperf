@@ -41,7 +41,7 @@ class DataHandler(object):
 
             steady_state = True
             metrics = {}
-            for metric in ('lat.mean', 'iops', 'bw'):
+            for metric in ('lat_ns.mean', 'iops', 'bw'):
                 metrics[metric] = {}
                 for io_type in ('read', 'write'):
                     metrics[metric][io_type] = {}
