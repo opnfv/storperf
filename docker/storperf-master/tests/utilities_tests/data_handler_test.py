@@ -183,17 +183,17 @@ class DataHandlerTest(unittest.TestCase):
 
         self.assertEqual(expected_slope, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['range'])
         self.assertEqual(expected_average, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['average'])
 
@@ -248,22 +248,22 @@ class DataHandlerTest(unittest.TestCase):
 
         self.assertEqual(expected_slope, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['slope'])
         self.assertEqual(expected_range, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['range'])
         self.assertEqual(expected_average, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['average'])
         self.assertEqual(report_data, self.metadata['report_data']
                          ['rw.queue-depth.8.block-size.8192']
-                         ['lat.mean']
+                         ['lat_ns.mean']
                          ['read']
                          ['series'])
         self.assertEqual(True, self._terminated)

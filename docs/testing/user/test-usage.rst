@@ -218,10 +218,10 @@ This is a sample of a type=metrics call.
    {
      "rw.queue-depth.1.block-size.512.read.bw": 52.8,
      "rw.queue-depth.1.block-size.512.read.iops": 106.76199999999999,
-     "rw.queue-depth.1.block-size.512.read.lat.mean": 93.176,
+     "rw.queue-depth.1.block-size.512.read.lat_ns.mean": 93.176,
      "rw.queue-depth.1.block-size.512.write.bw": 22.5,
      "rw.queue-depth.1.block-size.512.write.iops": 45.760000000000005,
-     "rw.queue-depth.1.block-size.512.write.lat.mean": 21764.184999999998
+     "rw.queue-depth.1.block-size.512.write.lat_ns.mean": 21764.184999999998
    }
 
 Abort a Job

@@ -12,17 +12,12 @@ This document provides the release notes for Danube 3.0 of StorPerf.
 Version history
 ---------------
 
+
 +--------------------+--------------------+--------------------+--------------------+
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 2017-07-14         | Danube 3.0         | Mark Beierl        |                    |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-| 2017-05-04         | Danube 2.0         | Mark Beierl        |                    |
-|                    |                    |                    |                    |
-+--------------------+--------------------+--------------------+--------------------+
-| 2017-03-30         | Danube 1.0         | Mark Beierl        |                    |
+| 2017-10-06         | Euphrates 1.0      | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
@@ -39,7 +34,10 @@ StorPerf is a standalone framework that uses OpenStack to measure Cinder volume
 performance.  If desired, it can push results to the OPNFV Test Results DB, or
 the embedded Graphite web interface can be used to perform ad hoc queries.
 
-This release supports Keystone v3 authentication
+This release changes to docker-compose framework and adds the StorPerf
+reporting module.  It also marks a change from microsecond (us) to nano-second
+precision for all reported latencies.  This is denoted by a change from
+lat.mean to lat_ns.mean for read and write metrics.
 
 Release Data
 ============
@@ -48,16 +46,16 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/commit-ID**                   | storperf/danube.3.0                  |
+| **Repo/commit-ID**                   | storperf/euphrates.1.0               |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Release designation**              | Danube base release                  |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | 2017-07-14                           |
+| **Release date**                     | 2017-10-06                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | OPNFV Danube release 3.0             |
+| **Purpose of the delivery**          | OPNFV Euphrates release 1.0          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -75,17 +73,14 @@ Reason for version
 Features additions
 ^^^^^^^^^^^^^^^^^^
 
-* STORPERF-139 - Expose maximum number of steady state samples as a parameter
+* STORPERF-125 - StorPerf container decomposition
+* STORPERF-141 - Create a series of graphs to support SNIA targers
 
 Bug Fixes
 ^^^^^^^^^
 
 The following minor bugs have been fixed
 
-* STORPERF-127 - Unable to communicate using v3 authentication due to missing domain.
-* STORPERF-128 - Daily Danube job uses latest tag from docker
-* STORPERF-153 - Profiling a file does not work
-* STORPERF-154 - PROJECT_DOMAIN_ID not recognized
 
 See JIRA for full `change log <https://jira.opnfv.org/jira/secure/ReleaseNote.jspa?projectId=11002&version=10714>`_
 
@@ -100,7 +95,7 @@ Software
 Documentation
 ^^^^^^^^^^^^^
 
-- `User Guide <http://docs.opnfv.org/en/stable-danube/submodules/storperf/docs/testing/user/index.html>`_
+- `User Guide <http://docs.opnfv.org/en/latest/submodules/storperf/docs/testing/user/index.html>`_
 
 Known Limitations, Issues and Workarounds
 =========================================
@@ -108,11 +103,11 @@ Known Limitations, Issues and Workarounds
 Limitations
 -----------
 
+* Does not work with a target OS that requires authentication instead of using init-cloud for generating the ssh key.
 
 Known issues
 ------------
 * STORPERF-56 - Cannot delete stack if create failed
-* STORPERF-180 - No details if stack create failed
 
 Test Result
 ===========
