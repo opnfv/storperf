@@ -26,7 +26,7 @@ services:
 
     storperf-swaggerui:
         container_name: "storperf-swaggerui"
-        image: "schickling/swagger-ui"
+        image: "opnfv/storperf-swaggerui:${TAG}"
 
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"

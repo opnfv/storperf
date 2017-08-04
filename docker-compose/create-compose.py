@@ -51,6 +51,9 @@ assert isinstance(reporting_tag, str)
 frontend_tag = input("Enter image TAG for frontend: ") or 'latest'
 assert isinstance(frontend_tag, str)
 
+swaggerui_tag = input("Enter image TAG for swaggerui: ") or 'later'
+assert isinstance(swaggerui_tag, str)
+
 env_file = input("Enter path to environment file: ")
 assert isinstance(env_file, str)
 if env_file == '':
@@ -65,6 +68,7 @@ if carbon_dir == '':
 
 f = open('docker-compose.yaml', 'w')
 f.write(content.format(storperf_tag=storeperf_tag, reporting_tag=reporting_tag,
-                       frontend_tag=frontend_tag, CARBON_DIR=carbon_dir, ENV_FILE=env_file))
+                       frontend_tag=frontend_tag, swaggerui_tag=swaggerui_tag,
+                       CARBON_DIR=carbon_dir, ENV_FILE=env_file))
 
 f.close()
