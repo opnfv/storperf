@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_be9ff002",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-04T14:33:36Z",
+      "side": 1,
+      "message": "We should set a default here, like:\n\nARG ARCH\u003dx86_64-v3.3",
+      "revId": "9c0f4acac6251d54f1c4009567390201685ae855",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
