@@ -22,6 +22,13 @@ then
     sudo chown 33:33 ${ci}/job/carbon
 fi
 
+if [ -z $ARCH ]
+then
+    ARCH=x86_65
+fi
+
+export ARCH
+
 docker-compose -f local-docker-compose.yaml build
 docker-compose -f local-docker-compose.yaml up -d
 
