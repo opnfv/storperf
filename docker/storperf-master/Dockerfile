@@ -15,7 +15,8 @@
 #    $ docker build -t opnfv/storperf-master:tag .
 #
 
-FROM alpine:3.5 as storperf-builder
+ARG ARCH
+FROM multiarch/alpine:$ARCH as storperf-builder
 
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 

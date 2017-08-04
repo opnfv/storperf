@@ -15,7 +15,8 @@
 ##
 
 
-FROM alpine:3.1
+ARG ARCH
+FROM multiarch/alpine:$ARCH
 MAINTAINER Mark Beierl <mark.beierl@dell.com>
 LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 
