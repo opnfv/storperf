@@ -15,7 +15,9 @@
 #    $ docker build -t opnfv/storperf-master:tag .
 #
 
-FROM alpine:3.5 as storperf-builder
+ARG ARCH=x86_64
+ARG ALPINE_VERSION=v3.6
+FROM multiarch/alpine:$ARCH-$ALPINE_VERSION as storperf-builder
 
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
@@ -57,7 +59,7 @@ RUN pip install -r /storperf/requirements.pip
 
 # Build stripped down StorPerf image
 
-FROM alpine:3.5 as storperf-master
+FROM multiarch/alpine:$ARCH-$ALPINE_VERSION as storperf-master
 
 RUN apk --no-cache add --update \
     python \
