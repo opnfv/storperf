@@ -16,6 +16,24 @@
       "revId": "9c0f4acac6251d54f1c4009567390201685ae855",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_de8594ae",
+        "filename": "docker/storperf-master/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-08-04T14:40:30Z",
+      "side": 1,
+      "message": "Why default when it can vary depending on the underlying architecture ?",
+      "parentUuid": "da33351e_be9ff002",
+      "revId": "9c0f4acac6251d54f1c4009567390201685ae855",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
