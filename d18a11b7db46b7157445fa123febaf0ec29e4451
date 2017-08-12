@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_b188b523",
+        "filename": "docker-compose/docker-compose.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-08-12T14:47:48Z",
+      "side": 1,
+      "message": "We need to update create docker-compose tool to reflect the changes in docker-compose.",
+      "revId": "d18a11b7db46b7157445fa123febaf0ec29e4451",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
