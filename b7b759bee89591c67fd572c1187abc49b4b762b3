@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_b18f1523",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-08-12T17:51:40Z",
+      "side": 1,
+      "message": "Please refer the tag here. \nschickling/swagger-ui:{swaggerui_tag}\n\nAlso please note the differences(if any) with respect to present version of docker-compose.yaml",
+      "range": {
+        "startLine": 32,
+        "startChar": 16,
+        "endLine": 32,
+        "endChar": 37
+      },
+      "revId": "b7b759bee89591c67fd572c1187abc49b4b762b3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
