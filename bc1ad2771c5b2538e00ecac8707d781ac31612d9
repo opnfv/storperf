@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_a376a23c",
+        "filename": "ci/launch_docker_container.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-08-15T18:10:31Z",
+      "side": 1,
+      "message": "Typo ?",
+      "range": {
+        "startLine": 27,
+        "startChar": 14,
+        "endLine": 27,
+        "endChar": 15
+      },
+      "revId": "bc1ad2771c5b2538e00ecac8707d781ac31612d9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
