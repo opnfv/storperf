@@ -27,6 +27,30 @@ storperf = StorPerfMaster()
 
 
 @swagger.model
+class LogsRequestModel:
+    resource_fields = {
+        'lines': fields.Integer
+    }
+
+
+class Logs(Resource):
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    @swagger.operation(
+        notes='Number of lines of logs',
+        type=LogsRequestModel.__name__
+    )
+    def get(self):
+        lines = request.args.get('lines')
+        try:
+            lines = int(lines)
+        except Exception:
+            pass
+        return jsonify({'logs': storperf.get_logs(lines)})
+
+
+@swagger.model
 class ConfigurationRequestModel:
     resource_fields = {
         'agent_count': fields.Integer,
@@ -343,6 +367,7 @@ def setup_logging(default_path='logging.json',
 api.add_resource(Configure, "/api/v1.0/configurations")
 api.add_resource(Quota, "/api/v1.0/quotas")
 api.add_resource(Job, "/api/v1.0/jobs")
+api.add_resource(Logs, "/api/v1.0/logs")
 
 if __name__ == "__main__":
     setup_logging()

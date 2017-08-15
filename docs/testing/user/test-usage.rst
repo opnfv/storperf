@@ -255,3 +255,20 @@ issuing an HTTP DELETE to the configurations API.
 You may also want to delete an environment, and then create a new one with a
 different number of VMs/Cinder volumes to test the impact of the number of VMs
 in your environment.
+
+Viewing StorPerf Logs
+=====================
+
+Logs are an integral part of any application as they help debugging the application. The user just
+needs to issue an HTTP request. To view the entire logs
+
+.. code-block:: bash
+
+  curl -X GET --header 'Accept: application/json' http://StorPerf:5000/api/v1.0/logs?lines=all
+
+Alternatively, one can also view a certain amount of lines by specifying the number in the
+request.
+
+.. code-block:: bash
+
+  curl -X GET --header 'Accept: application/json' http://StorPerf:5000/api/v1.0/logs?lines=12
