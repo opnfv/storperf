@@ -256,6 +256,23 @@ class StorPerfMaster(object):
             'workloads',
             str(self._test_executor.workload_modules))
 
+    def get_logs(self, lines=None):
+        LOG_DIR = '/var/log/supervisor/storperf-webapp.log'
+
+        if isinstance(lines, int):
+            logs = []
+            index = 0
+            for line in reversed(open(LOG_DIR).readlines()):
+                if index != int(lines):
+                    logs.append(line.strip())
+                    index += 1
+                else:
+                    break
+        else:
+            with open(LOG_DIR) as f:
+                logs = f.read().split('\n')
+        return logs
+
     def create_stack(self):
         if (self.stack_id is not None):
             raise ParameterError("ERROR: Stack has already been created")
