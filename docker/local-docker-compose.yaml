@@ -19,6 +19,8 @@ services:
         volumes:
             - ${CARBON_DIR}:/opt/graphite/storage/whisper
             - ./storperf-master/:/storperf
+#        links:
+#            - storperf-graphite
 
     storperf-reporting:
         container_name: "storperf-reporting"
@@ -32,6 +34,12 @@ services:
         container_name: "storperf-swaggerui"
         image: "schickling/swagger-ui"
 
+#    storperf-graphite:
+#        container_name: "storperf-graphite"
+#        image: "diceone/alpine-graphite"
+#        ports:
+#            - "8080:8080"
+
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"
         build: storperf-httpfrontend
@@ -41,3 +49,4 @@ services:
             - storperf-master
             - storperf-reporting
             - storperf-swaggerui
+#            - storperf-graphite
