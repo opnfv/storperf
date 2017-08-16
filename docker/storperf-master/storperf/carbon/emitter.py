@@ -15,7 +15,9 @@ import time
 class CarbonMetricTransmitter():
 
     carbon_host = '127.0.0.1'
-    carbon_port = 2003
+    carbon_port = 2010
+    host = '172.17.0.1'
+    port = 2003 
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -27,12 +29,16 @@ class CarbonMetricTransmitter():
 
         carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         carbon_socket.connect((self.carbon_host, self.carbon_port))
+        carbon_socket2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        carbon_socket2.connect((self.host, self.port))
 
         for key, metric in metrics.items():
             message = key + " " + metric + " " + timestamp
             self.logger.debug("Metric: " + message)
             carbon_socket.send(message + '\n')
+	    carbon_socket2.send(message + '\n')
 
         carbon_socket.close()
+	carbon_socket2.close()
         self.logger.info("Sent metrics to carbon with timestamp %s"
                          % timestamp)
