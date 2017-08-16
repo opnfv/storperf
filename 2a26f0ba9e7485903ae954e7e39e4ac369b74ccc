@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da33351e_0c9fbb53",
+        "filename": "docker/storperf-master/graphite/carbon.conf",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-08-16T14:03:46Z",
+      "side": 1,
+      "message": "A different port was used in reference to assure the changes that need to be done in sending the metrics.\nYes, we should be able to revert to port 2003 .",
+      "parentUuid": "da33351e_2c6f1fc7",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_0c74db97",
         "filename": "docker/storperf-master/storperf/carbon/emitter.py",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "da33351e_ec2b77e9",
+        "filename": "docker/storperf-master/storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-08-16T14:03:46Z",
+      "side": 1,
+      "message": "Yes, that is for the manual testing to send the metrics.\nThe main reason behind this was that I wanted to ensure whether we can directly plug in the graphite image.",
+      "parentUuid": "da33351e_0c74db97",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_4c6543e0",
         "filename": "docker/storperf-master/storperf/carbon/emitter.py",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2017-08-16T12:29:48Z",
       "side": 1,
       "message": "Each one should be done in its own try: except block so that if one is not reachable, the other should still work.",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_cc303359",
+        "filename": "docker/storperf-master/storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-08-16T14:03:46Z",
+      "side": 1,
+      "message": "Agreed. Will ensure in revision.",
+      "parentUuid": "da33351e_4c6543e0",
       "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
