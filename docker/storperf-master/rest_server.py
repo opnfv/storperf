@@ -13,11 +13,12 @@ import os
 import sys
 
 from flask import abort, Flask, request, jsonify
+from flask_cors import CORS
 from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
 
-from flask_cors import CORS
 from storperf.storperf_master import StorPerfMaster
+
 
 app = Flask(__name__, static_url_path="")
 CORS(app)
