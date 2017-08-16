@@ -9,18 +9,34 @@
 
 from flask import Flask, redirect, url_for, request, render_template, session
 from flask import send_from_directory, flash
-import urllib
 import json
 app = Flask(__name__)
 app.secret_key = 'storperf_graphing_module'
 
 
+def get_data(data):
+    metrics = {}
+    report_data = {}
+    temp = data.keys()[0]
+    if type(data[temp]) is list:
+        details = data[temp][0].get('details')
+        metrics = details.get('metrics')
+        report_data = details.get('report_data')
+    else:
+        metrics = data[temp].get('metrics')
+        report_data = data[temp].get('report_data')
+    return metrics, report_data
+
+
 @app.route('/reporting/success/')
 def success():
     try:
-        data = urllib.urlopen(session["url"]).read()
+        path = session["url"]
+        data = open("./static/testdata/" + path).read()
         data = json.loads(data)
-        return render_template('plot_tables.html', data=data)
+        metrics, report_data = get_data(data)
+        return render_template('plot_tables.html',
+                               metrics=metrics, report_data=report_data)
     except Exception as e:
         session['server_error'] = e.message + ' ' + repr(e.args)
         return redirect(url_for('file_not_found'))
