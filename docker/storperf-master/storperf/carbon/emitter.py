@@ -14,8 +14,8 @@ import time
 
 class CarbonMetricTransmitter():
 
-    carbon_host = '127.0.0.1'
-    carbon_port = 2003
+    carbon_servers = [('127.0.0.1', 2003),
+                      ('storperf-graphite', 2003)]
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -24,15 +24,25 @@ class CarbonMetricTransmitter():
         if 'timestamp' in metrics:
             metrics.pop('timestamp')
         timestamp = str(calendar.timegm(time.gmtime()))
+        carbon_socket = None
 
-        carbon_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        carbon_socket.connect((self.carbon_host, self.carbon_port))
+        for host, port in self.carbon_servers:
+            try:
+                carbon_socket = socket.socket(socket.AF_INET,
+                                              socket.SOCK_STREAM)
+                carbon_socket.connect((host, port))
 
-        for key, metric in metrics.items():
-            message = key + " " + metric + " " + timestamp
-            self.logger.debug("Metric: " + message)
-            carbon_socket.send(message + '\n')
+                for key, metric in metrics.items():
+                    message = key + " " + metric + " " + timestamp
+                    self.logger.debug("Metric: " + message)
+                    carbon_socket.send(message + '\n')
 
-        carbon_socket.close()
-        self.logger.info("Sent metrics to carbon with timestamp %s"
-                         % timestamp)
+                self.logger.info("Sent metrics to %s:%s with timestamp %s"
+                                 % (host, port, timestamp))
+
+            except Exception, e:
+                self.logger.error("While notifying carbon %s:%s %s"
+                                  % (host, port, e))
+
+            if carbon_socket is not None:
+                carbon_socket.close()

@@ -7,27 +7,39 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import SocketServer
 import json
-from storperf.carbon import converter
-from storperf.carbon.emitter import CarbonMetricTransmitter
-import threading
-from time import sleep, strptime
+from time import strptime
 import unittest
 
 import mock
 
-
-class MetricsHandler(SocketServer.BaseRequestHandler):
-
-    def handle(self):
-        # Echo the back to the client
-        CarbonMetricTransmitterTest.response = self.request.recv(1024)
-        return
+from storperf.carbon import converter
+from storperf.carbon.emitter import CarbonMetricTransmitter
 
 
-class MetricsServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
-    pass
+addresses = []
+data = []
+connect_exception = []
+send_exception = []
+
+
+class MockSocket(object):
+
+    def __init__(self, *args):
+        pass
+
+    def connect(self, address):
+        if len(connect_exception) != 0:
+            raise connect_exception[0]
+        addresses.append(address)
+
+    def send(self, datum):
+        if len(send_exception) != 0:
+            raise send_exception[0]
+        data.append(datum)
+
+    def close(self):
+        pass
 
 
 class CarbonMetricTransmitterTest(unittest.TestCase):
@@ -35,17 +47,16 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
     response = None
 
     def setUp(self):
+        del addresses[:]
+        del data[:]
+        del connect_exception[:]
+        del send_exception[:]
 
-        address = ('localhost', 0)
-        server = MetricsServer(address, MetricsHandler)
-        ip, self.listen_port = server.server_address
-
-        t = threading.Thread(target=server.serve_forever)
-        t.setDaemon(True)
-        t.start()
-
+    @mock.patch("socket.socket")
     @mock.patch("time.gmtime")
-    def test_transmit_metrics(self, mock_time):
+    def test_transmit_metrics(self, mock_time, mock_socket):
+
+        mock_socket.side_effect = MockSocket
 
         mock_time.return_value = strptime("30 Nov 00", "%d %b %y")
 
@@ -58,15 +69,48 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         emitter.carbon_port = self.listen_port
         emitter.transmit_metrics(result)
 
-        count = 0
-
-        while (CarbonMetricTransmitterTest.response is None and count < 10):
-            count += 1
-            sleep(0.1)
-
         self.assertEqual("host.run-name.key value 975542400\n",
-                         CarbonMetricTransmitterTest.response,
-                         CarbonMetricTransmitterTest.response)
+                         data[0],
+                         data[0])
+
+    @mock.patch("socket.socket")
+    def test_connect_fails(self, mock_socket):
+
+        mock_socket.side_effect = MockSocket
+        connect_exception.append(Exception("Mock connection error"))
+
+        testconv = converter.Converter()
+        json_object = json.loads(
+            """{"timestamp" : "975542400", "key":"value" }""")
+        result = testconv.convert_json_to_flat(json_object, "host.run-name")
+
+        emitter = CarbonMetricTransmitter()
+        emitter.carbon_port = self.listen_port
+        emitter.transmit_metrics(result)
+
+        self.assertEqual(0,
+                         len(data),
+                         len(data))
+
+    @mock.patch("socket.socket")
+    def test_send_fails(self, mock_socket):
+
+        mock_socket.side_effect = MockSocket
+        send_exception.append(Exception("Mock send error"))
+
+        testconv = converter.Converter()
+        json_object = json.loads(
+            """{"timestamp" : "975542400", "key":"value" }""")
+        result = testconv.convert_json_to_flat(json_object, "host.run-name")
+
+        emitter = CarbonMetricTransmitter()
+        emitter.carbon_port = self.listen_port
+        emitter.transmit_metrics(result)
+
+        self.assertEqual(0,
+                         len(data),
+                         len(data))
+
 
 if __name__ == '__main__':
     unittest.main()
