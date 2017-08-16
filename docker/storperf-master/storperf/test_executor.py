@@ -15,14 +15,16 @@ from os import listdir
 import os
 from os.path import isfile, join
 import sched
+from threading import Thread
+from time import sleep
+import time
+
 from storperf.carbon.converter import Converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
 from storperf.db.job_db import JobDB
 from storperf.fio.fio_invoker import FIOInvoker
 from storperf.utilities.data_handler import DataHandler
 from storperf.utilities.thread_gate import ThreadGate
-from threading import Thread
-import time
 
 
 class UnknownWorkload(Exception):
@@ -98,7 +100,14 @@ class TestExecutor(object):
             metric,
             callback_id)
 
-        self.metrics_emitter.transmit_metrics(carbon_metrics)
+        self.metrics_emitter.transmit_metrics(carbon_metrics, callback_id)
+
+        commit_count = 10
+        while (commit_count > 0 and
+               not self.metrics_emitter.confirm_commit(callback_id)):
+            self.logger.info("Waiting 1 more second for commit")
+            sleep(1)
+            commit_count -= 1
 
         if self._thread_gate.report(callback_id):
             self.broadcast_event()
@@ -134,8 +143,8 @@ class TestExecutor(object):
 
         for workload in workloads:
             try:
-                workload_module = self.load_from_file("workloads/" +
-                                                      workload + ".py")
+                workload_module = self.load_from_file("workloads/"
+                                                      + workload + ".py")
                 self.logger.debug("Found: " + str(workload_module))
                 if(workload_module is None):
                     raise UnknownWorkload(
@@ -244,11 +253,11 @@ class TestExecutor(object):
                     if self._terminated:
                         return
                     self.current_workload = (
-                        "%s.%s.queue-depth.%s.block-size.%s" %
-                        (self.job_db.job_id,
-                         workload_name,
-                         iodepth,
-                         blocksize))
+                        "%s.%s.queue-depth.%s.block-size.%s"
+                        % (self.job_db.job_id,
+                           workload_name,
+                           iodepth,
+                           blocksize))
 
                     self.logger.info("Starting run %s" % self.current_workload)
                     self.workload_status[self.current_workload] = "Running"
@@ -287,11 +296,11 @@ class TestExecutor(object):
                     if not scheduler.empty():
                         try:
                             scheduler.cancel(event)
-                        except:
+                        except ValueError:
                             pass
 
-                    self.logger.info("Completed run %s" %
-                                     self.current_workload)
+                    self.logger.info("Completed run %s"
+                                     % self.current_workload)
                     self.workload_status[self.current_workload] = "Completed"
                     self._workload_executors = []
                     self.current_workload = None

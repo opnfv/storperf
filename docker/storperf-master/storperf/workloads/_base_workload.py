@@ -45,8 +45,8 @@ class _base_workload(object):
                 "Profiling a device, using 100% of " + self.filename)
         else:
             self.options['size'] = self.default_filesize
-            self.logger.debug("Profiling a filesystem, using " +
-                              self.default_filesize + " file")
+            self.logger.debug("Profiling a filesystem, using "
+                              + self.default_filesize + " file")
 
         self.options['filename'] = self.filename
 
@@ -74,9 +74,9 @@ class _base_workload(object):
 
     @property
     def fullname(self):
-        return ("%s.%s.queue-depth.%s.block-size.%s.%s" %
-                (str(self.id),
-                 self.__class__.__name__,
-                 str(self.options['iodepth']),
-                 str(self.options['bs']),
-                 str(self.remote_host).replace(".", "-")))
+        return ("%s.%s.queue-depth.%s.block-size.%s.%s"
+                % (str(self.id),
+                   self.__class__.__name__,
+                   str(self.options['iodepth']),
+                   str(self.options['bs']),
+                   str(self.remote_host).replace(".", "-")))
