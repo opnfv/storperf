@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_2c6f1fc7",
+        "filename": "docker/storperf-master/graphite/carbon.conf",
+        "patchSetId": 1
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-16T12:29:48Z",
+      "side": 1,
+      "message": "Why a different port?  We should be able to keep the same ports as these should be running in different containers.",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_0c74db97",
+        "filename": "docker/storperf-master/storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-16T12:29:48Z",
+      "side": 1,
+      "message": "The host should be the hostname that is given in the docker-compose.yaml.  See the nginx.conf and storperf-httpfrontend in docker compose for an example.",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_4c6543e0",
+        "filename": "docker/storperf-master/storperf/carbon/emitter.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-16T12:29:48Z",
+      "side": 1,
+      "message": "Each one should be done in its own try: except block so that if one is not reachable, the other should still work.",
+      "revId": "2a26f0ba9e7485903ae954e7e39e4ac369b74ccc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
