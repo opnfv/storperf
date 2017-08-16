@@ -11,18 +11,19 @@ from datetime import datetime
 import logging
 import os
 import socket
-from storperf.db.configuration_db import ConfigurationDB
-from storperf.db.job_db import JobDB
-from storperf.test_executor import TestExecutor
 from threading import Thread
 from time import sleep
 
 from cinderclient import client as cinderclient
-import heatclient.client as heatclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 import paramiko
 from scp import SCPClient
+
+import heatclient.client as heatclient
+from storperf.db.configuration_db import ConfigurationDB
+from storperf.db.job_db import JobDB
+from storperf.test_executor import TestExecutor
 
 
 class ParameterError(Exception):
@@ -257,7 +258,7 @@ class StorPerfMaster(object):
             str(self._test_executor.workload_modules))
 
     def get_logs(self, lines=None):
-        LOG_DIR = '/var/log/supervisor/storperf-webapp.log'
+        LOG_DIR = './storperf.log'
 
         if isinstance(lines, int):
             logs = []

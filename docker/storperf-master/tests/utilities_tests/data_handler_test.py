@@ -8,10 +8,11 @@
 ##############################################################################
 
 import os
-from storperf.utilities.data_handler import DataHandler
 import unittest
 
 import mock
+
+from storperf.utilities.data_handler import DataHandler
 
 
 class MockGraphiteDB(object):
@@ -76,11 +77,11 @@ class DataHandlerTest(unittest.TestCase):
         mock_graphite_db.return_value = expected
         mock_time.return_value = expected[-1][0] + 10
 
-        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s" %
-                                 ("job_id",
-                                  "rw",
-                                  8,
-                                  8192))
+        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s"
+                                 % ("job_id",
+                                    "rw",
+                                    8,
+                                    8192))
 
         actual = self.data_handler._lookup_prior_data(self, 'read', 'iops')
         self.assertEqual(expected, actual)
@@ -148,8 +149,9 @@ class DataHandlerTest(unittest.TestCase):
     @mock.patch("time.time")
     @mock.patch("storperf.db.test_results_db.push_results_to_db")
     @mock.patch("storperf.db.graphite_db.GraphiteDB.fetch_series")
-    @mock.patch("storperf.db.graphite_db.JobDB.fetch_workloads")
-    def test_non_terminated_report(self, mock_job_db, mock_graphite_db,
+    @mock.patch("storperf.db.job_db.JobDB.fetch_workloads")
+    def test_non_terminated_report(self, mock_job_db,
+                                   mock_graphite_db,
                                    mock_results_db, mock_time):
         self._terminated = False
         mock_results_db.side_effect = self.push_results_to_db
@@ -169,12 +171,11 @@ class DataHandlerTest(unittest.TestCase):
         expected_range = 17.78
         expected_average = 212.49777777777774
 
-        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s" %
-                                 ("job_id",
-                                  "rw",
-                                  8,
-                                  8192))
-
+        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s"
+                                 % ("job_id",
+                                    "rw",
+                                    8,
+                                    8192))
         mock_job_db.return_value = [[self.current_workload, 4804559000, None]]
 
         self.data_handler.data_event(self)
@@ -201,7 +202,7 @@ class DataHandlerTest(unittest.TestCase):
     @mock.patch("time.time")
     @mock.patch("storperf.db.test_results_db.push_results_to_db")
     @mock.patch("storperf.db.graphite_db.GraphiteDB.fetch_series")
-    @mock.patch("storperf.db.graphite_db.JobDB.fetch_workloads")
+    @mock.patch("storperf.db.job_db.JobDB.fetch_workloads")
     def test_report_that_causes_termination(self,
                                             mock_job_db,
                                             mock_graphite_db,
@@ -236,12 +237,11 @@ class DataHandlerTest(unittest.TestCase):
         expected_range = 17.78
         expected_average = 209.2135
 
-        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s" %
-                                 ("job_id",
-                                  "rw",
-                                  8,
-                                  8192))
-
+        self.current_workload = ("%s.%s.queue-depth.%s.block-size.%s"
+                                 % ("job_id",
+                                    "rw",
+                                    8,
+                                    8192))
         mock_job_db.return_value = [[self.current_workload, 4804559000, None]]
 
         self.data_handler.data_event(self)
