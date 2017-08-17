@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_5cefb0b0",
+        "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
+        "patchSetId": 4
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-17T15:48:20Z",
+      "side": 1,
+      "message": "The Y axis changes with the metric plotted.  It needs to be Latency (ns) or Throughput (KB/s) depending on what is being plotted.",
+      "revId": "432583fb52e5efb3d1417a498d2e72d7b3e3f70e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
