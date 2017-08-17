@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_7cdb941b",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-17T15:34:57Z",
+      "side": 1,
+      "message": "The model is used for describe the response, not the input parameters.\n\nYou need to add something like:\n\n        parameters\u003d[\n            {\n                \"name\": \"lines\",\n                \"description\": \"The number of log lines to fetch\",\n                \"required\": False,\n                \"type\": \"string\",\n                \"allowMultiple\": False,\n                \"paramType\": \"query\"\n            }\n        ]\n\nso that the Swagger UI allows for input of \"lines\" parameter.",
+      "revId": "ee7f7815ee9191cb91b893fffba6c112cfd3fa21",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_5cd8501d",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-17T15:34:57Z",
+      "side": 1,
+      "message": "The log output is reversed when lines is specified vs. when it is not.  Note the timestamp goes in opposite directions.\n\n?lines\u003dall:\n\n  \"logs\": [\n    \"2017-08-17 15:20:34,845 - Thread-2 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:20:34] \\\"GET /api/spec.json HTTP/1.0\\\" 200 -\",\n    \"2017-08-17 15:20:53,356 - Thread-3 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:20:53] \\\"GET /api/v1.0/logs HTTP/1.0\\\" 200 -\",\n    \"2017-08-17 15:21:12,848 - Thread-4 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:21:12] \\\"GET /api/v1.0/logs HTTP/1.0\\\" 200 -\",\n  ...\n\n?lines\u003d5\n\n  \"logs\": [\n    \"2017-08-17 15:21:24,069 - Thread-6 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:21:24] \\\"GET /api/v1.0/logs HTTP/1.0\\\" 200 -\",\n    \"2017-08-17 15:21:14,226 - Thread-5 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:21:14] \\\"GET /api/v1.0/logs HTTP/1.0\\\" 200 -\",\n    \"2017-08-17 15:21:12,848 - Thread-4 - werkzeug - INFO - 172.18.0.5 - - [17/Aug/2017 15:21:12] \\\"GET /api/v1.0/logs HTTP/1.0\\\" 200 -\",\n  ...",
+      "revId": "ee7f7815ee9191cb91b893fffba6c112cfd3fa21",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
