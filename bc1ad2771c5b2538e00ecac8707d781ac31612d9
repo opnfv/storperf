@@ -22,6 +22,30 @@
       "revId": "bc1ad2771c5b2538e00ecac8707d781ac31612d9",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_e38f0a22",
+        "filename": "ci/launch_docker_container.sh",
+        "patchSetId": 13
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-17T15:09:34Z",
+      "side": 1,
+      "message": "yes, thanks!",
+      "parentUuid": "da33351e_a376a23c",
+      "range": {
+        "startLine": 27,
+        "startChar": 14,
+        "endLine": 27,
+        "endChar": 15
+      },
+      "revId": "bc1ad2771c5b2538e00ecac8707d781ac31612d9",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
