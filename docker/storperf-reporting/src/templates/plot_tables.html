@@ -27,17 +27,13 @@
         </center>
     </div>
     <script>
-        data = {{ data | tojson | safe }};
         page = [];
-        results = data.results;
-        if (results == undefined) {
-            details = data.details;
-        } else {
-            details = results[0].details;
-        }
-        metrics = details.metrics;
-        report_data = details.report_data;
+        metrics = {{ metrics | tojson | safe }};
+        report_data = {{ report_data | tojson | safe }};
+        console.log(metrics);
+        console.log(report_data);
         for (var key in report_data) {
+            console.log(key);
             for (var test in report_data[key]) {
                 var text = "";
                 var series = [];
@@ -73,6 +69,7 @@
                 }
             }
         }
+        console.log(page);
 
         function content_display(num) {
             var text = page[num - 1][0];
@@ -117,7 +114,27 @@
                     width: 2
                 }
             };
-            Plotly.newPlot(graphID, [plot, avg_plus, avg_minus]);
+            var layout = {
+  xaxis: {
+    title: 'ROUND',
+    titlefont: {
+      family: 'Arial, sans-serif',
+      size: 18,
+      color: 'lightgrey'
+    },
+    showticklabels: true,
+  },
+  yaxis: {
+    title: 'IOPS',
+    titlefont: {
+      family: 'Arial, sans-serif',
+      size: 18,
+      color: 'lightgrey'
+    },
+    showticklabels: true,
+  }
+};
+            Plotly.newPlot(graphID, [plot, avg_plus, avg_minus],layout);
         }
         content_display(1);
         $('#page-selection').bootpag({
