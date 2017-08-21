@@ -26,6 +26,35 @@ api = swagger.docs(Api(app), apiVersion='1.0')
 storperf = StorPerfMaster()
 
 
+class Logs(Resource):
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    @swagger.operation(
+        notes="Fetch logs",
+        parameters=[
+            {
+                "name": "lines",
+                "description": "The number of lines to fetch",
+                "required": "False",
+                "type": "string",
+                "allowedMultiple": "False",
+                "paramType": "query"
+            }
+        ]
+    )
+    def get(self):
+        lines = request.args.get('lines')
+        if lines:
+            try:
+                lines = int(lines)
+            except Exception:
+                pass
+        else:
+            lines = 35
+        return jsonify({'logs': storperf.get_logs(lines)})
+
+
 @swagger.model
 class ConfigurationRequestModel:
     resource_fields = {
@@ -343,6 +372,7 @@ def setup_logging(default_path='logging.json',
 api.add_resource(Configure, "/api/v1.0/configurations")
 api.add_resource(Quota, "/api/v1.0/quotas")
 api.add_resource(Job, "/api/v1.0/jobs")
+api.add_resource(Logs, "/api/v1.0/logs")
 
 if __name__ == "__main__":
     setup_logging()
