@@ -19,14 +19,14 @@ app.secret_key = 'storperf_graphing_module'
 def get_data(data):
     metrics = {}
     report_data = {}
-    temp = data.keys()[0]
-    if type(data[temp]) is list:
-        details = data[temp][0].get('details')
+    temp = data.get("results") or data.get("report")
+    if type(temp) is list:
+        details = temp[0].get('details')
         metrics = details.get('metrics')
         report_data = details.get('report_data')
     else:
-        metrics = data[temp].get('metrics')
-        report_data = data[temp].get('report_data')
+        metrics = temp.get('metrics')
+        report_data = temp.get('report_data')
     return metrics, report_data
 
 
@@ -84,3 +84,4 @@ def index():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True, threaded=True)
+
