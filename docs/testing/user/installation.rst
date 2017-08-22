@@ -236,3 +236,22 @@ The tag for the latest stable Brahmaputra release is:
 .. code-block:: bash
 
    docker pull opnfv/storperf:brahmaputra.1.2
+
+StorPerf on ARM Processors
+==========================
+
+StorPerf now supports docker images on ARM processors as well. However, at the moment
+there is no upstream image on DockerHub. The user needs to manually build it. Firstly,
+clone StorPerf repository from GitHub
+
+.. code-block:: bash
+
+  git clone https://git.opnfv.org/storperf
+  cd storperf/docker/
+
+Next, build and setup the docker images
+
+.. code-block:: console
+
+  TAG=aarch64 ENV_FILE=./admin.rc CARBON_DIR=./carbon docker-compose -f local-docker-compose.yaml build
+  TAG=aarch64 ENV_FILE=./admin.rc CARBON_DIR=./carbon docker-compose up -d
