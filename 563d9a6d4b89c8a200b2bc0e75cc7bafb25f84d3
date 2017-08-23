@@ -16,6 +16,24 @@
       "revId": "563d9a6d4b89c8a200b2bc0e75cc7bafb25f84d3",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_43105b01",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-08-23T15:18:16Z",
+      "side": 1,
+      "message": "But this file should be the one under docker-compose directory, right ?\n\nSo the final instructions should be \n\ncd ../docker-compose\nTAG\u003daarch64 ENV_FILE\u003d./admin.rc CARBON_DIR\u003d./carbon docker-compose up -d",
+      "parentUuid": "da33351e_5413fb65",
+      "revId": "563d9a6d4b89c8a200b2bc0e75cc7bafb25f84d3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
