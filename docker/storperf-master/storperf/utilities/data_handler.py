@@ -9,6 +9,8 @@
 
 import logging
 import os
+import time
+
 from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
@@ -16,8 +18,6 @@ from storperf.utilities import data_treatment as DataTreatment
 from storperf.utilities import dictionary
 from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
-from time import sleep
-import time
 
 
 class DataHandler(object):
@@ -93,31 +93,12 @@ class DataHandler(object):
         # A bit of a hack here as Carbon might not be finished storing the
         # data we just sent to it
         now = int(time.time())
-        backtime = 60 * (executor.steady_state_samples + 2)
+        backtime = 60 * (executor.steady_state_samples + 1)
         data_series = graphite_db.fetch_series(workload,
                                                metric,
                                                io_type,
                                                now,
                                                backtime)
-        most_recent_time = now
-        if len(data_series) > 0:
-            most_recent_time = data_series[-1][0]
-
-        delta = now - most_recent_time
-        self.logger.debug("Last update to graphite was %s ago" % delta)
-
-        while (delta < 5 or (delta > 60 and delta < 120)):
-            sleep(5)
-            data_series = graphite_db.fetch_series(workload,
-                                                   metric,
-                                                   io_type,
-                                                   now,
-                                                   backtime)
-            if len(data_series) > 0:
-                most_recent_time = data_series[-1][0]
-            delta = time.time() - most_recent_time
-            self.logger.debug("Last update to graphite was %s ago" % delta)
-
         return data_series
 
     def _convert_timestamps_to_samples(self, executor, series):
@@ -201,5 +182,6 @@ class DataHandler(object):
                                                               build_tag,
                                                               payload)
                 executor.result_url = response['href']
-            except:
-                self.logger.exception("Error pushing results into Database")
+            except Exception as e:
+                self.logger.exception("Error pushing results into Database",
+                                      e)
