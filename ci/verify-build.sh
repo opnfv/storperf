@@ -16,8 +16,8 @@ cd ${ci}/../docker
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
 
-touch ${ENV_FILE}
 mkdir -p ${CARBON_DIR}
+touch ${ENV_FILE}
 
 if [ -z $ARCH ]
 then
