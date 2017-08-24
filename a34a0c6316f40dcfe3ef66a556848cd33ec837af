@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "da33351e_229b8c73",
+        "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 85,
+      "author": {
+        "id": 6845
+      },
+      "writtenOn": "2017-08-24T21:14:17Z",
+      "side": 1,
+      "message": "Sure. Adding it.",
+      "parentUuid": "da33351e_02cf6880",
+      "revId": "a34a0c6316f40dcfe3ef66a556848cd33ec837af",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_0221284d",
         "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
         "patchSetId": 1
