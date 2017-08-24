@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_62be34d6",
+        "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
+        "patchSetId": 2
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 6845
+      },
+      "writtenOn": "2017-08-24T21:14:17Z",
+      "side": 1,
+      "message": "removing the whitespaces",
+      "range": {
+        "startLine": 109,
+        "startChar": 61,
+        "endLine": 109,
+        "endChar": 62
+      },
+      "revId": "28518f4767637638b7a103bf71aef04b5709083c",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
