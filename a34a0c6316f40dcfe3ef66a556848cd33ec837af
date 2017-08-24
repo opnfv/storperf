@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_0221284d",
+        "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-24T21:04:02Z",
+      "side": 1,
+      "message": "Latency is in Nano seconds (ns), not micro anymore.",
+      "revId": "a34a0c6316f40dcfe3ef66a556848cd33ec837af",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
