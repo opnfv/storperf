@@ -11,10 +11,45 @@
     <script src="/reporting/js/plotly-latest.min.js"></script>
     <script src="/reporting/js/Chart.min.js"></script>
     <style>
-        .table td {
-            text-align: left;
-        }
-    </style>
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
 </head>
 
 <body>
@@ -22,6 +57,15 @@
         {% include 'header.html' %}
         <div id="content"><strong>Loading...</strong>
         </div>
+        <div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+      <span class="close" id="close">&times;</span>
+    <div id="modal-text"></div>
+  </div>
+
+</div>
         <center>
             <div id="page-selection"></div>
         </center>
@@ -30,118 +74,140 @@
         page = [];
         metrics = {{ metrics | tojson | safe }};
         report_data = {{ report_data | tojson | safe }};
-        console.log(metrics);
-        console.log(report_data);
-        for (var key in report_data) {
-            console.log(key);
-            for (var test in report_data[key]) {
-                var text = "";
-                var series = [];
-                var average;
-                for (var status in report_data[key][test]) {
-                    text = '<div class="row text-center lead">';
-                    text += "<h3>" + key + "</h3>" + "<br>";
-                    text += "<strong><u>" + test + "</strong>" + "<br>";
-                    text += "<strong>" + status + "</strong>" + "<br>";
-                    text += "<table class=' table table-striped'>";
-                    for (var values in report_data[key][test][status]) {
-                        text += "<tr>";
-                        value_data = report_data[key][test][status][values];
-                        if (values == "average") {
-                            average = value_data;
-                            text += "<td width='50%'>" + values + "</td><td width='50%'>" + value_data + "</td>";
-                        } else if (values == "series") {
-                            text += "<td width='50%'>" + values + "</td><td width='50%'> ";
-                            var len = value_data.length;
-                            series = value_data;
-                            for (var i = 0; i < len; i++) {
-                                text += "[" + value_data[i] + "]";
-                                if (i != len - 1)
-                                    text += ",";
-                            }
-                            text += "</td>";
-                        } else {
-                            text += "<td width='50%'>" + values + "</td><td width='50%'>" + value_data + "</td>";
-                        }
-                        text += "</tr>";
-                    }
-                    page.push([text, series, average]);
+        keys = [];
+        for (var k in report_data){
+            keys.push(k);
+        }
+        //console.log(keys);
+        text = "";
+        for (var i = 0; i < keys.length; i++ ){
+            text += "<div class='row' id='row-"+ keys[i] +"'>";
+            text += "<h4 onclick=add_test('" + keys[i] + "')>" + keys[i] + "</h4>";
+            text += "</div>"; 
+        }
+        $("#content").html(text);
+
+        function add_test(key){
+            if(document.getElementById("test-" + key) == null){
+                tests = [];
+                for(var test in report_data[key]) tests.push(test);
+                text = "<div class='col-md-12' id = 'test-" + key + "'><ul class='list-group'>";
+                for(var i = 0; i < tests.length; i++ ){
+                    text +=  "<li class='list-group-item' onclick=add_data('"+ key +"','" + tests[i] + "') id='li-" +
+                             key + "-" + tests[i] + "'>" + tests[i] + "</li>"
                 }
+                text += "<li class='list-group-item' onclick=delete_test('" + key + "')> close </li>";
+                text += "</ul></div>";
+                var div = document.getElementById('row-' + key);
+                div.innerHTML += text;
             }
         }
-        console.log(page);
-
-        function content_display(num) {
-            var text = page[num - 1][0];
-            var array = page[num - 1][1];
-            var average = page[num - 1][2];
-            var final_array = [];
-            var graph_label = []
-            for (var i = 0; i < array.length; i++) {
-                graph_label = graph_label.concat(i + 1);
+        function delete_test(key){
+            document.getElementById("test-" + key).remove();
+        }
+        function add_data(key,test){
+            text = "<ul id='list-" + key + "-" + test + "'>"; 
+            if(document.getElementById('list-' + key + '-' + test ) == null){
+                for( item in report_data[key][test] )
+                    text += "<li onclick=create_modal('" + key + "','" + test + "','" + item + "') id='" +
+                            key + "-" + test + "-" + item + "'>" + item + "</li>";
+                text += "</ul>"
+                var div = document.getElementById("li-" + key + "-" + test);
+                div.innerHTML += text;
             }
-            for (var i = 0; i < array.length; i++) {
-                final_array = final_array.concat(array[i][1]);
+        }
+        function create_modal(key,test,item){
+            var  modal = document.getElementById('myModal');
+            var modal_div = document.getElementById('modal-text');
+            modal_div.innerHTML += "<div id='graph'></div><br><div id='report'></div>";
+            data = report_data[key][test][item];
+            var x = [];
+            var y = [];
+            var name = "";
+            var average = data["average"];
+            if(test == "bw")
+                name = "Bandwidth (KB/s)";
+            else if(test == "iops")
+                name = "IOPS";
+            else
+                name = "Latency (microseconds/us)";
+            var len = data["series"].length;
+            for(var i = 0 ; i < len ; i++){
+                x[i] = data["series"][i][0];
+                y[i] = data["series"][i][1];
             }
-            var index = num - 1;
-            var graphID = "graph" + index;
-            text += "<tr><td>Graph</td><td><div id='" + graphID + "' style='display: block; height:400px; width 400px;'></div></td></tr>";
-            text += "</table></div>";
-            $("#content").html(text);
-            var plot = {
-                x: graph_label,
-                y: final_array,
-                type: "lines",
-                name: "Plot"
-            };
-            var avg_plus = {
-                x: graph_label,
-                y: Array(array.length).fill(1.2 * average),
-                type: "lines",
-                name: "avg_plus",
-                line: {
-                    dash: "dashdot",
-                    width: 2
-                }
-            };
-            var avg_minus = {
-                x: graph_label,
-                y: Array(array.length).fill(0.8 * average),
-                type: "lines",
-                name: "avg_minus",
-                line: {
-                    dash: "dashdot",
-                    width: 2
-                }
+            var trace1 = {
+                x: x,
+                y: y,
+                name: name,
+                type: 'scatter'
             };
             var layout = {
-  xaxis: {
-    title: 'ROUND',
-    titlefont: {
-      family: 'Arial, sans-serif',
-      size: 18,
-      color: 'lightgrey'
-    },
-    showticklabels: true,
-  },
-  yaxis: {
-    title: 'IOPS',
-    titlefont: {
-      family: 'Arial, sans-serif',
-      size: 18,
-      color: 'lightgrey'
-    },
-    showticklabels: true,
-  }
-};
-            Plotly.newPlot(graphID, [plot, avg_plus, avg_minus],layout);
+                xaxis: {
+                    title: 'Round'
+                },
+                yaxis: {
+                    title: name
+                }
+            };
+            // Creating average plot in var trace2
+            var average_x = [];
+            var average_y = [];
+            for(var i = 0; i < len ;i++ ){
+                average_x.push(i+1);
+                average_y.push(average)
+            }
+            var trace2 = {
+                x: average_x,
+                y: average_y,
+                name: 'Average',
+                type: 'scatter'
+            };
+            // Creating average plot in var trace3
+            var average_plus_x = [];
+            var average_plus_y = [];
+            for(var i = 0; i < len ;i++ ){
+                average_plus_x.push(i+1);
+                average_plus_y.push(1.1*average)
+            }
+            var trace3 = {
+                x: average_plus_x,
+                y: average_plus_y,
+                name: '110%*Average',
+                type: 'scatter'
+            };
+            // Creating average plot in var trace4
+            var average_minus_x = [];
+            var average_minus_y = [];
+            for(var i = 0; i < len ;i++ ){
+                average_minus_x.push(i+1);
+                average_minus_y.push(0.9*average)
+            }
+            var trace4 = {
+                x: average_minus_x,
+                y: average_minus_y,
+                name: '90%*Average',
+                type: 'scatter'
+            };
+            var plot_data = [trace1,trace2,trace3,trace4];
+            Plotly.newPlot('graph',plot_data,layout);
+            modal.style.display = "block";
+            table = "<table class='table table-bordered'>";
+            table += "<thead><tr>Steady State Determination Data</tr></thead>";
+            table += "<tbody>";
+            table += "<tr><td>Steady State: "+ data["steady_state"] +"</td><td> Average " + name + ": " + average + "</td></tr>";
+            table += "<tr><td> Allowed Maximum Data Excursion: " + 0.2*average +
+                     "</td><td> Measured Maximum Data Excursion: " + data["range"] + "</td></tr>";
+            table += "<tr><td> Allowed Maximum Slope Excursion: " + 0.1*average +
+                     "</td><td> Measured Maximum Data Excursion: " + data["slope"] + "</td></tr>";
+            table += "</tbody></table>";
+            document.getElementById("report").innerHTML = table;
+
         }
-        content_display(1);
-        $('#page-selection').bootpag({
-            total: page.length
-        }).on("page", function(event, num) {
-            content_display(num);
-        });
+        document.getElementById("close").onclick = function(){
+            document.getElementById('modal-text').innerHTML = "";
+            document.getElementById("myModal").style.display = "none";
+        }
     </script>
 </body>
 
