@@ -185,7 +185,35 @@
                 name: '90%*Average',
                 type: 'scatter'
             };
-            var plot_data = [trace1,trace2,trace3,trace4];
+            // Creating slope plot in var trace5
+            var slope_y = [];
+            var slope_mid = parseInt(len/2);
+            // Init slope_y with average
+            for(var i = 0; i < len; i++){
+                slope_y.push(average);
+            }
+            // Creating the slope plot
+            var i = slope_mid - 1;
+            var count = data["slope"];
+            while(i >= 0){
+                slope_y[i] -= count;
+                count += data["slope"];
+                i--;
+            }
+            var i = slope_mid + 1;
+            var count = data["slope"];
+            while(i < len){
+                slope_y[i] += count;
+                count += data["slope"];
+                i++;
+            }
+            var trace5 = {
+                x: x,
+                y: slope_y,
+                name: 'Slope',
+                type: 'scatter'
+            };
+            var plot_data = [trace1,trace2,trace3,trace4,trace5];
             Plotly.newPlot('graph',plot_data,layout);
             modal.style.display = "block";
             table = "<table class='table table-bordered'>";
@@ -195,7 +223,7 @@
             table += "<tr><td> Allowed Maximum Data Excursion: " + 0.2*average +
                      "</td><td> Measured Maximum Data Excursion: " + data["range"] + "</td></tr>";
             table += "<tr><td> Allowed Maximum Slope Excursion: " + 0.1*average +
-                     "</td><td> Measured Maximum Data Excursion: " + data["slope"] + "</td></tr>";
+                     "</td><td> Measured Maximum Slope Excursion: " + data["slope"] + "</td></tr>";
             table += "</tbody></table>";
             document.getElementById("report").innerHTML = table;
 
