@@ -73,7 +73,9 @@ RUN \
         curl \
         gnupg
 
-RUN gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEYS"
+RUN gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEYS" || \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEYS" || \
+    gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEYS"
 
 RUN curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
     && curl -fSL http://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
