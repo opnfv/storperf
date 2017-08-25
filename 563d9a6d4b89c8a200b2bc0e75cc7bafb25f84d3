@@ -34,6 +34,24 @@
       "revId": "563d9a6d4b89c8a200b2bc0e75cc7bafb25f84d3",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_4e6d1798",
+        "filename": "docs/testing/user/installation.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-25T13:45:57Z",
+      "side": 1,
+      "message": "No, it needs to be in the storperf/docker directory as we need to use \"local\" docker-compose, not the docker-compose.yaml that pulls from the remote repos.",
+      "parentUuid": "da33351e_43105b01",
+      "revId": "563d9a6d4b89c8a200b2bc0e75cc7bafb25f84d3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
