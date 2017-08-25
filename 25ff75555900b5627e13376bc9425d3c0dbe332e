@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_0e4caf41",
+        "filename": "docker/storperf-reporting/src/templates/plot_tables.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-25T13:33:55Z",
+      "side": 1,
+      "message": "This should be\n  count +\u003d data[\"slope\"]\n\nOtherwise, you\u0027re plotting a log(slope) as it is doubling the value each time. See https://imagebin.ca/v/3Y6Hh1kjbKh4",
+      "revId": "25ff75555900b5627e13376bc9425d3c0dbe332e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
