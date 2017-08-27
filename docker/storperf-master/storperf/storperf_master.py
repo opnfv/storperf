@@ -257,6 +257,36 @@ class StorPerfMaster(object):
             'workloads',
             str(self._test_executor.workload_modules))
 
+    @property
+    def username(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'username'
+        )
+
+    @username.setter
+    def username(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'username',
+            value
+        )
+
+    @property
+    def password(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'password'
+        )
+
+    @password.setter
+    def password(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'password',
+            value
+        )
+
     def get_logs(self, lines=None):
         LOG_DIR = './storperf.log'
 
@@ -354,6 +384,9 @@ class StorPerfMaster(object):
         params['agent_count'] = self.agent_count
         params['public_network'] = self.public_network
         params['volume_size'] = self.volume_size
+        if self.username and self.password:
+            params['username'] = self.username
+            params['password'] = self.password
         job_id = self._test_executor.execute(params)
 
         return job_id
@@ -424,13 +457,49 @@ class StorPerfMaster(object):
 
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(slave, username='storperf',
-                    key_filename='storperf/resources/ssh/storperf_rsa',
-                    timeout=2)
+        if self.username and self.password:
+            ssh.connect(slave,
+                        username=self.username,
+                        password=self.password)
+        else:
+            ssh.connect(slave, username='storperf',
+                        key_filename='storperf/resources/ssh/storperf_rsa',
+                        timeout=2)
+
+        available = self._check_root_fs(ssh)
+        logger.debug("Available space on / is %s" % available)
+        if available < 65536:
+            logger.warn("Root filesystem is too small, attemping resize")
+            self._resize_root_fs(ssh, logger)
+
+            available = self._check_root_fs(ssh)
+            logger.debug("Available space on / is now %s" % available)
+            if available < 65536:
+                logger.error("Cannot create enough space on /")
+                raise Exception("Root filesystem has only %s free" %
+                                available)
 
         scp = SCPClient(ssh.get_transport())
         logger.debug("Transferring fio to %s" % slave)
         scp.put('/usr/local/bin/fio', '~/')
+
+    def _check_root_fs(self, ssh):
+        (_, stdout, _) = ssh.exec_command("df /")
+        stdout.readline()
+        lines = stdout.readline().split()
+        if len(lines) > 4:
+            available = lines[3]
+            return int(available)
+
+    def _resize_root_fs(self, ssh, logger):
+        command = "sudo /usr/sbin/resize2fs /dev/vda1"
+        logger.info("Attempting %s" % command)
+        (_, stdout, stderr) = ssh.exec_command(command)
+        stdout.channel.recv_exit_status()
+        for line in iter(stdout.readline, b''):
+            logger.info(line)
+        for line in iter(stderr.readline, b''):
+            logger.error(line)
 
     def _make_parameters(self):
         heat_parameters = {}

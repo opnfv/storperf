@@ -35,7 +35,6 @@ def push_results_to_db(db_url, details, logger):
             logger.debug(r.content)
         return json.loads(r.content)
     except Exception:
-        if logger:
-            logger.exception("Error [push_results_to_db('%s', '%s', '%s')]:" %
-                             (db_url, params, details['details']))
+        logger.exception("Error [push_results_to_db('%s', '%s')]:" %
+                         (db_url, params))
         return None

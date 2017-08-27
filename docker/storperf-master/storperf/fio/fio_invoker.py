@@ -15,13 +15,14 @@ import paramiko
 
 class FIOInvoker(object):
 
-    def __init__(self):
+    def __init__(self, var_dict={}):
         self.logger = logging.getLogger(__name__)
         self.event_listeners = set()
         self.event_callback_ids = set()
         self._remote_host = None
         self.callback_id = None
         self.terminated = False
+        self.metadata = var_dict
 
     @property
     def remote_host(self):
@@ -90,11 +91,7 @@ class FIOInvoker(object):
         self.logger.debug("Finished")
 
     def execute(self, args=[]):
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.remote_host, username='storperf',
-                    key_filename='storperf/resources/ssh/storperf_rsa',
-                    timeout=2)
+        ssh = self._ssh_client()
 
         command = "sudo ./fio " + ' '.join(args)
         self.logger.debug("Remote command: %s" % command)
@@ -133,11 +130,7 @@ class FIOInvoker(object):
         self.logger.debug("Terminating fio on " + self.remote_host)
         self.terminated = True
 
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.remote_host, username='storperf',
-                    key_filename='storperf/resources/ssh/storperf_rsa',
-                    timeout=2)
+        ssh = self._ssh_client()
 
         command = "sudo killall fio"
 
@@ -151,3 +144,17 @@ class FIOInvoker(object):
 
         stdout.close()
         stderr.close()
+
+    def _ssh_client(self):
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        if 'username' in self.metadata and 'password' in self.metadata:
+            ssh.connect(self.remote_host,
+                        username=self.metadata['username'],
+                        password=self.metadata['password'])
+            return ssh
+        else:
+            ssh.connect(self.remote_host, username='storperf',
+                        key_filename='storperf/resources/ssh/storperf_rsa',
+                        timeout=2)
+            return ssh
