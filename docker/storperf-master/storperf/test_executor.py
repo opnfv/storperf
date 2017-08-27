@@ -321,7 +321,7 @@ class TestExecutor(object):
 
     def execute_on_node(self, workload):
 
-        invoker = FIOInvoker()
+        invoker = FIOInvoker(self.metadata)
         invoker.register(self.event)
         workload.invoker = invoker
 
