@@ -15,13 +15,14 @@ import paramiko
 
 class FIOInvoker(object):
 
-    def __init__(self):
+    def __init__(self, var_dict={}):
         self.logger = logging.getLogger(__name__)
         self.event_listeners = set()
         self.event_callback_ids = set()
         self._remote_host = None
         self.callback_id = None
         self.terminated = False
+        self.metadata = var_dict
 
     @property
     def remote_host(self):
@@ -92,9 +93,14 @@ class FIOInvoker(object):
     def execute(self, args=[]):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.remote_host, username='storperf',
-                    key_filename='storperf/resources/ssh/storperf_rsa',
-                    timeout=2)
+        if 'username' in self.metadata and 'password' in self.metadata:
+            ssh.connect(self.remote_host,
+                        username=self.metadata['username'],
+                        password=self.metadata['password'])
+        else:
+            ssh.connect(self.remote_host, username='storperf',
+                        key_filename='storperf/resources/ssh/storperf_rsa',
+                        timeout=2)
 
         command = "sudo ./fio " + ' '.join(args)
         self.logger.debug("Remote command: %s" % command)
