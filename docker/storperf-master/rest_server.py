@@ -64,7 +64,9 @@ class ConfigurationRequestModel:
         'agent_image': fields.String,
         'public_network': fields.String,
         'volume_size': fields.Integer,
-        'availability_zone': fields.String
+        'availability_zone': fields.String,
+        'username': fields.String,
+        'password': fields.String
     }
 
 
@@ -137,6 +139,10 @@ class Configure(Resource):
                 storperf.volume_size = request.json['volume_size']
             if ('availability_zone' in request.json):
                 storperf.availabilty_zone = request.json['availability_zone']
+            if ('username' in request.json):
+                storperf.username = request.json['username']
+            if ('password' in request.json):
+                storperf.password = request.json['password']
 
             storperf.create_stack()
             if storperf.stack_id is None:

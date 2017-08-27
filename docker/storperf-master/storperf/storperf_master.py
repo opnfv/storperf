@@ -257,6 +257,36 @@ class StorPerfMaster(object):
             'workloads',
             str(self._test_executor.workload_modules))
 
+    @property
+    def username(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'username'
+        )
+
+    @username.setter
+    def username(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'username',
+            value
+        )
+
+    @property
+    def password(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'password'
+        )
+
+    @password.setter
+    def password(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'password',
+            value
+        )
+
     def get_logs(self, lines=None):
         LOG_DIR = './storperf.log'
 
