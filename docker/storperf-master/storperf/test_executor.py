@@ -328,7 +328,7 @@ class TestExecutor(object):
         self.logger.info("Starting " + workload.fullname)
 
         self.job_db.start_workload(workload)
-        workload.execute()
+        workload.execute(self.metadata)
         self.job_db.end_workload(workload)
         invoker.unregister(self.event)
 
