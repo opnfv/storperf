@@ -257,6 +257,36 @@ class StorPerfMaster(object):
             'workloads',
             str(self._test_executor.workload_modules))
 
+    @property
+    def username(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'username'
+        )
+
+    @username.setter
+    def username(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'username',
+            value
+        )
+
+    @property
+    def password(self):
+        return self.configuration_db.get_configuration_value(
+            'stack',
+            'password'
+        )
+
+    @password.setter
+    def password(self, value):
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'password',
+            value
+        )
+
     def get_logs(self, lines=None):
         LOG_DIR = './storperf.log'
 
@@ -407,9 +437,14 @@ class StorPerfMaster(object):
 
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(slave, username='storperf',
-                    key_filename='storperf/resources/ssh/storperf_rsa',
-                    timeout=2)
+        if self.username and self.password:
+            ssh.connect(slave,
+                        username=self.username,
+                        password=self.password)
+        else:
+            ssh.connect(slave, username='storperf',
+                        key_filename='storperf/resources/ssh/storperf_rsa',
+                        timeout=2)
 
         scp = SCPClient(ssh.get_transport())
         logger.debug("Transferring fio to %s" % slave)
