@@ -18,3 +18,5 @@ then
 fi
 
 openstack image show "Ubuntu 16.04 x86_64"
+
+exit 0
