@@ -19,15 +19,20 @@ app.secret_key = 'storperf_graphing_module'
 def get_data(data):
     metrics = {}
     report_data = {}
-    temp = data.get("results") or data.get("report")
+    temp = data.get("results") or data.get("report") or data.get("details")
     if type(temp) is list:
-        details = temp[0].get('details')
-        metrics = details.get('metrics')
-        report_data = details.get('report_data')
+        length = len(temp)
+        if length == 1:
+            details = temp[0].get('details')
+            metrics = details.get('metrics')
+            report_data = details.get('report_data')
+            return "single", metrics, report_data
+        else:
+            return "multi", temp
     else:
         metrics = temp.get('metrics')
         report_data = temp.get('report_data')
-    return metrics, report_data
+        return "single", metrics, report_data
 
 
 @app.route('/reporting/success/')
@@ -39,9 +44,14 @@ def success():
         else:
             data = open("./static/testdata/" + URL).read()
         data = json.loads(data)
-        metrics, report_data = get_data(data)
-        return render_template('plot_tables.html',
-                               metrics=metrics, report_data=report_data)
+        response = get_data(data)
+        if response[0] == "single":
+            metrics, report_data = response[1], response[2]
+            return render_template('plot_tables.html',
+                                   metrics=metrics, report_data=report_data)
+        else:
+            return render_template('plot_multi_data.html',
+                                   results=response[1])
     except Exception as e:
         session['server_error'] = e.message + ' ' + repr(e.args)
         return redirect(url_for('file_not_found'))
