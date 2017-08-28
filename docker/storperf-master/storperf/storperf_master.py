@@ -363,7 +363,7 @@ class StorPerfMaster(object):
 
     def fetch_results(self, job_id):
         if self._test_executor.job_db.job_id == job_id:
-            return self._test_executor.metadata['metrics']
+            return self._test_executor.metadata['details']['metrics']
 
         workload_params = self.job_db.fetch_workload_params(job_id)
         if 'report' in workload_params:
@@ -377,8 +377,22 @@ class StorPerfMaster(object):
     def fetch_job_status(self, job_id):
         return self._test_executor.execution_status(job_id)
 
-    def fetch_all_jobs(self):
-        return self.job_db.fetch_jobs()
+    def fetch_all_jobs(self, metrics_type):
+        job_list = self.job_db.fetch_jobs()
+        job_report = {}
+        if metrics_type is None:
+            job_report['job_ids'] = job_list
+        else:
+            job_report['results'] = []
+            for job in job_list:
+                if metrics_type == 'metadata':
+                    metadata = self.fetch_metadata(job)
+                    self.logger.info("Looking up %s" % job)
+                    result = metadata
+                    result['id'] = job
+                    if 'report' in metadata:
+                        job_report['results'].append(metadata['report'])
+        return job_report
 
     def _setup_slave(self, slave):
         logger = logging.getLogger(__name__ + ":" + slave)

@@ -224,13 +224,13 @@ class Job(Resource):
     )
     def get(self):
 
-        metrics_type = "metrics"
-        if request.args.get('type'):
-            metrics_type = request.args.get('type')
-
         workload_id = request.args.get('id')
 
         if workload_id:
+            metrics_type = "metrics"
+            if request.args.get('type'):
+                metrics_type = request.args.get('type')
+
             if metrics_type == "metrics":
                 return jsonify(storperf.fetch_results(workload_id))
 
@@ -240,7 +240,10 @@ class Job(Resource):
             if metrics_type == "status":
                 return jsonify(storperf.fetch_job_status(workload_id))
         else:
-            return jsonify({"job_ids": storperf.fetch_all_jobs()})
+            metrics_type = None
+            if request.args.get('type'):
+                metrics_type = request.args.get('type')
+            return jsonify(storperf.fetch_all_jobs(metrics_type))
 
     @swagger.operation(
         parameters=[
