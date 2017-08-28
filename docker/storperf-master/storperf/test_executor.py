@@ -39,7 +39,6 @@ class TestExecutor(object):
         self.filename = None
         self.deadline = None
         self.steady_state_samples = 10
-        self.metadata = {}
         self.start_time = None
         self.end_time = None
         self.current_workload = None
@@ -57,6 +56,27 @@ class TestExecutor(object):
         self._workload_executors = []
         self._workload_thread = None
         self._thread_gate = None
+        self._setup_metadata({})
+
+    def _setup_metadata(self, metadata={}):
+        try:
+            installer = os.environ['INSTALLER_TYPE']
+        except KeyError:
+            self.logger.error("Cannot determine installer")
+            installer = "Unknown_installer"
+
+        self.metadata = {}
+        self.metadata['project_name'] = 'storperf'
+        self.metadata['installer'] = installer
+        self.metadata['pod_name'] = 'Unknown'
+        self.metadata['version'] = 'Unknown'
+        self.metadata['scenario'] = 'Unknown'
+        self.metadata['build_tag'] = 'Unknown'
+        self.metadata['test_case'] = 'Unknown'
+        self.metadata['details'] = {}
+        self.metadata['details']['metrics'] = {}
+        self.metadata.update(metadata)
+        self.metadata['case_name'] = self.metadata['test_case']
 
     @property
     def slaves(self):
@@ -171,8 +191,7 @@ class TestExecutor(object):
     def execute(self, metadata):
         self.job_db.create_job_id()
         self.job_db.record_workload_params(metadata)
-        self.metadata = metadata
-        self.metadata['metrics'] = {}
+        self._setup_metadata(metadata)
         self._workload_thread = Thread(target=self.execute_workloads,
                                        args=(),
                                        name="Workload thread")
@@ -313,10 +332,10 @@ class TestExecutor(object):
 
         self.end_time = time.time()
         self._terminated = True
-        report = {'report': json.dumps(self.metadata)}
-        self.job_db.record_workload_params(report)
         self.broadcast_event()
         self.unregister(data_handler.data_event)
+        report = {'report': json.dumps(self.metadata)}
+        self.job_db.record_workload_params(report)
         self.job_db.job_id = None
 
     def execute_on_node(self, workload):

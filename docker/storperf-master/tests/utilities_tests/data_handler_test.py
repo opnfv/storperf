@@ -35,6 +35,8 @@ class DataHandlerTest(unittest.TestCase):
         self.steady_state_samples = 10
         self.end_time = 1
         self.metadata = {}
+        self.metadata['details'] = {}
+        self.metadata['details']['metrics'] = {}
         self.block_sizes = "1"
         self.queue_depths = "1"
         mock.job_id = "1"
@@ -134,7 +136,7 @@ class DataHandlerTest(unittest.TestCase):
         self._terminated = True
         mock_results_db.side_effect = self.push_results_to_db
         mock_graphite_db.side_effect = MockGraphiteDB
-        self.metadata = {
+        self.metadata['details'] = {
             "steady_state": {
                 "rr.queue-depth.8.block-size.16384": True,
                 "rr.queue-depth.8.block-size.2048": False,
@@ -182,17 +184,20 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual(False, self.pushed)
         self.assertEqual(False, self._terminated)
 
-        self.assertEqual(expected_slope, self.metadata['report_data']
+        self.assertEqual(expected_slope, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
                          ['slope'])
-        self.assertEqual(expected_range, self.metadata['report_data']
+        self.assertEqual(expected_range, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
                          ['range'])
-        self.assertEqual(expected_average, self.metadata['report_data']
+        self.assertEqual(expected_average, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
@@ -246,22 +251,26 @@ class DataHandlerTest(unittest.TestCase):
 
         self.data_handler.data_event(self)
 
-        self.assertEqual(expected_slope, self.metadata['report_data']
+        self.assertEqual(expected_slope, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
                          ['slope'])
-        self.assertEqual(expected_range, self.metadata['report_data']
+        self.assertEqual(expected_range, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
                          ['range'])
-        self.assertEqual(expected_average, self.metadata['report_data']
+        self.assertEqual(expected_average, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
                          ['average'])
-        self.assertEqual(report_data, self.metadata['report_data']
+        self.assertEqual(report_data, self.metadata['details']
+                         ['report_data']
                          ['rw.queue-depth.8.block-size.8192']
                          ['lat_ns.mean']
                          ['read']
@@ -277,7 +286,7 @@ class DataHandlerTest(unittest.TestCase):
         mock_results_db.side_effect = self.push_results_to_db
         self.start_time = 1504559100
         self.end_time = 1504560000
-        self.metadata = {
+        self.metadata['details'] = {
             "scenario_name": "ceph_ws,wr,rs,rr,rw",
             "status": "OK",
             "steady_state": {
@@ -289,9 +298,11 @@ class DataHandlerTest(unittest.TestCase):
             "volume_size": 10
         }
         self.data_handler._push_to_db(self)
-        self.assertEqual('FAIL', self.db_results[9],
+        self.assertEqual('FAIL', self.db_results[1]['criteria'],
                          'Expected FAIL in criteria')
-        self.assertEqual('2017-09-04 21:05:00', self.db_results[3],
+        self.assertEqual('2017-09-04 21:05:00',
+                         self.db_results[1]['start_time'],
                          'Start time')
-        self.assertEqual('2017-09-04 21:20:00', self.db_results[4],
+        self.assertEqual('2017-09-04 21:20:00',
+                         self.db_results[1]['end_time'],
                          'End time')

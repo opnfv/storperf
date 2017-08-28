@@ -15,7 +15,6 @@ from storperf.db import test_results_db
 from storperf.db.graphite_db import GraphiteDB
 from storperf.db.job_db import JobDB
 from storperf.utilities import data_treatment as DataTreatment
-from storperf.utilities import dictionary
 from storperf.utilities import math as math
 from storperf.utilities import steady_state as SteadyState
 
@@ -36,8 +35,6 @@ class DataHandler(object):
             self._push_to_db(executor)
         else:
             workload = '.'.join(executor.current_workload.split('.')[1:6])
-            if 'metrics' not in executor.metadata:
-                executor.metadata['metrics'] = {}
 
             steady_state = True
             metrics = {}
@@ -67,19 +64,21 @@ class DataHandler(object):
                     metrics[metric][io_type]['average'] = average
 
                     metrics_key = '%s.%s.%s' % (workload, io_type, metric)
-                    executor.metadata['metrics'][metrics_key] = average
+                    executor.metadata['details']['metrics'][metrics_key] = \
+                        average
 
                     if not steady:
                         steady_state = False
 
-            if 'report_data' not in executor.metadata:
-                executor.metadata['report_data'] = {}
+            if 'report_data' not in executor.metadata['details']:
+                executor.metadata['details']['report_data'] = {}
 
-            if 'steady_state' not in executor.metadata:
-                executor.metadata['steady_state'] = {}
+            if 'steady_state' not in executor.metadata['details']:
+                executor.metadata['details']['steady_state'] = {}
 
-            executor.metadata['report_data'][workload] = metrics
-            executor.metadata['steady_state'][workload] = steady_state
+            executor.metadata['details']['report_data'][workload] = metrics
+            executor.metadata['details']['steady_state'][workload] = \
+                steady_state
 
             workload_name = executor.current_workload.split('.')[1]
 
@@ -128,60 +127,36 @@ class DataHandler(object):
         return SteadyState.steady_state(data_series)
 
     def _push_to_db(self, executor):
-        pod_name = dictionary.get_key_from_dict(executor.metadata,
-                                                'pod_name',
-                                                'Unknown')
-        version = dictionary.get_key_from_dict(executor.metadata,
-                                               'version',
-                                               'Unknown')
-        scenario = dictionary.get_key_from_dict(executor.metadata,
-                                                'scenario_name',
-                                                'Unknown')
-        build_tag = dictionary.get_key_from_dict(executor.metadata,
-                                                 'build_tag',
-                                                 'Unknown')
-        test_case = dictionary.get_key_from_dict(executor.metadata,
-                                                 'test_case',
-                                                 'Unknown')
-        duration = executor.end_time - executor.start_time
-
-        payload = executor.metadata
+        executor.metadata['duration'] = executor.end_time - executor.start_time
 
         steady_state = True
-        for _, value in executor.metadata['steady_state'].items():
+        for _, value in executor.metadata['details']['steady_state'].items():
             steady_state = steady_state and value
 
-        payload['timestart'] = executor.start_time
-        payload['duration'] = duration
+        executor.metadata['timestart'] = executor.start_time
 
         if steady_state:
             criteria = 'PASS'
         else:
             criteria = 'FAIL'
+        executor.metadata['criteria'] = criteria
 
-        start_time = time.strftime('%Y-%m-%d %H:%M:%S',
-                                   time.gmtime(executor.start_time))
+        executor.metadata['start_time'] = \
+            time.strftime('%Y-%m-%d %H:%M:%S',
+                          time.gmtime(executor.start_time))
 
-        end_time = time.strftime('%Y-%m-%d %H:%M:%S',
-                                 time.gmtime(executor.end_time))
+        executor.metadata['end_time'] = \
+            time.strftime('%Y-%m-%d %H:%M:%S',
+                          time.gmtime(executor.end_time))
 
         test_db = os.environ.get('TEST_DB_URL')
         if test_db is not None:
             self.logger.info("Pushing results to %s" % (test_db))
             try:
-                response = test_results_db.push_results_to_db(test_db,
-                                                              "storperf",
-                                                              test_case,
-                                                              start_time,
-                                                              end_time,
-                                                              self.logger,
-                                                              pod_name,
-                                                              version,
-                                                              scenario,
-                                                              criteria,
-                                                              build_tag,
-                                                              payload)
+                response = test_results_db.push_results_to_db(
+                    test_db,
+                    executor.metadata,
+                    self.logger)
                 executor.result_url = response['href']
-            except Exception as e:
-                self.logger.exception("Error pushing results into Database",
-                                      e)
+            except Exception:
+                self.logger.exception("Error pushing results into Database")
