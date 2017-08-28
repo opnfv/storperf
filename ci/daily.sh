@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 ##############################################################################
 # Copyright (c) 2015 EMC and others.
 #
@@ -14,6 +14,12 @@ then
     WORKSPACE=`pwd`
 fi
 
+docker-compose --version
+if [ $? -ne 0 ]
+then
+    echo "Docker compose is missing"
+    exit 1
+fi
 
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng $WORKSPACE/ci/job/releng
 

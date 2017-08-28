@@ -34,7 +34,15 @@ docker-compose -f local-docker-compose.yaml up -d
 
 echo "Waiting for StorPerf to become active"
 
+ATTEMPTS=20
+
 while [ $(curl -s -o /dev/null -I -w "%{http_code}" -X GET http://127.0.0.1:5000/api/v1.0/configurations) != "200" ]
 do
+    ATTEMPTS=$((ATTEMPTS - 1))
+    if [ ${ATTEMPTS} -le 1 ]
+    then
+        echo "Failed to get a start up of StorPerf Master"
+        exit 1
+    fi
     sleep 1
 done
