@@ -10,7 +10,6 @@ Mailing list tag [storperf]
 Repository: storperf
 
 Committers:
-ferenc.f.farkas@ericsson.com
 mark.beierl@emc.com
 jose.lausuch@ericsson.com
 
@@ -20,3 +19,6 @@ Link to TSC approval of the project:
 Link to approval of additional committers:
   http://lists.opnfv.org/pipermail/opnfv-tech-discuss/2015-December/007109.html
   https://lists.opnfv.org/pipermail/opnfv-tsc/2017-April/003419.html
+
+Link to approval of inactive committers:
+  https://lists.opnfv.org/pipermail/opnfv-tsc/2017-August/003680.html
