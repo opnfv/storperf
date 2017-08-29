@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_4a75f996",
+        "filename": "docker/storperf-master/storperf/test_executor.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-29T11:44:40Z",
+      "side": 1,
+      "message": "I just noticed this. Perhaps this is a good place to pass the credentials?",
+      "revId": "d4962869082c4888e64e13c3240dc6ecfb4804fe",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
