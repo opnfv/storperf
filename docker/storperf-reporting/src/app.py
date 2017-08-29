@@ -39,6 +39,20 @@ def get_data(data):
 def success():
     try:
         URL = session["url"]
+        if URL.find("jobs") is not -1 and URL.find("metadata") is -1:
+            data = urllib.urlopen(URL).read()
+            data = json.loads(data)
+            temp = data["job_ids"]
+            print temp
+            if temp:
+                info = {}
+                for ID in temp:
+                    url = URL + "?id=" + ID + "&type=metadata"
+                    data_temp = urllib.urlopen(url).read()
+                    data_temp = json.loads(data_temp)
+                    report_data = get_data(data_temp)[-1]
+                    info[ID] = report_data
+                return render_template('plot_jobs.html', results=info)
         if validators.url(URL):
             data = urllib.urlopen(URL).read()
         else:
