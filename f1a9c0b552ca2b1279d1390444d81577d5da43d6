@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_36646021",
+        "filename": "docker/storperf-master/storperf/fio/fio_invoker.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-30T18:44:45Z",
+      "side": 1,
+      "message": "This will throw a key error if username or password are not present.  It needs to be:\n\n  if \u0027username\u0027 in self.metadata ...",
+      "revId": "f1a9c0b552ca2b1279d1390444d81577d5da43d6",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
