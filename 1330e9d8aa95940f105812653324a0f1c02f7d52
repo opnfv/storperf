@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_766ee802",
+        "filename": "docker/storperf-reporting/src/app.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-08-30T18:47:29Z",
+      "side": 1,
+      "message": "I don\u0027t think this is needed as the change to storperf-master already returns all the jobs in the same way that testresults does.  No further lookups are required.",
+      "revId": "1330e9d8aa95940f105812653324a0f1c02f7d52",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
