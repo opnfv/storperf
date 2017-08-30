@@ -16,6 +16,24 @@
       "revId": "1330e9d8aa95940f105812653324a0f1c02f7d52",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_f6815890",
+        "filename": "docker/storperf-reporting/src/app.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 6845
+      },
+      "writtenOn": "2017-08-30T18:57:58Z",
+      "side": 1,
+      "message": "The reason for using URL.find(\"metadata\") is -1 was because if the user enters a URl like ../jobs?id\u003d\u003cJOB_ID\u003e\u0026type\u003d\"metadata\" this will simply return the report_data and wont have a field for job_ids",
+      "parentUuid": "da33351e_766ee802",
+      "revId": "1330e9d8aa95940f105812653324a0f1c02f7d52",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
