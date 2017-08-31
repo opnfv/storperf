@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 ##############################################################################
 # Copyright (c) 2017 Dell EMC and others.
 #
@@ -11,22 +11,24 @@
 cd `dirname $0`
 ci=`pwd`
 
-exit 0
-
 cd ${ci}/../docker
 
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
+
+${ci}/remove_docker_container.sh
 
 mkdir -p ${CARBON_DIR}
 touch ${ENV_FILE}
 
 if [ -z $ARCH ]
 then
-    ARCH=x86_64
+    ARCH=$(uname -m)
 fi
 
-export ARCH
+export ARCH=${ARCH}
+
+echo Using $ARCH architecture
 
 docker-compose -f local-docker-compose.yaml down
 docker-compose -f local-docker-compose.yaml build
