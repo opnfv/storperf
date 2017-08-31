@@ -11,8 +11,6 @@
 cd `dirname $0`
 ci=`pwd`
 
-exit 0
-
 cd ${ci}/../docker
 
 export ENV_FILE=${ci}/job/admin.rc
