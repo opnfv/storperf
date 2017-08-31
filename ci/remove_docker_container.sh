@@ -19,7 +19,7 @@ export CARBON_DIR=${ci}/job/carbon/
 
 docker-compose -f local-docker-compose.yaml down
 
-for container_name in storperf storperf-master storperf-swaggerui storperf-httpfrontend storperf-reporting
+for container_name in storperf storperf-master storperf-swaggerui storperf-httpfrontend storperf-reporting storperf-graphite
 do
     container=`docker ps -a -q -f name=$container_name`
     if [ ! -z $container ]
