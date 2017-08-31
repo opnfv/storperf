@@ -40,7 +40,10 @@ services:
 
     storperf-graphite:
         container_name: "storperf-graphite"
-        build: storperf-graphite
+        build:
+            context: storperf-graphite
+            args:
+                ARCH: ${ARCH}
         volumes:
             - ${CARBON_DIR}:/opt/graphite/storage/whisper
 

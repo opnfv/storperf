@@ -14,7 +14,7 @@
 
 # From https://github.com/SchweizerischeBundesbahnen/docker-graphite
 
-ARG ARCH=x86_64
+ARG ARCH
 ARG ALPINE_VERSION=v3.5
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 
