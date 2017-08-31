@@ -15,7 +15,7 @@
 ##
 
 
-ARG ARCH=x86_64
+ARG ARCH
 ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 MAINTAINER Mark Beierl <mark.beierl@dell.com>

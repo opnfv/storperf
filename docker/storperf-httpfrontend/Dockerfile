@@ -12,8 +12,8 @@
 #    $ docker build -t opnfv/storperf-frontend:tag .
 ##
 
-ARG ARCH=x86_64
-ARG ALPINE_VERSION=v3.5
+ARG ARCH
+ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 
 # This comes from https://github.com/nginxinc/docker-nginx/blob/14c1b938737cf4399a6bb039bc506957dce562ae/stable/alpine/Dockerfile
