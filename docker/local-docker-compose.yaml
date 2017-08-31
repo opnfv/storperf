@@ -18,7 +18,6 @@ services:
                 ARCH: ${ARCH}
         env_file: ${ENV_FILE}
         volumes:
-            - ${CARBON_DIR}:/opt/graphite/storage/whisper
             - ./storperf-master/:/storperf
         links:
             - storperf-graphite
@@ -42,8 +41,8 @@ services:
     storperf-graphite:
         container_name: "storperf-graphite"
         build: storperf-graphite
-        ports:
-            - "8000:8080"
+        volumes:
+            - ${CARBON_DIR}:/opt/graphite/storage/whisper
 
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"
