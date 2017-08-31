@@ -11,8 +11,6 @@
 cd `dirname $0`
 ci=`pwd`
 
-exit 0
-
 cd ${ci}/../docker
 
 export ENV_FILE=${ci}/job/admin.rc
@@ -23,14 +21,16 @@ touch ${ENV_FILE}
 
 if [ -z $ARCH ]
 then
-    ARCH=x86_64
+    ARCH=`uname -m`
 fi
 
 export ARCH
 
-docker-compose -f local-docker-compose.yaml down
-docker-compose -f local-docker-compose.yaml build
-docker-compose -f local-docker-compose.yaml up -d
+echo Using $ARCH architecture
+
+ARCH=$ARCH docker-compose -f local-docker-compose.yaml down
+ARCH=$ARCH docker-compose -f local-docker-compose.yaml --build-arg ARCH=${ARCH} build
+ARCH=$ARCH docker-compose -f local-docker-compose.yaml up -d
 
 function check_for_life() {
     NAME=$1
