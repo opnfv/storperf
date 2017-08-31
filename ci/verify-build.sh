@@ -11,8 +11,6 @@
 cd `dirname $0`
 ci=`pwd`
 
-exit 0
-
 cd ${ci}/../docker
 
 export ENV_FILE=${ci}/job/admin.rc
@@ -23,10 +21,13 @@ touch ${ENV_FILE}
 
 if [ -z $ARCH ]
 then
+    ARCH=`uname -m`
     ARCH=x86_64
 fi
 
 export ARCH
+
+echo Using $ARCH architecture
 
 docker-compose -f local-docker-compose.yaml down
 docker-compose -f local-docker-compose.yaml build
