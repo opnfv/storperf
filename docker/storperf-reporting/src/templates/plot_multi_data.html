@@ -84,27 +84,27 @@ ul {
         function init(){
             page = [];
             report_data = results[0]["details"]["report_data"];
-            build_tag = [];
+            ids = [];
             text = "<a href='/reporting/'><button type='button' class='btn btn-default btn-lg'>Go back</button></a><br><br>";
             for ( var i = 0; i < results.length ; i++ ){
-                build_tag.push(results[i]["build_tag"]);
-                text += "<div class='row well' id='row-" + build_tag[i] + "'>";
+                ids.push(results[i]["_id"]);
+                text += "<div class='row well' id='row-" + ids[i] + "'>";
                 text += "<h4> ID  : " + results[i]["_id"] + "</h4>";
                 text += "<h4> Start Date  : " + results[i]["start_date"] + "</h4>";
                 text += "<h4> Criteria  : " + results[i]["criteria"] + "</h4>";
                 text += "<h4> Build Tag  : " + results[i]["build_tag"] + "</h4>";
-                text += "<button type='button' class='btn btn-default btn-lg' id='para-"+ build_tag[i] +
-                        "' onclick=add_info('" + build_tag[i] + "')> Click here to view details </button>"; 
+                text += "<button type='button' class='btn btn-default btn-lg' id='para-"+ ids[i] +
+                        "' onclick=add_info('" + ids[i] + "')> Click here to view details </button>"; 
                 text += "</div>"; 
             }
             $("#content").html(text);
         }
-        function add_info(build_tag){
+        function add_info(ids){
             report_data = {};
             keys = [];
             var i = 0;
             for ( i = 0; i < results.length ; i++ ){
-                if( results[i]["build_tag"] == build_tag ){
+                if( results[i]["_id"] == ids ){
                     report_data = results[i]["details"]["report_data"];
                     break;
                 }
@@ -113,7 +113,7 @@ ul {
                 keys.push(k);
             }
             text = "";
-            text += "<div class='row well' id='row-" + build_tag[i] + "'>";
+            text += "<div class='row well' id='row-" + results[i]["_id"] + "'>";
             text += "<h4> ID  : " + results[i]["_id"] + "</h4>";
             text += "<h4> Start Date  : " + results[i]["start_date"] + "</h4>";
             text += "<h4> Criteria  : " + results[i]["criteria"] + "</h4>";

@@ -7,11 +7,15 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
+import json
+import urllib
+
 from flask import Flask, redirect, url_for, request, render_template, session
 from flask import send_from_directory, flash
-import urllib
+
 import validators
-import json
+
+
 app = Flask(__name__)
 app.secret_key = 'storperf_graphing_module'
 
