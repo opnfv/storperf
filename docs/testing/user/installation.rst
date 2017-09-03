@@ -176,6 +176,11 @@ which should result in:
 
      00649e02237d27bf0b40d1a66160a68a56c9f5e1ceb78d7858e30715cf4350e3  create-compose.py
 
+Note: Install python future package to avoid error on python2.
+
+.. code-block:: console
+
+     pip install future
 
 
 Docker Exec
