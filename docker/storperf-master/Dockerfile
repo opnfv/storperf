@@ -15,7 +15,7 @@
 #    $ docker build -t opnfv/storperf-master:tag .
 #
 
-ARG ARCH
+ARG ARCH=x86_64
 ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION as storperf-builder
 
