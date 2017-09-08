@@ -11,7 +11,7 @@
 cd `dirname $0`
 ci=`pwd`
 
-cd ${ci}/../docker
+cd ${ci}/../docker-compose
 
 export ENV_FILE=${ci}/job/admin.rc
 export CARBON_DIR=${ci}/job/carbon/
@@ -19,18 +19,24 @@ export CARBON_DIR=${ci}/job/carbon/
 if [ ! -d ${ci}/job/carbon ]
 then
     mkdir ${ci}/job/carbon
-    sudo chown 33:33 ${ci}/job/carbon
 fi
 
-if [ -z $ARCH ]
+if [ -z ${ARCH} ]
 then
     ARCH=x86_64
 fi
 
 export ARCH
 
-docker-compose -f local-docker-compose.yaml build
-docker-compose -f local-docker-compose.yaml up -d
+if [ -z ${DOCKER_TAG} ]
+then
+    DOCKER_TAG=latest
+fi
+
+export TAG=${DOCKER_TAG}
+
+docker-compose pull
+docker-compose up -d
 
 echo "Waiting for StorPerf to become active"
 
