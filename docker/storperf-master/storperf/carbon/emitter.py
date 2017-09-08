@@ -16,13 +16,12 @@ from storperf.db.graphite_db import GraphiteDB
 
 class CarbonMetricTransmitter():
 
-    carbon_servers = [('127.0.0.1', 2003),
-                      ('storperf-graphite', 2003)]
-
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.graphite_db = GraphiteDB()
         self.commit_markers = {}
+        self.host = 'storperf-graphite'
+        self.port = 2003
 
     def transmit_metrics(self, metrics, commit_marker):
         timestamp = str(calendar.timegm(time.gmtime()))
@@ -30,36 +29,35 @@ class CarbonMetricTransmitter():
 
         carbon_socket = None
 
-        for host, port in self.carbon_servers:
-            try:
-                carbon_socket = socket.socket(socket.AF_INET,
-                                              socket.SOCK_STREAM)
-                carbon_socket.connect((host, port))
+        try:
+            carbon_socket = socket.socket(socket.AF_INET,
+                                          socket.SOCK_STREAM)
+            carbon_socket.connect((self.host, self.port))
 
-                for key, value in metrics.items():
-                    try:
-                        float(value)
-                        message = "%s %s %s\n" \
-                            % (key, value, timestamp)
-                        self.logger.debug("Metric: " + message.strip())
-                        carbon_socket.send(message)
-                    except ValueError:
-                        self.logger.debug("Ignoring non numeric metric %s %s"
-                                          % (key, value))
+            for key, value in metrics.items():
+                try:
+                    float(value)
+                    message = "%s %s %s\n" \
+                        % (key, value, timestamp)
+                    self.logger.debug("Metric: " + message.strip())
+                    carbon_socket.send(message)
+                except ValueError:
+                    self.logger.debug("Ignoring non numeric metric %s %s"
+                                      % (key, value))
 
-                message = "%s.commit-marker %s %s\n" \
-                    % (commit_marker, timestamp, timestamp)
-                carbon_socket.send(message)
-                self.logger.debug("Marker %s" % message.strip())
-                self.logger.info("Sent metrics to %s:%s with timestamp %s"
-                                 % (host, port, timestamp))
+            message = "%s.commit-marker %s %s\n" \
+                % (commit_marker, timestamp, timestamp)
+            carbon_socket.send(message)
+            self.logger.debug("Marker %s" % message.strip())
+            self.logger.info("Sent metrics to %s:%s with timestamp %s"
+                             % (self.host, self.port, timestamp))
 
-            except Exception, e:
-                self.logger.error("While notifying carbon %s:%s %s"
-                                  % (host, port, e))
+        except Exception, e:
+            self.logger.error("While notifying carbon %s:%s %s"
+                              % (self.host, self.port, e))
 
-            if carbon_socket is not None:
-                carbon_socket.close()
+        if carbon_socket is not None:
+            carbon_socket.close()
 
     def confirm_commit(self, commit_marker):
         marker_timestamp = self.commit_markers[commit_marker]
