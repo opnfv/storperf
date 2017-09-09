@@ -25,6 +25,7 @@ services:
     storperf-master:
         container_name: "storperf-master"
         image: "opnfv/storperf-master:{storperf_tag}"
+        env_file: {ENV_FILE}
         links:
             - storperf-graphite
 
