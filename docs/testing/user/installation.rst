@@ -110,8 +110,9 @@ The following ports are exposed if you use the supplied docker-compose.yaml
 file:
 
 * 5000 for StorPerf ReST API and Swagger UI
-* 8000 for StorPerf's Graphite Web Server
 
+Note: Port 8000 is no longer exposed and graphite can be accesed via
+http://storperf:5000/graphite
 
 Running StorPerf Container
 ==========================
