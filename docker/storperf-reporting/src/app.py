@@ -30,13 +30,13 @@ def get_data(data):
             details = temp[0].get('details')
             metrics = details.get('metrics')
             report_data = details.get('report_data')
-            return "single", metrics, report_data
+            return "single", metrics, report_data, temp
         else:
             return "multi", temp
     else:
         metrics = temp.get('metrics')
         report_data = temp.get('report_data')
-        return "single", metrics, report_data
+        return "single", metrics, report_data, temp
 
 
 @app.route('/reporting/success/')
@@ -64,9 +64,9 @@ def success():
         data = json.loads(data)
         response = get_data(data)
         if response[0] == "single":
-            metrics, report_data = response[1], response[2]
-            return render_template('plot_tables.html',
-                                   metrics=metrics, report_data=report_data)
+            metrics, report_data, results = response[1], response[2], response[3]
+            return render_template('plot_multi_data.html',
+                                   metrics=metrics, report_data=report_data, results=results)
         else:
             return render_template('plot_multi_data.html',
                                    results=response[1])
