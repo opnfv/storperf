@@ -90,12 +90,13 @@ do
     curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=$JOB&type=status" \
         -o $WORKSPACE/ci/job/status.json
     JOB_STATUS=`cat $WORKSPACE/ci/job/status.json | awk '/Status/ {print $2}' | cut -d\" -f2`
-    diff $WORKSPACE/ci/job/status.json $WORKSPACE/ci/job/old-status.json >/dev/null
-    if [ $? -eq 1 ]
+    if diff $WORKSPACE/ci/job/status.json $WORKSPACE/ci/job/old-status.json >/dev/null
     then
         cat $WORKSPACE/ci/job/status.json
     fi
 done
+
+set +e
 
 echo "Deleting stack for cleanup"
 curl -s -X DELETE --header 'Accept: application/json' 'http://127.0.0.1:5000/api/v1.0/configurations'
