@@ -8,21 +8,20 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-cd `dirname $0`
-
-# TODO: Switch based on installer type, for now this is hard coded to JOID only
+cd $(dirname "$0")
 
 if [ ! -d job ]
 then
     mkdir job
 fi
 
-export INSTALLER=`./detect_installer.sh`
+SSH_KEY=""
+INSTALLER="$(./detect_installer.sh)"
 case $INSTALLER in
     joid)
-        export OS_AUTH_URL=http://`juju status keystone | grep public | awk '{print $2}'`:5000/v2.0
-        export OS_USERNAME=admin
-        export OS_PASSWORD=openstack
+        OS_AUTH_URL=http://`juju status keystone | grep public | awk '{print $2}'`:5000/v2.0
+        OS_USERNAME=admin
+        OS_PASSWORD=openstack
         cat << EOF > job/openstack.rc
 export OS_AUTH_URL=$OS_AUTH_URL
 export OS_USERNAME=$OS_USERNAME
@@ -31,14 +30,32 @@ export OS_TENANT_NAME=admin
 export OS_PROJECT_NAME=admin
 EOF
         ;;
+    fuel)
+        INSTALLER_IP=`sudo virsh domifaddr cfg01 | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
+        if [ -z ${BRANCH} ]
+        then
+            BRANCH=master
+        fi
+        SALT_MASTER=${INSTALLER_IP}
+        if [ "$(hostname)" == "jenkins-slave-arm-virtual2" ]
+        then
+            SSH_KEY="-s /var/lib/opnfv/mcp.rsa"
+        fi
+        ;;
     apex)
         INSTALLER_IP=`sudo virsh domifaddr undercloud | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
         ;;
+    *)
+        echo "Unknown installer ${INSTALLER}"
+        exit 1
 esac
 
-if [ ! -z $INSTALLER_IP ]
+if [ ! -z "${INSTALLER_IP}" ]
 then
-    ./job/releng/utils/fetch_os_creds.sh -i $INSTALLER -a $INSTALLER_IP -d job/openstack.rc
+    CMD="./job/releng/utils/fetch_os_creds.sh -i $INSTALLER -a $INSTALLER_IP $SSH_KEY -d job/openstack.rc"
+    echo $CMD
+    $CMD
+
     echo export OS_PROJECT_NAME=admin >> job/openstack.rc
 fi
 

@@ -19,4 +19,10 @@ then
     INSTALLER=apex
 fi
 
+sudo virsh list --all | grep cfg01 >/dev/null
+if [ $? -eq 0 ]
+then
+    INSTALLER=fuel
+fi
+
 echo $INSTALLER
