@@ -8,15 +8,16 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-which juju 2>/dev/null
-if [ $? -eq 0 ]
-then
+if which juju >/dev/null 2>&1 ; then
     INSTALLER=joid
 fi
-sudo virsh list --all | grep undercloud >/dev/null
-if [ $? -eq 0 ]
-then
+
+if sudo virsh list --all | grep -q undercloud ; then
     INSTALLER=apex
+fi
+
+if sudo virsh list --all | grep -q cfg01 ; then
+    INSTALLER=fuel
 fi
 
 echo $INSTALLER
