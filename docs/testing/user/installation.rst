@@ -210,6 +210,8 @@ pulling the latest master Euphrates container is:
    docker pull opnfv/storperf-master:latest
    docker pull opnfv/storperf-reporting:latest
    docker pull opnfv/storperf-httpfrontend:latest
+   docker pull opnfv/storperf-swaggerui:latest
+   docker pull opnfv/storperf-graphite:latest
 
 However, by itself, this will no longer provide full functionality.  Full
 instructions are provided in the Running StorPerf Container section of this
