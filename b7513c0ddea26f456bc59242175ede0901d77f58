@@ -163,6 +163,24 @@
     },
     {
       "key": {
+        "uuid": "da33351e_85dceb13",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-09-13T13:44:22Z",
+      "side": 1,
+      "message": "So is that part of the heat template, or do they just get set as metadata on the glance image?",
+      "parentUuid": "da33351e_6f2b8694",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_cf19f289",
         "filename": "ci/daily.sh",
         "patchSetId": 3
