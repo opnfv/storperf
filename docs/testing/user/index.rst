@@ -15,3 +15,4 @@ StorPerf User Guide
    introduction.rst
    installation.rst
    test-usage.rst
+   storperf-reporting.rst
