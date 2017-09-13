@@ -36,6 +36,7 @@ StorPerf User Guide
 
    ./testing/user/introduction.rst
    ./testing/user/test-usage.rst
+   ./testing/user/storperf-reporting.rst
 
 
 Indices
