@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_ef483689",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 14,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "ARCH\u003d\"${ARCH:-$(uname -m)}\"",
+      "range": {
+        "startLine": 11,
+        "startChar": 0,
+        "endLine": 14,
+        "endChar": 2
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_4f5fa241",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "\"${ARCH}\" because paranoia (and shellcheck) recommend it",
+      "range": {
+        "startLine": 24,
+        "startChar": 9,
+        "endLine": 24,
+        "endChar": 16
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_2f5a1e50",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "let\u0027s use the uefi1 image, as things get *a lot* more complicated with the disk image, requiring direct kernel (3-part) boot ...\nThe E release Fuel on AArch64 works really nice with UEFI guests, but we also need to provide some extra properties (see below).",
+      "range": {
+        "startLine": 26,
+        "startChar": 48,
+        "endLine": 26,
+        "endChar": 53
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_8f59aa5c",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "\"{FILE}\"",
+      "range": {
+        "startLine": 40,
+        "startChar": 10,
+        "endLine": 40,
+        "endChar": 17
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_af358ef8",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "instead of removing the file, we could let wget deal with that, and maybe use timestamp to re-download only if the file changes, e.g.:\nhttps://github.com/opnfv/fuel/blob/master/mcp/scripts/lib.sh#L28",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_6f2b8694",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "on AArch64, we need to specify 2 extra properties:\n- hw_firmware_type (it tells the instance to use guest UEFI aka AAVMF);\n- hw_video_model (no cirrus on AArch64, only VGA, it will be obsoleted later after libvirt makes VGA the default on AArch64);\nSee: https://github.com/opnfv/functest/blob/master/functest/ci/config_aarch64_patch.yaml#L27",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_cf19f289",
+        "filename": "ci/daily.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "someone has been using shellcheck, nice :)",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_af1c6e78",
+        "filename": "ci/daily.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "To disable this per-file, see:\nhttps://github.com/opnfv/fuel/blob/master/ci/deploy.sh#L2",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_0f147a4c",
+        "filename": "ci/daily.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "same as before",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 2
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_ef167654",
+        "filename": "ci/launch_docker_container.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-13T01:40:16Z",
+      "side": 1,
+      "message": "DOCKER_TAG\u003d\"{DOCKER_TAG:-latest}\"",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 34,
+        "endChar": 2
+      },
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
