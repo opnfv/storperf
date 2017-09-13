@@ -71,6 +71,23 @@
     },
     {
       "key": {
+        "uuid": "da33351e_2f085e2c",
+        "filename": "ci/create_glance_image.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-09-13T01:44:45Z",
+      "side": 1,
+      "message": "Any opinions here?  I only use armhf with emulation, so I have not tried a *real* RPI OpenStack deployment.  Is this overkill?",
+      "revId": "b7513c0ddea26f456bc59242175ede0901d77f58",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_8f59aa5c",
         "filename": "ci/create_glance_image.sh",
         "patchSetId": 3
