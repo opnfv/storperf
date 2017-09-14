@@ -66,7 +66,7 @@ def success():
         if response[0] == "single":
             metrics, report_data = response[1], response[2]
             results = response[3]
-            return render_template('plot_multi_data.html',
+            return render_template('plot_tables.html',
                                    metrics=metrics, report_data=report_data,
                                    results=results)
         else:
