@@ -1,0 +1,165 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_11013c38",
+        "filename": "ci/daily.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "minor nitpick, this could be folded as well into a one line",
+      "range": {
+        "startLine": 63,
+        "startChar": 0,
+        "endLine": 66,
+        "endChar": 2
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_b197b0eb",
+        "filename": "ci/detect_installer.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "`grep -q` would be a tiny bit cleaner, since there\u0027s no useless piping; which leads to why not just:\nif virsh list --all | grep -q cfg01; then",
+      "range": {
+        "startLine": 22,
+        "startChar": 24,
+        "endLine": 22,
+        "endChar": 45
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_d1a2344a",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "$() is preferred if possible",
+      "range": {
+        "startLine": 34,
+        "startChar": 21,
+        "endLine": 34,
+        "endChar": 22
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_f19db80b",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "fold",
+      "range": {
+        "startLine": 35,
+        "startChar": 8,
+        "endLine": 38,
+        "endChar": 10
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_919c2c11",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "I don\u0027t see SALT_MASTER anywhere else",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 35
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_318ba0c4",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "please remove this condition, SSH_KEY will always be in that location for Fuel, even though we had it in ~/opnfv/ or /tmp in the past (sorry for changing sensitive stuff like this at this point in the release cycle).",
+      "range": {
+        "startLine": 40,
+        "startChar": 8,
+        "endLine": 40,
+        "endChar": 60
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_11881cc4",
+        "filename": "ci/launch_docker_container.sh",
+        "patchSetId": 4
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-14T17:24:55Z",
+      "side": 1,
+      "message": "`mkdir -p` does not mind if the directory already exists, it just skips creating it, so we can remove the if",
+      "range": {
+        "startLine": 19,
+        "startChar": 0,
+        "endLine": 22,
+        "endChar": 2
+      },
+      "revId": "eda26696dcb4eeb39da015a795b3e4b38b09dcd3",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
