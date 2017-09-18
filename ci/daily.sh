@@ -104,11 +104,18 @@ done
 
 set +e
 
+
+echo ==========================================================================
+echo StorPerf Master logs
+echo ==========================================================================
+docker logs storperf-master
+echo ==========================================================================
+
 echo "Deleting stack for cleanup"
 curl -s -X DELETE --header 'Accept: application/json' \
     'http://127.0.0.1:5000/api/v1.0/configurations'
 
-curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=${JOB&}type=metadata" \
+curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=${JOB}&type=metadata" \
     -o "${WORKSPACE}/ci/job/report.json"
 
 "${WORKSPACE}/ci/remove_docker_container.sh"
