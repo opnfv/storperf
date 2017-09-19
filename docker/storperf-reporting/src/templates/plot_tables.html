@@ -74,18 +74,43 @@
         page = [];
         metrics = {{ metrics | tojson | safe }};
         report_data = {{ report_data | tojson | safe }};
+        results = {{ results | tojson | safe }};
+        results = results[0];
         keys = [];
         for (var k in report_data){
             keys.push(k);
         }
-        //console.log(keys);
-        text = "";
-        for (var i = 0; i < keys.length; i++ ){
-            text += "<div class='row' id='row-"+ keys[i] +"'>";
-            text += "<h4 onclick=add_test('" + keys[i] + "')>" + keys[i] + "</h4>";
-            text += "</div>";
+        init();
+        function init(){
+            text = "<a href='/reporting/'><button type='button' class='btn btn-default btn-lg'>Go back</button></a><br><br>";
+            text += "<div class='row well'>";
+            text += "<h4> ID  : " + results["_id"] + "</h4>";
+            text += "<h4> Start Date  : " + results["start_date"] + "</h4>";
+            text += "<h4> Criteria  : " + results["criteria"] + "</h4>";
+            text += "<h4> Build Tag  : " + results["build_tag"] + "</h4>";
+            text += "<button type='button' class='btn btn-default btn-lg' onclick=add_info()> Click here to view details </button>"; 
+            text += "</div>"; 
+            text += "<div id='info'></div>";
+            $("#content").html(text);
         }
-        $("#content").html(text);
+        function add_info(){
+            text = "<button type='button' class='btn btn-default btn-lg' onclick=init()>Go back</button><br><br>";
+            text += "<div class='row well'>";
+            text += "<h4> ID  : " + results["_id"] + "</h4>";
+            text += "<h4> Start Date  : " + results["start_date"] + "</h4>";
+            text += "<h4> Criteria  : " + results["criteria"] + "</h4>";
+            text += "<h4> Build Tag  : " + results["build_tag"] + "</h4>";
+            text += "<button type='button' class='btn btn-default btn-lg' onclick=create_block_report()> Steady State Convergence Report - All Block Sizes </button>";
+            text += "<div class='row' id='block_report'></div>"
+            text += "</div>"; 
+            text += "<div id='info'></div>";
+            for (var i = 0; i < keys.length; i++ ){
+                text += "<div class='row' id='row-"+ keys[i] +"'>";
+                text += "<h4 onclick=add_test('" + keys[i] + "')>" + keys[i] + "</h4>";
+                text += "</div>";
+            }
+            $("#content").html(text);
+        }
 
         function add_test(key){
             if(document.getElementById("test-" + key) == null){
@@ -227,6 +252,74 @@
             table += "</tbody></table>";
             document.getElementById("report").innerHTML = table;
 
+        }
+        function create_block_report(){
+            var ele = document.getElementById("block_report");
+            var text = "";
+            text += "<br><ul class='list-group' style='margin: auto;'>"
+            text += "<li class='list-group-item'><h5>Read</h5></li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','bw')>Bandwidth (KB/s)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','iops')>IOPS</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item'><h5>Write</h5></li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','bw')>Bandwidth (KB/s)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','iops')>IOPS</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item' onclick=close_block_report()><h5>Close</h5></li>";
+            text += "</ul>";
+            ele.innerHTML = text;
+        }
+        function close_block_report(){
+            document.getElementById("block_report").innerHTML = "";
+        }
+        function create_block_graph(key,test){
+            data = {};
+            for(i in report_data){
+                if(report_data[i][test] == undefined && test == 'lat_ns.mean')
+                    test = 'lat.mean';
+                data[i] = report_data[i][test][key]; 
+            }
+            var  modal = document.getElementById('myModal');
+            var modal_div = document.getElementById('modal-text');
+            modal_div.innerHTML += "<div id='graph'></div><br><div id='report'></div>";
+            var name = "";
+            var average = data["average"];
+            if(test == "bw")
+                name = "Bandwidth (KB/s)";
+            else if(test == "iops")
+                name = "IOPS";
+            else
+                name = "Latency (nanoseconds/ns)";
+            var plot_data = [];
+            for(i in data){
+                var x = [];
+                var y = [];
+                var len = data[i]["series"].length;
+                for(var j = 0 ; j < len ; j++){
+                    x[j] = data[i]["series"][j][0];
+                    y[j] = data[i]["series"][j][1];
+                }
+                var trace = {
+                    x: x,
+                    y: y,
+                    type: 'scatter',
+                    name: i
+                };
+                plot_data.push(trace);
+            }
+            var layout = {
+                autosize: true,
+                xaxis: {
+                    title: 'Round'
+                },
+                yaxis: {
+                    title: name
+                },
+                height: 500,
+                width: 500,
+            };
+            Plotly.newPlot('graph',plot_data,layout);
+            modal.style.display = "block";
         }
         document.getElementById("close").onclick = function(){
             document.getElementById('modal-text').innerHTML = "";

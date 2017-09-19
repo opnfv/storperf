@@ -83,7 +83,6 @@ ul {
         results = {{ results | tojson | safe }};
         function init(){
             page = [];
-            report_data = results[0]["details"]["report_data"];
             ids = [];
             text = "<a href='/reporting/'><button type='button' class='btn btn-default btn-lg'>Go back</button></a><br><br>";
             for ( var i = 0; i < results.length ; i++ ){
@@ -119,6 +118,8 @@ ul {
             text += "<h4> Criteria  : " + results[i]["criteria"] + "</h4>";
             text += "<h4> Build Tag  : " + results[i]["build_tag"] + "</h4>";
             text += "<button type='button' class='btn btn-default btn-lg' onclick=init()>Go Back</button>";
+            text += "<button type='button' class='btn btn-default btn-lg' onclick=create_block_report() style='float: right;'> Steady State Convergence Report - All Block Sizes </button>";
+            text += "<div class='row' id='block_report'></div>"
             text += "</div>";
             for (var i = 0; i < keys.length; i++ ){
                 text += "<div class='row' id='row-"+ keys[i] +"'>";
@@ -267,6 +268,79 @@ ul {
             table += "</tbody></table>";
             document.getElementById("report").innerHTML = table;
 
+        }
+        function create_block_report(){
+            var ele = document.getElementById("block_report");
+            var text = "";
+            text += "<br><ul class='list-group' style='margin: auto;'>"
+            text += "<li class='list-group-item'><h5>Read</h5></li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','bw')>Bandwidth (KB/s)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','iops')>IOPS</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item'><h5>Write</h5></li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','bw')>Bandwidth (KB/s)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','iops')>IOPS</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item' onclick=close_block_report()><h5>Close</h5></li>";
+            text += "</ul>";
+            ele.innerHTML = text;
+        }
+        function close_block_report(){
+            document.getElementById("block_report").innerHTML = "";
+        }
+        function create_block_graph(key,test){
+            data = {};
+            for(i in report_data){
+                data[i] = report_data[i][test][key]; 
+            }
+            var  modal = document.getElementById('myModal');
+            var modal_div = document.getElementById('modal-text');
+            modal_div.innerHTML += "<div id='graph'></div><br><div id='report'></div>";
+            var name = "";
+            var average = data["average"];
+            if(test == "bw")
+                name = "Bandwidth (KB/s)";
+            else if(test == "iops")
+                name = "IOPS";
+            else
+                name = "Latency (nanoseconds/ns)";
+            var plot_data = [];
+            for(i in data){
+                var x = [];
+                var y = [];
+                var len = data[i]["series"].length;
+                for(var j = 0 ; j < len ; j++){
+                    x[j] = data[i]["series"][j][0];
+                    y[j] = data[i]["series"][j][1];
+                }
+                var trace = {
+                    x: x,
+                    y: y,
+                    type: 'scatter',
+                    name: i
+                };
+                plot_data.push(trace);
+            }
+            var layout = {
+                autosize: false,
+                xaxis: {
+                    title: 'Round'
+                },
+                yaxis: {
+                    title: name
+                },
+                margin: {
+                  l: 0,
+                  r: 0,
+                  b: 0,
+                  t: 0,
+                  pad: 4
+                },
+                width: 500,
+                height: 500
+            };
+            Plotly.newPlot('graph',plot_data,layout);
+            modal.style.display = "block";
         }
         init();
         document.getElementById("close").onclick = function(){
