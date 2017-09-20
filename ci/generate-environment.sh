@@ -16,6 +16,7 @@ fi
 ssh_options="-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 
 export INSTALLER=`./detect_installer.sh`
+TARGET="/dev/vdb"
 
 case $INSTALLER in
     joid)
@@ -36,6 +37,12 @@ case $INSTALLER in
         # juju status | grep hardware: | grep tags | grep -v virtual
         NETWORK=ext-net
         ;;
+    fuel)
+        CINDER_BACKEND=LVM
+        CINDER_NODES=4
+        NETWORK=floating_net
+        TARGET="/dev/vdc"
+        ;;
     apex)
         INSTALLER_IP=`sudo virsh domifaddr undercloud | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
         CINDER_BACKEND=ceph
@@ -54,4 +61,5 @@ export CINDER_BACKEND=$CINDER_BACKEND
 export CINDER_NODES=$CINDER_NODES
 export INSTALLER=$INSTALLER
 export NETWORK=$NETWORK
+export TARGET=$TARGET
 EOF

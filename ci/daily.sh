@@ -36,8 +36,10 @@ pip install python-openstackclient==3.7.0
 pip install python-heatclient==1.7.0
 
 "${WORKSPACE}/ci/generate-admin-rc.sh"
+
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> "${WORKSPACE}/ci/job/admin.rc"
 "${WORKSPACE}/ci/generate-environment.sh"
+
 
 # shellcheck source=/dev/null
 source "${WORKSPACE}/ci/job/environment.rc"
@@ -61,7 +63,6 @@ export VOLUME_SIZE=${VOLUME_SIZE:-2}
 export WORKLOADS=${WORKLOADS:-ws,rs,rw}
 
 ARCH="${ARCH:-$(uname -m)}"
-IMAGE_NAME="Ubuntu 16.04 ${ARCH}"
 
 echo ==========================================================================
 echo Environment
@@ -71,6 +72,7 @@ echo ==========================================================================
 "$WORKSPACE/ci/remove_docker_container.sh"
 "$WORKSPACE/ci/delete_stack.sh"
 "$WORKSPACE/ci/create_glance_image.sh"
+IMAGE_NAME=$(cat $WORKSPACE/ci/job/glance_image_name)
 "$WORKSPACE/ci/create_storperf_flavor.sh"
 "$WORKSPACE/ci/launch_docker_container.sh"
 "$WORKSPACE/ci/create_stack.sh" "${AGENT_COUNT}" "${VOLUME_SIZE}" "${IMAGE_NAME}" "${NETWORK}"
@@ -82,8 +84,6 @@ export QUEUE_DEPTH="${QUEUE_DEPTHS}"
 echo "=========================================================================="
 echo "Starting run of ${WORKLOAD} ${BLOCK_SIZE} ${QUEUE_DEPTH}"
 echo "=========================================================================="
-
-exit 0
 
 JOB=$("${WORKSPACE}/ci/start_job.sh" \
     | awk '/job_id/ {print $2}' | sed 's/"//g')
