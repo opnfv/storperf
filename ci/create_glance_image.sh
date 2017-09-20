@@ -10,7 +10,7 @@
 
 ARCH="${ARCH:-$(uname -m)}"
 
-IMAGE_NAME="Ubuntu 16.04 ${ARCH}"
+IMAGE_NAME="Ubuntu 17.04 ${ARCH}"
 
 echo "Checking for ${IMAGE_NAME} in Glance"
 
@@ -21,14 +21,14 @@ then
 
     case "${ARCH}" in
     aarch64)
-        FILE=ubuntu-16.04-server-cloudimg-arm64-uefi1.img
+        FILE=ubuntu-17.04-server-cloudimg-arm64.img
         PROPERTIES="--property hw_firmware_type=uefi --property hw_video_model=vga"
         ;;
     armhf)
-        FILE=ubuntu-16.04-server-cloudimg-armhf-disk1.img
+        FILE=ubuntu-17.04-server-cloudimg-armhf.img
         ;;
     x86_64)
-        FILE=ubuntu-16.04-server-cloudimg-amd64-disk1.img
+        FILE=ubuntu-17.04-server-cloudimg-amd64.img
         ;;
     *)
         echo "Unsupported architecture: ${ARCH}"
@@ -36,7 +36,7 @@ then
         ;;
     esac
 
-    wget --continue -q "https://cloud-images.ubuntu.com/releases/16.04/release/${FILE}"
+    wget --continue -q "https://cloud-images.ubuntu.com/releases/17.04/release/${FILE}"
     openstack image create "${IMAGE_NAME}" --disk-format qcow2 --public \
     ${PROPERTIES} \
     --container-format bare --file "${FILE}"
