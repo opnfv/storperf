@@ -36,6 +36,11 @@ case $INSTALLER in
         # juju status | grep hardware: | grep tags | grep -v virtual
         NETWORK=ext-net
         ;;
+    fuel)
+        CINDER_BACKEND=LVM
+        CINDER_NODES=4
+        NETWORK=floating_net
+        ;;
     apex)
         INSTALLER_IP=`sudo virsh domifaddr undercloud | grep ipv4 | awk '{print $4}' | cut -d/ -f1`
         CINDER_BACKEND=ceph

@@ -13,6 +13,8 @@ services:
         container_name: "storperf-master"
         image: "opnfv/storperf-master:${TAG}"
         env_file: ${ENV_FILE}
+        volumes:
+            - ./certs:/etc/ssl/certs/
         links:
             - storperf-graphite
 
@@ -29,6 +31,7 @@ services:
         image: "opnfv/storperf-graphite:${TAG}"
         volumes:
             - ${CARBON_DIR}:/opt/graphite/storage/whisper
+
 
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"
