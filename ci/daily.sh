@@ -36,8 +36,14 @@ pip install python-openstackclient==3.7.0
 pip install python-heatclient==1.7.0
 
 "${WORKSPACE}/ci/generate-admin-rc.sh"
+
+echo rc=$?
+
+exit 0
+
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> "${WORKSPACE}/ci/job/admin.rc"
 "${WORKSPACE}/ci/generate-environment.sh"
+
 
 # shellcheck source=/dev/null
 source "${WORKSPACE}/ci/job/environment.rc"

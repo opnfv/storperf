@@ -538,7 +538,14 @@ class StorPerfMaster(object):
 
             loader = loading.get_plugin_loader('password')
             auth = loader.load_from_options(**creds)
-            sess = session.Session(auth=auth)
+
+            https_cacert = os.getenv('OS_CACERT', '')
+            https_insecure = os.getenv('OS_INSECURE', '').lower() == 'true'
+
+            self.logger.info("cacert=%s" % https_cacert)
+
+            sess = session.Session(auth=auth,
+                                   verify=(https_cacert or not https_insecure))
 
             self.logger.debug("Looking up orchestration endpoint")
             heat_endpoint = sess.get_endpoint(auth=auth,
@@ -546,13 +553,13 @@ class StorPerfMaster(object):
                                               endpoint_type='publicURL')
 
             self.logger.debug("Orchestration endpoint is %s" % heat_endpoint)
-            token = sess.get_token(auth=auth)
 
             self._heat_client = heatclient.Client(
                 "1",
                 endpoint=heat_endpoint,
-                token=token)
+                session=sess)
 
             self.logger.debug("Creating cinder client")
-            self._cinder_client = cinderclient.Client("2", session=sess)
+            self._cinder_client = cinderclient.Client("2", session=sess,
+                                                      cacert=https_cacert)
             self.logger.debug("OpenStack authentication complete")
