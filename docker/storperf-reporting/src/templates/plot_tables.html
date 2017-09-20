@@ -11,44 +11,6 @@
     <script src="/reporting/js/plotly-latest.min.js"></script>
     <script src="/reporting/js/Chart.min.js"></script>
     <style>
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-/* The Close Button */
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
 </style>
 </head>
 
@@ -57,15 +19,6 @@
         {% include 'header.html' %}
         <div id="content"><strong>Loading...</strong>
         </div>
-        <div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-      <span class="close" id="close">&times;</span>
-    <div id="modal-text"></div>
-  </div>
-
-</div>
         <center>
             <div id="page-selection"></div>
         </center>
@@ -135,18 +88,32 @@
             if(document.getElementById('list-' + key + '-' + test ) == null){
                 for( item in report_data[key][test] ){
                     var state = report_data[key][test][item]["steady_state"];
-                    text += "<li onclick=create_modal('" + key + "','" + test + "','" + item + "') id='" +
-                            key + "-" + test + "-" + item + "'>" + item + " (steady state: " + state +")</li>";
+                    text += "<li onclick=create_modal('" + key + "','" + test + "','" + item + "') id='";
+                    text += key + "-" + test + "-" + item + "'>" + item + " (steady state: " + state +")"; 
+                    text += "<br><div id='modal-" + key + "-" + test + "-" + item + "'>";
+                    text += '<div class="modal-content-'+ key + '-' + test + '-' + item +'">';
+                    text += '<div id="modal-text-'+ key + '-' + test + '-' + item +'"></div>';
+                    text += "</div></div></li>";
+                    text += '<button class="btn btn-default" id="close-'+ key + '-' + test + '-' + item +'" style="display: none;" onclick=close_graph("'+ key + '","' + test + '","' + item + '")>Close</button><br>';
                 }
                 text += "</ul>"
                 var div = document.getElementById("li-" + key + "-" + test);
                 div.innerHTML += text;
             }
         }
+
+        function close_graph(key,test,item){
+            document.getElementById('close-'+key+'-'+test+'-'+item).style.display = "none";
+            document.getElementById('modal-text-'+ key + '-' + test + '-' + item).innerHTML = "";
+
+        }
+
         function create_modal(key,test,item){
-            var  modal = document.getElementById('myModal');
-            var modal_div = document.getElementById('modal-text');
-            modal_div.innerHTML += "<div id='graph'></div><br><div id='report'></div>";
+            var  modal = document.getElementById('modal-'+key+'-'+test+'-'+item);
+            var modal_div = document.getElementById('modal-text-'+ key + '-' + test + '-' + item);
+            modal_div.innerHTML += "<div id='graph-"+key+"-"+test+"-"+item+"'></div><br><div id='report-"+key+"-"+test+"-"+item+"'></div>";
+            var close_btn = document.getElementById('close-'+key+'-'+test+'-'+item);
+            close_btn.style.display = "block";
             data = report_data[key][test][item];
             var x = [];
             var y = [];
@@ -239,7 +206,7 @@
                 type: 'scatter'
             };
             var plot_data = [trace1,trace2,trace3,trace4,trace5];
-            Plotly.newPlot('graph',plot_data,layout);
+            Plotly.newPlot('graph-'+key+'-'+test+'-'+item,plot_data,layout);
             modal.style.display = "block";
             table = "<table class='table table-bordered'>";
             table += "<thead><tr>Steady State Determination Data</tr></thead>";
@@ -250,27 +217,63 @@
             table += "<tr><td> Allowed Maximum Slope Excursion: " + 0.1*average +
                      "</td><td> Measured Maximum Slope Excursion: " + data["slope"] + "</td></tr>";
             table += "</tbody></table>";
-            document.getElementById("report").innerHTML = table;
-
+            document.getElementById("report-" + key + "-" + test + "-" + item).innerHTML = table;
         }
+
         function create_block_report(){
             var ele = document.getElementById("block_report");
             var text = "";
-            text += "<br><ul class='list-group' style='margin: auto;'>"
+            text += "<ul class='list-group' style='margin: auto;'>"
             text += "<li class='list-group-item'><h5>Read</h5></li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','bw')>Bandwidth (KB/s)</li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','iops')>IOPS</li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' ";
+            text += "onclick=create_block_graph('read','bw')>Bandwidth (KB/s)";
+            text += "<div id='modal-block-report-read-bw'>";
+            text += '<div class="modal-content-block-report-read-bw">';
+            text += '<div id="modal-text-block-report-read-bw"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-read-bw" style="display: none;" onclick=close_block_graph("read","bw")>Close Graph</div>';
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','iops')>IOPS";
+            text += "<div id='modal-block-report-read-iops'>";
+            text += '<div class="modal-content-block-report-read-iops">';
+            text += '<div id="modal-text-block-report-read-iops"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-read-bw" style="display: none;" onclick=close_block_graph("read","iops")>Close Graph</div>';
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('read','lat_ns.mean')>Latency (nanoseconds/ns)";
+            text += "<div id='modal-block-report-read-lat_ns.mean'>";
+            text += '<div class="modal-content-block-report-read-lat_ns.mean">';
+            text += '<div id="modal-text-block-report-read-lat_ns.mean"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-read-lat_ns.mean" style="display: none;" onclick=close_block_graph("read","lat_ns.mean")>Close Graph</div>';
             text += "<li class='list-group-item'><h5>Write</h5></li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','bw')>Bandwidth (KB/s)</li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','iops')>IOPS</li>";
-            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','lat_ns.mean')>Latency (nanoseconds/ns)</li>";
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','bw')>Bandwidth (KB/s)";
+            text += "<div id='modal-block-report-write-bw'>";
+            text += '<div class="modal-content-block-report-write-bw">';
+            text += '<div id="modal-text-block-report-write-bw"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-write-bw" style="display: none;" onclick=close_block_graph("write,"bw")>Close Graph</div>';
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','iops')>IOPS";
+            text += "<div id='modal-block-report-write-tops'>";
+            text += '<div class="modal-content-block-report-write-iops">';
+            text += '<div id="modal-text-block-report-write-iops"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-write-iops" style="display: none;" onclick=close_block_graph("write","iops")>Close Graph</div>';
+            text += "<li class='list-group-item' style='text-indent:20px;' onclick=create_block_graph('write','lat_ns.mean')>Latency (nanoseconds/ns)";
+            text += "<div id='modal-block-report-write-lat_ns.mean'>";
+            text += '<div class="modal-content-block-report-write-lat_ns.mean">';
+            text += '<div id="modal-text-block-report-write-lat_ns.mean"></div>';
+            text += "</div></div></li>";
+            text += '<div class="list-group-item" id="close-block-report-write-lat_ns.mean" style="display: none;" onclick=close_block_graph("write","lat_ns.mean")>Close Graph</div>';
             text += "<li class='list-group-item' onclick=close_block_report()><h5>Close</h5></li>";
             text += "</ul>";
             ele.innerHTML = text;
         }
         function close_block_report(){
             document.getElementById("block_report").innerHTML = "";
+        }
+        function close_block_graph(key,test){
+            document.getElementById('close-block-report-'+key+'-'+test).style.display = "none";
+            document.getElementById('modal-text-block-report-'+ key + '-' + test).innerHTML = "";
+
         }
         function create_block_graph(key,test){
             data = {};
@@ -279,9 +282,10 @@
                     test = 'lat.mean';
                 data[i] = report_data[i][test][key]; 
             }
-            var  modal = document.getElementById('myModal');
-            var modal_div = document.getElementById('modal-text');
-            modal_div.innerHTML += "<div id='graph'></div><br><div id='report'></div>";
+            document.getElementById('close-block-report-'+key+'-'+test).style.display = 'block';
+            var  modal = document.getElementById('modal-block-report-'+key+'-'+test);
+            var modal_div = document.getElementById('modal-text-block-report-'+key+'-'+test);
+            modal_div.innerHTML += "<div id='graph-"+key+ "-"+ test+ "'></div><br><div id='report-"+key+ "-"+ test+ "'></div>";
             var name = "";
             var average = data["average"];
             if(test == "bw")
@@ -315,17 +319,12 @@
                 yaxis: {
                     title: name
                 },
-                height: 500,
-                width: 500,
             };
-            Plotly.newPlot('graph',plot_data,layout);
+            Plotly.newPlot('graph-'+key+'-'+test,plot_data,layout);
             modal.style.display = "block";
         }
-        document.getElementById("close").onclick = function(){
-            document.getElementById('modal-text').innerHTML = "";
-            document.getElementById("myModal").style.display = "none";
-        }
-    </script>
+
+        </script>
 </body>
 
 </html>
