@@ -26,6 +26,8 @@ services:
         container_name: "storperf-master"
         image: "opnfv/storperf-master:{storperf_tag}"
         env_file: {ENV_FILE}
+        volumes:
+            - ./certs:/etc/ssl/certs/
         links:
             - storperf-graphite
 
@@ -54,19 +56,20 @@ services:
             - storperf-swaggerui
             - storperf-graphite
 '''
-storeperf_tag = input("Enter image TAG for storperf-master: ") or 'latest'
+storeperf_tag = input("Enter image TAG for storperf-master: ") \
+    or 'x86_64-latest'
 assert isinstance(storeperf_tag, str)
 
-reporting_tag = input("Enter image TAG for reporting: ") or 'latest'
+reporting_tag = input("Enter image TAG for reporting: ") or 'x86_64-latest'
 assert isinstance(reporting_tag, str)
 
-frontend_tag = input("Enter image TAG for frontend: ") or 'latest'
+frontend_tag = input("Enter image TAG for frontend: ") or 'x86_64-latest'
 assert isinstance(frontend_tag, str)
 
-graphite_tag = input("Enter image TAG for graphite: ") or 'latest'
+graphite_tag = input("Enter image TAG for graphite: ") or 'x86_64-latest'
 assert isinstance(graphite_tag, str)
 
-swaggerui_tag = input("Enter image TAG for swaggerui: ") or 'latest'
+swaggerui_tag = input("Enter image TAG for swaggerui: ") or 'x86_64-latest'
 assert isinstance(swaggerui_tag, str)
 
 env_file = input("Enter path to environment file: ")
