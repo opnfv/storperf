@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_d306a61c",
+        "filename": "docker-compose/docker-compose.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-09-21T00:31:23Z",
+      "side": 1,
+      "message": "Volume for Carbon is missing?\n\ncreate-compose.py needs to be updated to reflect this change.",
+      "revId": "32c34e797c705e1ae83bf3d3645400510aee6ec8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
