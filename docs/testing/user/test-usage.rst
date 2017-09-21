@@ -209,6 +209,7 @@ This is an example of a type=status call.
      }
    }
 
+If the `job_id` is not provided along with `type` status, then all jobs are returned along with their status.
 Metrics
 ~~~~~~~
 Metrics can be queried at any time during or after the completion of a run.
