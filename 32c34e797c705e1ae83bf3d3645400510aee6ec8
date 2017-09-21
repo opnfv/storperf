@@ -2,6 +2,69 @@
   "comments": [
     {
       "key": {
+        "uuid": "da33351e_93b9be17",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-21T03:17:55Z",
+      "side": 1,
+      "message": "`mkdir -p job` already checks whether the dir exists, so the condition could be removed",
+      "range": {
+        "startLine": 13,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 2
+      },
+      "revId": "32c34e797c705e1ae83bf3d3645400510aee6ec8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_1345ae16",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-21T03:17:55Z",
+      "side": 1,
+      "message": "sed -e \u0027s/export //g\u0027 -e \u0027s/\"//g\u0027\nBut how about replaing the whole line with a nice awk:\nawk \u0027/export / { gsub(/\"/, x); print $2}\u0027 job/openstack.rc \u003e job/admin.rc",
+      "range": {
+        "startLine": 59,
+        "startChar": 33,
+        "endLine": 59,
+        "endChar": 65
+      },
+      "revId": "32c34e797c705e1ae83bf3d3645400510aee6ec8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_734d1a3e",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 1
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-21T03:17:55Z",
+      "side": 1,
+      "message": "extra line",
+      "revId": "32c34e797c705e1ae83bf3d3645400510aee6ec8",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "da33351e_d306a61c",
         "filename": "docker-compose/docker-compose.yaml",
         "patchSetId": 1
