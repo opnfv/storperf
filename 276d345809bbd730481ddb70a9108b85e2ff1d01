@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_f9062985",
+        "filename": "ci/generate-admin-rc.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-21T17:53:32Z",
+      "side": 1,
+      "message": "grep | awk can usually be rewritten using only awk:\nawk \u0027/public/ {print $2}\u0027",
+      "range": {
+        "startLine": 20,
+        "startChar": 52,
+        "endLine": 20,
+        "endChar": 82
+      },
+      "revId": "276d345809bbd730481ddb70a9108b85e2ff1d01",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da33351e_d90b658c",
+        "filename": "docker-compose/create-compose.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 2997
+      },
+      "writtenOn": "2017-09-21T17:53:32Z",
+      "side": 1,
+      "message": "I remember seeing some discussion around this, apparently it\u0027s not recommend to use \\ to do line breaks in py.\nIf I remember right, the recommended form is (input or ...), but I might be wrong.\nBut since we have multiple references to this default str, how about defining a variable for it, and use os.something (was it arch, cpu_arch?, I don\u0027t rememberm, but I can look it up if needed) to provide a default that also works for AArch64.",
+      "range": {
+        "startLine": 59,
+        "startChar": 63,
+        "endLine": 59,
+        "endChar": 64
+      },
+      "revId": "276d345809bbd730481ddb70a9108b85e2ff1d01",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
