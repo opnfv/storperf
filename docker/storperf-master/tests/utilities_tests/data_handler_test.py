@@ -301,8 +301,8 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual('FAIL', self.db_results[1]['criteria'],
                          'Expected FAIL in criteria')
         self.assertEqual('2017-09-04 21:05:00',
-                         self.db_results[1]['start_time'],
+                         self.db_results[1]['start_date'],
                          'Start time')
         self.assertEqual('2017-09-04 21:20:00',
-                         self.db_results[1]['end_time'],
+                         self.db_results[1]['stop_date'],
                          'End time')
