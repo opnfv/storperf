@@ -141,11 +141,11 @@ class DataHandler(object):
             criteria = 'FAIL'
         executor.metadata['criteria'] = criteria
 
-        executor.metadata['start_time'] = \
+        executor.metadata['start_date'] = \
             time.strftime('%Y-%m-%d %H:%M:%S',
                           time.gmtime(executor.start_time))
 
-        executor.metadata['end_time'] = \
+        executor.metadata['stop_date'] = \
             time.strftime('%Y-%m-%d %H:%M:%S',
                           time.gmtime(executor.end_time))
 

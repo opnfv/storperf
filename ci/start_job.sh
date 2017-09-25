@@ -18,7 +18,7 @@ cat << EOF > body.json
    "metadata": {
         "disk_type": "${DISK_TYPE}",
         "pod_name": "${POD_NAME}",
-        "scenario_name": "${SCENARIO_NAME}",
+        "scenario": "${SCENARIO_NAME}",
         "storage_node_count": ${CINDER_NODES},
         "version": "${VERSION}",
         "build_tag": "${BUILD_TAG}",
