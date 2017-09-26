@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_dc73457e",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 284,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-09-26T19:49:15Z",
+      "side": 1,
+      "message": "This looks like a change in indentation, which means the else now belongs to \n\n  if metrics_type \u003d\u003d \"status\"\n\nwhere before it was the else to \n\n  if workload_id:\n\nSo that means if no id is specified, this code will never be hit.",
+      "revId": "582402daf34e7fbc241aac5fcd31d2cbfdae37f0",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
