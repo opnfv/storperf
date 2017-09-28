@@ -129,16 +129,9 @@ class DataHandler(object):
     def _push_to_db(self, executor):
         executor.metadata['duration'] = executor.end_time - executor.start_time
 
-        steady_state = True
-        for _, value in executor.metadata['details']['steady_state'].items():
-            steady_state = steady_state and value
-
         executor.metadata['timestart'] = executor.start_time
 
-        if steady_state:
-            criteria = 'PASS'
-        else:
-            criteria = 'FAIL'
+        criteria = self._determine_criteria(executor.metadata)
         executor.metadata['criteria'] = criteria
 
         executor.metadata['start_date'] = \
@@ -160,3 +153,14 @@ class DataHandler(object):
                 executor.result_url = response['href']
             except Exception:
                 self.logger.exception("Error pushing results into Database")
+
+    def _determine_criteria(self, metadata):
+        steady_state = True
+        for workload, value in metadata['details']['steady_state'].items():
+            if not workload.startswith("_"):
+                steady_state = steady_state and value
+
+        if steady_state:
+            return "PASS"
+        else:
+            return "FAIL"
