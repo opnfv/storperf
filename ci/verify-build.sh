@@ -55,6 +55,8 @@ function check_for_life() {
 
 FAILURES=0
 
+set +e
+
 check_for_life storperf-httpfrontend "/"
 FAILURES=$((FAILURES + $?))
 
