@@ -280,11 +280,17 @@ class Job(Resource):
 
             if metrics_type == "status":
                 return jsonify(storperf.fetch_job_status(workload_id))
+
         else:
             metrics_type = None
             if request.args.get('type'):
                 metrics_type = request.args.get('type')
-            return jsonify(storperf.fetch_all_jobs(metrics_type))
+
+            if metrics_type == "status":
+                return jsonify(storperf.fetch_job_status(workload_id))
+
+            else:
+                return jsonify(storperf.fetch_all_jobs(metrics_type))
 
     @swagger.operation(
         parameters=[
