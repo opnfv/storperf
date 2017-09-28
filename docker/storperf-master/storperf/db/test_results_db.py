@@ -17,10 +17,10 @@ def push_results_to_db(db_url, details, logger):
     """
     url = db_url + "/results"
 
-    params = details.copy()
-    params.pop('details')
+    params = details["report"]
 
-    logger.info("popped params= %s" % params)
+    if logger:
+        logger.info("popped params= %s" % params)
 
     headers = {'Content-Type': 'application/json'}
     try:
@@ -35,6 +35,7 @@ def push_results_to_db(db_url, details, logger):
             logger.debug(r.content)
         return json.loads(r.content)
     except Exception:
-        logger.exception("Error [push_results_to_db('%s', '%s')]:" %
-                         (db_url, params))
+        if logger:
+            logger.exception("Error [push_results_to_db('%s', '%s')]:" %
+                             (db_url, params))
         return None
