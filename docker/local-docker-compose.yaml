@@ -44,8 +44,6 @@ services:
             context: storperf-graphite
             args:
                 ARCH: ${ARCH}
-        volumes:
-            - ${CARBON_DIR}:/opt/graphite/storage/whisper
 
     storperf-httpfrontend:
         container_name: "storperf-httpfrontend"
