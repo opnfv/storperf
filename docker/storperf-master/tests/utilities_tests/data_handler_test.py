@@ -306,3 +306,32 @@ class DataHandlerTest(unittest.TestCase):
         self.assertEqual('2017-09-04 21:20:00',
                          self.db_results[1]['stop_date'],
                          'End time')
+
+    def test_pass_criteria(self):
+        metadata = {
+            "details": {
+              "steady_state": {
+                "_warm_up.queue-depth.8.block-size.16384": False,
+                "rw.queue-depth.4.block-size.16384": True
+              }
+            },
+        }
+        criteria = self.data_handler._determine_criteria(metadata)
+        self.assertEqual('PASS',
+                         criteria,
+                         'PASS')
+
+    def test_fail_criteria(self):
+        metadata = {
+            "details": {
+              "steady_state": {
+                "_warm_up.queue-depth.8.block-size.16384": False,
+                "rw.queue-depth.4.block-size.16384": True,
+                "rw.queue-depth.8.block-size.16384": False
+              }
+            },
+        }
+        criteria = self.data_handler._determine_criteria(metadata)
+        self.assertEqual('FAIL',
+                         criteria,
+                         'FAIL')
