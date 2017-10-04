@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da33351e_cca1b7f9",
+        "filename": "docs/release/release-notes/release-notes.rst",
+        "patchSetId": 5
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2017-10-04T20:07:41Z",
+      "side": 1,
+      "message": "Typo.\nIt would be better to to associate links with feature additions and bug fixes. Just a suggestion",
+      "range": {
+        "startLine": 80,
+        "startChar": 85,
+        "endLine": 80,
+        "endChar": 91
+      },
+      "revId": "4c15604abb2aa69179d0bac2d1a33740e8f9f11e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
