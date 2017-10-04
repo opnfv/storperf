@@ -83,6 +83,8 @@ echo "==========================================================================
 echo "Starting run of ${WORKLOAD} ${BLOCK_SIZE} ${QUEUE_DEPTH}"
 echo "=========================================================================="
 
+exit 0
+
 JOB=$("${WORKSPACE}/ci/start_job.sh" \
     | awk '/job_id/ {print $2}' | sed 's/"//g')
 curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=${JOB}&type=status" \

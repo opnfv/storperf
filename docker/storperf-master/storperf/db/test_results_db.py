@@ -17,17 +17,12 @@ def push_results_to_db(db_url, details, logger):
     """
     url = db_url + "/results"
 
-    params = details["report"]
-
-    if logger:
-        logger.info("popped params= %s" % params)
-
     headers = {'Content-Type': 'application/json'}
     try:
         if logger:
-            jsonified_params = json.dumps(params)
+            jsonified_params = json.dumps(details)
             logger.info("Pushing results to %s" % (url))
-            logger.debug("Parameters: %s" % jsonified_params[:1024])
+            logger.debug("Parameters: %s" % details)
         r = requests.post(url, data=jsonified_params, headers=headers)
         if logger:
             logger.debug(r)
@@ -37,5 +32,5 @@ def push_results_to_db(db_url, details, logger):
     except Exception:
         if logger:
             logger.exception("Error [push_results_to_db('%s', '%s')]:" %
-                             (db_url, params))
+                             (db_url, details))
         return None
