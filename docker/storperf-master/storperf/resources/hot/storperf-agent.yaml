@@ -24,6 +24,9 @@ parameters:
     default: storperf
   storperf_open_security_group:
     type: string
+  volume_metadata:
+    type: json
+    default: {}
   volume_size:
     type: number
     description: Size of the volume to be created.
@@ -42,8 +45,8 @@ parameters:
   agent_zone:
     type: string
     default: nova
-resources:
 
+resources:
   storperf_agent:
     type: "OS::Nova::Server"
     properties:
@@ -90,6 +93,8 @@ resources:
     type: OS::Cinder::Volume
     properties:
       size: { get_param: volume_size }
+      name: storperf-volume
+      metadata: { get_param: volume_metadata}
 
   agent_volume_att:
     type: OS::Cinder::VolumeAttachment

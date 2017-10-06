@@ -66,6 +66,23 @@ class StorPerfMasterTest(unittest.TestCase):
         self.assertEqual(
             expected, actual, "Did not expect: " + str(actual))
 
+    def test_volume_metadata(self):
+        expected = {"a": "b"}
+
+        self.storperf.volume_metadata = expected
+        actual = self.storperf.volume_metadata
+
+        self.assertEqual(
+            expected, actual, "Did not expect: " + str(actual))
+
+    def test_empty_volume_metadata(self):
+        expected = {}
+
+        actual = self.storperf.volume_metadata
+
+        self.assertEqual(
+            expected, actual, "Did not expect: " + str(actual))
+
     def test_agent_network(self):
         expected = "ABCDEF"
 

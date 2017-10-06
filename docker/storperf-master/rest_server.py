@@ -98,6 +98,7 @@ class ConfigurationRequestModel:
         'agent_flavor': fields.String,
         'agent_image': fields.String,
         'public_network': fields.String,
+        'volume_metadata': fields.Nested,
         'volume_size': fields.Integer,
         'availability_zone': fields.String,
         'username': fields.String,
@@ -114,6 +115,7 @@ class ConfigurationResponseModel:
         'public_network': fields.String,
         'stack_created': fields.Boolean,
         'stack_id': fields.String,
+        'volume_metadata': fields.Nested,
         'volume_size': fields.Integer,
         'availability_zone': fields.String
     }
@@ -135,6 +137,7 @@ class Configure(Resource):
                         'agent_flavor': storperf.agent_flavor,
                         'agent_image': storperf.agent_image,
                         'public_network': storperf.public_network,
+                        'volume_metadata': storperf.volume_metadata,
                         'volume_size': storperf.volume_size,
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
@@ -170,6 +173,8 @@ class Configure(Resource):
                 storperf.agent_image = request.json['agent_image']
             if ('public_network' in request.json):
                 storperf.public_network = request.json['public_network']
+            if ('volume_metadata' in request.json):
+                storperf.volume_size = request.json['volume_metadata']
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
             if ('availability_zone' in request.json):
@@ -187,6 +192,7 @@ class Configure(Resource):
                             'agent_flavor': storperf.agent_flavor,
                             'agent_image': storperf.agent_image,
                             'public_network': storperf.public_network,
+                            'volume_metadata': storperf.volume_metadata,
                             'volume_size': storperf.volume_size,
                             'availability_zone': storperf.availability_zone,
                             'stack_id': storperf.stack_id})
