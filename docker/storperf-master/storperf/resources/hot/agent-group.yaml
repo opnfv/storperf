@@ -27,6 +27,9 @@ parameters:
     constraints:
       - range: { min: 1, max: 1024 }
         description: must be between 1 and 1024 Gb.
+  volume_metadata:
+    type: json
+    default: {}
   agent_count:
     type: number
     default: 1
@@ -51,6 +54,7 @@ resources:
           image: {get_param: agent_image},
           storperf_open_security_group: {get_resource: storperf_open_security_group},
           key_name: {get_resource: storperf_key_pair},
+          volume_metadata: {get_param: volume_metadata},
           volume_size: {get_param: volume_size}
         }
       }

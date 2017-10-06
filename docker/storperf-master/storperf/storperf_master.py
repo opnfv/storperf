@@ -8,6 +8,7 @@
 ##############################################################################
 
 from datetime import datetime
+import json
 import logging
 import os
 import socket
@@ -54,6 +55,30 @@ class StorPerfMaster(object):
         self._heat_client = None
         self._test_executor = TestExecutor()
         self._last_openstack_auth = datetime.now()
+
+    @property
+    def volume_metadata(self):
+        value = self.configuration_db.get_configuration_value(
+            'stack',
+            'volume_metadata')
+        if (value is None):
+            self.volume_metadata = {}
+            value = "{}"
+        return json.loads(value)
+
+    @volume_metadata.setter
+    def volume_metadata(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change volume metadata after stack is created")
+
+        if len(value) == 0:
+            value = {}
+
+        self.configuration_db.set_configuration_value(
+            'stack',
+            'volume_metadata',
+            json.dumps(value))
 
     @property
     def volume_size(self):
