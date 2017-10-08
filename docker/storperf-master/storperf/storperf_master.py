@@ -362,6 +362,12 @@ class StorPerfMaster(object):
         if (self.stack_id is None):
             raise ParameterError("ERROR: Stack does not exist")
 
+        job_list = self.job_db.fetch_jobs()
+        for job in job_list:
+            report = self.fetch_job_status(job)
+            if report['Status'] == 'Running':
+                raise "ERROR: Job {} is already running".format(job)
+
         self._attach_to_openstack()
 
         stack = self._heat_client.stacks.get(self.stack_id)
