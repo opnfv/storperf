@@ -85,7 +85,8 @@ class DataHandlerTest(unittest.TestCase):
                                     8,
                                     8192))
 
-        actual = self.data_handler._lookup_prior_data(self, 'read', 'iops')
+        actual = self.data_handler._lookup_prior_data(self, "sumSeries",
+                                                      'read', 'iops')
         self.assertEqual(expected, actual)
 
     def test_short_sample(self):
