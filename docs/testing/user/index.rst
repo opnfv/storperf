@@ -5,9 +5,9 @@
 .. http://creativecommons.org/licenses/by/4.0
 .. (c) OPNFV, Dell EMC and others.
 
-======================
-StorPerf User Guide
-======================
+**********
+User Guide
+**********
 
 .. toctree::
    :maxdepth: 2
