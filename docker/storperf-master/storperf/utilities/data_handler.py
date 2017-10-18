@@ -43,7 +43,12 @@ class DataHandler(object):
                 for io_type in ('read', 'write'):
                     metrics[metric][io_type] = {}
 
-                    series = self._lookup_prior_data(executor, metric, io_type)
+                    function = "sumSeries"
+                    if 'mean' in metric:
+                        function = "averageSeries"
+
+                    series = self._lookup_prior_data(executor, metric, io_type,
+                                                     function)
                     series = self._convert_timestamps_to_samples(
                         executor, series)
                     steady = self._evaluate_prior_data(
@@ -85,7 +90,7 @@ class DataHandler(object):
             if steady_state and not workload_name.startswith('_'):
                 executor.terminate_current_run()
 
-    def _lookup_prior_data(self, executor, metric, io_type):
+    def _lookup_prior_data(self, executor, metric, io_type, function):
         workload = executor.current_workload
         graphite_db = GraphiteDB()
 
@@ -93,7 +98,8 @@ class DataHandler(object):
         # data we just sent to it
         now = int(time.time())
         backtime = 60 * (executor.steady_state_samples + 1)
-        data_series = graphite_db.fetch_series(workload,
+        data_series = graphite_db.fetch_series(function,
+                                               workload,
                                                metric,
                                                io_type,
                                                now,

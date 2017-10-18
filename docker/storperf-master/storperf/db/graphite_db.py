@@ -33,19 +33,20 @@ class GraphiteDB(object):
 
         return result
 
-    def fetch_series(self, workload, metric, io_type, time, duration):
+    def fetch_series(self, function, workload, metric,
+                     io_type, time, duration):
 
         series = []
         end = time
         start = end - duration
 
         request = ("http://%s:%s/graphite/render/?target="
-                   "averageSeries(%s.*.jobs.1.%s.%s)"
+                   "%s(%s.*.jobs.1.%s.%s)"
                    "&format=json"
                    "&from=%s"
                    "&until=%s"
                    % (self.graphite_host, self.graphite_port,
-                      workload, io_type, metric,
+                      function, workload, io_type, metric,
                       start, end))
         self.logger.debug("Calling %s" % (request))
 

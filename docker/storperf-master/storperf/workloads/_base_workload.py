@@ -23,7 +23,7 @@ class _base_workload(object):
             'bs': '64k',
             'iodepth': '1',
             'numjobs': '1',
-            'loops': '20',
+            'loops': '200',
             'output-format': 'json',
             'status-interval': '60'
         }

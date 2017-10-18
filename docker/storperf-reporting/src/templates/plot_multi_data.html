@@ -35,8 +35,8 @@
                 text += "<h4> Criteria  : " + results[i]["criteria"] + "</h4>";
                 text += "<h4> Build Tag  : " + results[i]["build_tag"] + "</h4>";
                 text += "<button type='button' class='btn btn-default btn-lg' id='para-"+ ids[i] +
-                        "' onclick=add_info('" + ids[i] + "')> Click here to view details </button>"; 
-                text += "</div>"; 
+                        "' onclick=add_info('" + ids[i] + "')> Click here to view details </button>";
+                text += "</div>";
             }
             $("#content").html(text);
         }
@@ -60,15 +60,15 @@
             text += "<h4> Criteria  : " + results[i]["criteria"] + "</h4>";
             text += "<h4> Build Tag  : " + results[i]["build_tag"] + "</h4>";
             text += "<button type='button' class='btn btn-default btn-lg' onclick=init()>Go Back</button>";
-            text += "<button type='button' class='btn btn-default btn-lg' onclick=create_block_report() style='float: right;'> Steady State Convergence Report - All Block Sizes </button>";
+            text += "<button type='button' class='btn btn-default btn-lg' onclick=create_block_report() style='float: right;'> Steady State Convergence Report - All Runs </button>";
             text += "<div class='row' id='block_report'></div>"
             text += "</div>";
             for (var i = 0; i < keys.length; i++ ){
                 text += "<div class='row' id='row-"+ keys[i] +"'>";
                 text += "<h4 onclick=add_test('" + keys[i] + "')>" + keys[i] + "</h4>";
                 text += "</div>";
-            }   
-            $("#content").html(text);   
+            }
+            $("#content").html(text);
         }
         function add_test(key){
             if(document.getElementById("test-" + key) == null){
@@ -94,7 +94,7 @@
                 for( item in report_data[key][test] ){
                     var state = report_data[key][test][item]["steady_state"];
                     text += "<li onclick=create_modal('" + key + "','" + test + "','" + item + "') id='";
-                    text += key + "-" + test + "-" + item + "'>" + item + " (steady state: " + state +")"; 
+                    text += key + "-" + test + "-" + item + "'>" + item + " (steady state: " + state +")";
                     text += "<br><div id='modal-" + key + "-" + test + "-" + item + "'>";
                     text += '<div class="modal-content-'+ key + '-' + test + '-' + item +'">';
                     text += '<div id="modal-text-'+ key + '-' + test + '-' + item +'"></div>';
@@ -131,9 +131,13 @@
             else
                 name = "Latency (nanoseconds/ns)";
             var len = data["series"].length;
+            var max_y = 1.25*average
             for(var i = 0 ; i < len ; i++){
                 x[i] = data["series"][i][0];
                 y[i] = data["series"][i][1];
+                if(y[i] > max_y){
+                    max_y=y[i]
+                }
             }
             var trace1 = {
                 x: x,
@@ -146,40 +150,41 @@
                     title: 'Round'
                 },
                 yaxis: {
-                    title: name
+                    title: name,
+                    range: [0, max_y]
                 }
             };
             // Creating average plot in var trace2
+            var average_plus_y = [];
+            for(var i = 0; i < len ;i++ ){
+                average_plus_y.push(1.2*average)
+            }
+            var trace2 = {
+                x: x,
+                y: average_plus_y,
+                name: 'Average + 20%',
+                type: 'scatter'
+            };
+            // Creating average plot in var trace3
             var average_y = [];
             for(var i = 0; i < len ;i++ ){
                 average_y.push(average)
             }
-            var trace2 = {
+            var trace3 = {
                 x: x,
                 y: average_y,
                 name: 'Average',
                 type: 'scatter'
             };
-            // Creating average plot in var trace3
-            var average_plus_y = [];
-            for(var i = 0; i < len ;i++ ){
-                average_plus_y.push(1.1*average)
-            }
-            var trace3 = {
-                x: x,
-                y: average_plus_y,
-                name: '110%*Average',
-                type: 'scatter'
-            };
             // Creating average plot in var trace4
             var average_minus_y = [];
             for(var i = 0; i < len ;i++ ){
-                average_minus_y.push(0.9*average)
+                average_minus_y.push(0.8*average)
             }
             var trace4 = {
                 x: x,
                 y: average_minus_y,
-                name: '90%*Average',
+                name: 'Average - 20%',
                 type: 'scatter'
             };
             // Creating slope plot in var trace5
@@ -223,7 +228,8 @@
                      "</td><td> Measured Maximum Slope Excursion: " + data["slope"] + "</td></tr>";
             table += "</tbody></table>";
             document.getElementById("report-" + key + "-" + test + "-" + item).innerHTML = table;
-        }        function create_block_report(){
+        }
+        function create_block_report(){
             var ele = document.getElementById("block_report");
             var text = "";
             text += "<ul class='list-group' style='margin: auto;'>"
@@ -283,10 +289,10 @@
             for(i in report_data){
                 if(report_data[i][test] == undefined && test == 'lat_ns.mean')
                     test = 'lat.mean';
-                data[i] = report_data[i][test][key]; 
+                data[i] = report_data[i][test][key];
             }
             document.getElementById('close-block-report-'+key+'-'+test).style.display = 'block';
-            var  modal = document.getElementById('modal-block-report-'+key+'-'+test);
+            var modal = document.getElementById('modal-block-report-'+key+'-'+test);
             var modal_div = document.getElementById('modal-text-block-report-'+key+'-'+test);
             modal_div.innerHTML += "<div id='graph-"+key+ "-"+ test+ "'></div><br><div id='report-"+key+ "-"+ test+ "'></div>";
             var name = "";
@@ -298,6 +304,7 @@
             else
                 name = "Latency (nanoseconds/ns)";
             var plot_data = [];
+            var max_y = 0
             for(i in data){
                 var x = [];
                 var y = [];
@@ -305,6 +312,9 @@
                 for(var j = 0 ; j < len ; j++){
                     x[j] = data[i]["series"][j][0];
                     y[j] = data[i]["series"][j][1];
+                    if(y[j] > max_y){
+                        max_y=y[j]
+                    }
                 }
                 var trace = {
                     x: x,
@@ -320,7 +330,8 @@
                     title: 'Round'
                 },
                 yaxis: {
-                    title: name
+                    title: name,
+                    range: [0, max_y]
                 },
             };
             Plotly.newPlot('graph-'+key+'-'+test,plot_data,layout);
