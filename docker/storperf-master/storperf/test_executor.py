@@ -230,7 +230,12 @@ class TestExecutor(object):
             for job in jobs:
                 if self.job_db.job_id == job_id and self._terminated is False:
                     status = "Running"
-            result[job] = status
+                    result['Status'] = status
+                    result['Workloads'] = self.workload_status
+                    result['TestResultURL'] = self.result_url
+                else:
+                    result[job] = {}
+                    result[job]['Status'] = "Completed"
 
         return result
 
