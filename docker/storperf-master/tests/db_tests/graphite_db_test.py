@@ -83,9 +83,10 @@ class GraphiteDBTest(unittest.TestCase):
                     [1480456040, 219.28],
                     [1480456050, 217.75]]
 
-        mock_requests.side_effect = (response, )
+        mock_requests.side_effect = (response,)
 
-        actual = self.graphdb.fetch_series("workload", "iops",
+        actual = self.graphdb.fetch_series("averageSeries",
+                                           "workload", "iops",
                                            "write", 0, 600)
         self.assertEqual(expected, actual)
 

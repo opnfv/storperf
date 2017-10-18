@@ -422,11 +422,6 @@ class StorPerfMaster(object):
                     metadata = self.fetch_metadata(job)
                     if 'report' in metadata:
                         metadata['report']['_id'] = job
-                        metadata['report']['start_date'] = \
-                            metadata['report']['start_time']
-                        metadata['report']['end_date'] = \
-                            metadata['report']['end_time']
-                        metadata['report']['_id'] = job
                         job_report['results'].append(metadata['report'])
         return job_report
 
