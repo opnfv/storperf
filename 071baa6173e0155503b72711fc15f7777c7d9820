@@ -52,6 +52,24 @@
       "revId": "071baa6173e0155503b72711fc15f7777c7d9820",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_7aea5d10",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-06T14:30:42Z",
+      "side": 1,
+      "message": "There currently isn\u0027t any CI process to upload the library so you may not be getting the new features planned during Fraser. You may want to consider pulling it from git. See upper-constraints.txt in the Functest repo for an example.",
+      "parentUuid": "9a3d3df0_b7a08044",
+      "revId": "071baa6173e0155503b72711fc15f7777c7d9820",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
