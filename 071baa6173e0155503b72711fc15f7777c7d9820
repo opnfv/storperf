@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_7796f8f1",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-06T13:11:16Z",
+      "side": 1,
+      "message": "Is snaps published?  Or do we need to do an install from git somewhere?",
+      "revId": "071baa6173e0155503b72711fc15f7777c7d9820",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}

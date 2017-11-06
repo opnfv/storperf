@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_37fd903b",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-06T13:11:16Z",
+      "side": 0,
+      "message": "Does snaps cause these to be pulled in automatically?",
+      "revId": "4f35267e19cfbfc2d51bc72f4986df5be70950fb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
