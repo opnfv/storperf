@@ -34,6 +34,24 @@
       "revId": "071baa6173e0155503b72711fc15f7777c7d9820",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_d78424b3",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 4
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-11-06T14:24:24Z",
+      "side": 1,
+      "message": "SNAPS 5.0.0 does not include Cinder, hence need to install master",
+      "parentUuid": "9a3d3df0_b7a08044",
+      "revId": "071baa6173e0155503b72711fc15f7777c7d9820",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
