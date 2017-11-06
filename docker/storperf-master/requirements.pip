@@ -15,3 +15,4 @@ html2text==2016.1.8
 paramiko==2.0.2
 requests==2.13.0
 scp==0.10.2
+snaps==5.0.0
