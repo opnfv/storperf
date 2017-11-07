@@ -34,6 +34,23 @@
       "revId": "4f35267e19cfbfc2d51bc72f4986df5be70950fb",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_dd7283e2",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 5
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-07T16:18:26Z",
+      "side": 0,
+      "message": "It appears as though these are not being pulled in by SNAPS.  The error in the build is:\n\n+ docker logs storperf-master\nTraceback (most recent call last):\n  File \"./rest_server.py\", line 20, in \u003cmodule\u003e\n    from storperf.storperf_master import StorPerfMaster\n  File \"/storperf/storperf/storperf_master.py\", line 17, in \u003cmodule\u003e\n    from cinderclient import client as cinderclient\nImportError: No module named cinderclient",
+      "revId": "4f35267e19cfbfc2d51bc72f4986df5be70950fb",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
