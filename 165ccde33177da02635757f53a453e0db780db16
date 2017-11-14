@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_2f6ecc2f",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 178,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-14T15:42:31Z",
+      "side": 1,
+      "message": "Here... this also needs a SNAPS equivalent.",
+      "revId": "165ccde33177da02635757f53a453e0db780db16",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_8f7d58ea",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-14T15:42:31Z",
+      "side": 1,
+      "message": "Check the @property for volume_quota.  I think it attempts to talk to Cinder client directly and should also change to SNAPS.",
+      "revId": "165ccde33177da02635757f53a453e0db780db16",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
