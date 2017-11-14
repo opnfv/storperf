@@ -14,13 +14,12 @@ import socket
 from threading import Thread
 from time import sleep
 
-from cinderclient import client as cinderclient
-from keystoneauth1 import loading
-from keystoneauth1 import session
 import paramiko
 from scp import SCPClient
+from snaps.config.stack import StackConfig
+from snaps.openstack.create_stack import OpenStackHeatStack
+from snaps.openstack.os_credentials import OSCreds
 
-import heatclient.client as heatclient
 from storperf.db.configuration_db import ConfigurationDB
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
@@ -38,20 +37,17 @@ class StorPerfMaster(object):
         self.configuration_db = ConfigurationDB()
         self.job_db = JobDB()
 
-        template_file = open("storperf/resources/hot/agent-group.yaml")
-        self._agent_group_hot = template_file.read()
-        template_file = open("storperf/resources/hot/storperf-agent.yaml")
-        self._agent_resource_hot = template_file.read()
-        self._hot_files = {
-            'storperf-agent.yaml': self._agent_resource_hot
-        }
-        self.logger.debug(
-            "Loaded agent-group template as: " + self._agent_group_hot)
-        self.logger.debug(
-            "Loaded agent-resource template as: " + self._agent_resource_hot)
+        self.stack_settings = StackConfig(
+            name='StorPerfAgent',
+            template_path='storperf/resources/hot/agent-group.yaml')
 
-        self._cinder_client = None
-        self._heat_client = None
+        self.os_creds = OSCreds(username=os.environ.get('OS_USERNAME'),
+                                password=os.environ.get('OS_PASSWORD'),
+                                auth_url=os.environ.get('OS_AUTH_URL'),
+                                project_name=os.environ.get('OS_PROJECT_NAME'))
+
+        self.heat_stack = OpenStackHeatStack(self.os_creds,
+                                             self.stack_settings)
         self._test_executor = TestExecutor()
         self._last_openstack_auth = datetime.now()
 
@@ -67,7 +63,7 @@ class StorPerfMaster(object):
 
     @volume_size.setter
     def volume_size(self, value):
-        if (self.stack_id is not None):
+        if (self.heat_stack.get_stack() is not None):
             raise ParameterError(
                 "ERROR: Cannot change volume size after stack is created")
 
@@ -89,7 +85,7 @@ class StorPerfMaster(object):
 
     @agent_count.setter
     def agent_count(self, value):
-        if (self.stack_id is not None):
+        if (self.heat_stack.get_stack() is not None):
             raise ParameterError(
                 "ERROR: Cannot change agent count after stack is created")
 
@@ -112,7 +108,7 @@ class StorPerfMaster(object):
 
     @agent_image.setter
     def agent_image(self, value):
-        if (self.stack_id is not None):
+        if (self.heat_stack.get_stack() is not None):
             raise ParameterError(
                 "ERROR: Cannot change agent image after stack is created")
 
@@ -129,7 +125,7 @@ class StorPerfMaster(object):
 
     @public_network.setter
     def public_network(self, value):
-        if (self.stack_id is not None):
+        if (self.heat_stack.get_stack() is not None):
             raise ParameterError(
                 "ERROR: Cannot change public network after stack is created")
 
@@ -146,7 +142,7 @@ class StorPerfMaster(object):
 
     @agent_flavor.setter
     def agent_flavor(self, value):
-        if (self.stack_id is not None):
+        if (self.heat_stack.get_stack() is not None):
             raise ParameterError(
                 "ERROR: Cannot change flavor after stack is created")
 
@@ -183,10 +179,8 @@ class StorPerfMaster(object):
 
     @property
     def volume_quota(self):
-        self._attach_to_openstack()
-        quotas = self._cinder_client.quotas.get(
-            os.environ.get('OS_TENANT_ID'))
-        return int(quotas.volumes)
+        # (TODO) Use SNAPS equivalent for Volume Quotas
+        pass
 
     @property
     def filename(self):
@@ -230,18 +224,9 @@ class StorPerfMaster(object):
 
     @property
     def is_stack_created(self):
-        if (self.stack_id is not None):
-            self._attach_to_openstack()
-
-            stack = self._heat_client.stacks.get(self.stack_id)
-            status = getattr(stack, 'stack_status')
-
-            self.logger.info("Status=" + status)
-            if (status == u'CREATE_COMPLETE'):
-                return True
-
-        return False
-
+        return (self.stack_id is not None
+            and self.heat_stack.get_status() == u'CREATE_COMPLETE')
+        
     @property
     def workloads(self):
         return self.configuration_db.get_configuration_value(
@@ -305,74 +290,29 @@ class StorPerfMaster(object):
         return logs
 
     def create_stack(self):
-        if (self.stack_id is not None):
-            raise ParameterError("ERROR: Stack has already been created")
-
-        self._attach_to_openstack()
-        volume_quota = self.volume_quota
-        if (volume_quota > 0 and self.agent_count > volume_quota):
-            message = "ERROR: Volume quota too low: " + \
-                str(self.agent_count) + " > " + str(self.volume_quota)
-            raise ParameterError(message)
-
-        self.logger.debug("Creating stack")
-        stack = self._heat_client.stacks.create(
-            stack_name="StorPerfAgentGroup",
-            template=self._agent_group_hot,
-            files=self._hot_files,
-            parameters=self._make_parameters())
-
-        self.stack_id = stack['stack']['id']
-
-        while True:
-            stack = self._heat_client.stacks.get(self.stack_id)
-            status = getattr(stack, 'stack_status')
-            self.logger.debug("Stack status=%s" % (status,))
-            if (status == u'CREATE_COMPLETE'):
-                return True
-            if (status == u'DELETE_COMPLETE'):
-                self.stack_id = None
-                return True
-            if (status == u'CREATE_FAILED'):
-                self.status_reason = getattr(stack, 'stack_status_reason')
-                sleep(5)
-                self._heat_client.stacks.delete(stack_id=self.stack_id)
-            sleep(2)
+        with open('storperf/resources/hot/storperf-agent.yaml', 'r') \
+            as template_file:
+            template=template_file.read()
+        self.stack_settings.files = {"storperf-agent.yaml": template}
+        self.stack_settings.env_values = self._make_parameters()
+        self.heat_stack.create()
+        self.stack_id = self.heat_stack.get_stack().id
 
     def delete_stack(self):
-        if (self.stack_id is None):
-            raise ParameterError("ERROR: Stack does not exist")
-
-        self._attach_to_openstack()
-        while True:
-            stack = self._heat_client.stacks.get(self.stack_id)
-            status = getattr(stack, 'stack_status')
-            self.logger.debug("Stack status=%s" % (status,))
-            if (status == u'CREATE_COMPLETE'):
-                self._heat_client.stacks.delete(stack_id=self.stack_id)
-            if (status == u'DELETE_COMPLETE'):
-                self.stack_id = None
-                return True
-            if (status == u'DELETE_FAILED'):
-                sleep(5)
-                self._heat_client.stacks.delete(stack_id=self.stack_id)
-            sleep(2)
+        self.heat_stack.initialize()
+        self.heat_stack.clean()
+        return True
 
     def execute_workloads(self, metadata={}):
         if (self.stack_id is None):
             raise ParameterError("ERROR: Stack does not exist")
 
-        job_list = self.job_db.fetch_jobs()
-        for job in job_list:
-            report = self.fetch_job_status(job)
-            if report['Status'] == 'Running':
-                raise "ERROR: Job {} is already running".format(job)
+        if not self._test_executor.terminated():
+            raise "ERROR: Job {} is already running".format(
+                self._test_executor.job_id)
 
-        self._attach_to_openstack()
-
-        stack = self._heat_client.stacks.get(self.stack_id)
-        outputs = getattr(stack, 'outputs')
-        slaves = outputs[0]['output_value']
+        outputs = self.heat_stack.get_outputs()
+        slaves = outputs[0].value
 
         setup_threads = []
 
@@ -511,57 +451,3 @@ class StorPerfMaster(object):
         heat_parameters['agent_flavor'] = self.agent_flavor
         heat_parameters['availability_zone'] = self.availability_zone
         return heat_parameters
-
-    def _attach_to_openstack(self):
-
-        time_since_last_auth = datetime.now() - self._last_openstack_auth
-
-        if (self._heat_client is None or
-                time_since_last_auth.total_seconds() > 600):
-            self._last_openstack_auth = datetime.now()
-
-            creds = {
-                "username": os.environ.get('OS_USERNAME'),
-                "password": os.environ.get('OS_PASSWORD'),
-                "auth_url": os.environ.get('OS_AUTH_URL'),
-                "project_domain_id":
-                    os.environ.get('OS_PROJECT_DOMAIN_ID'),
-                "project_domain_name":
-                    os.environ.get('OS_PROJECT_DOMAIN_NAME'),
-                "project_id": os.environ.get('OS_PROJECT_ID'),
-                "project_name": os.environ.get('OS_PROJECT_NAME'),
-                "tenant_name": os.environ.get('OS_TENANT_NAME'),
-                "tenant_id": os.environ.get("OS_TENANT_ID"),
-                "user_domain_id": os.environ.get('OS_USER_DOMAIN_ID'),
-                "user_domain_name": os.environ.get('OS_USER_DOMAIN_NAME')
-            }
-
-            self.logger.debug("Creds: %s" % creds)
-
-            loader = loading.get_plugin_loader('password')
-            auth = loader.load_from_options(**creds)
-
-            https_cacert = os.getenv('OS_CACERT', '')
-            https_insecure = os.getenv('OS_INSECURE', '').lower() == 'true'
-
-            self.logger.info("cacert=%s" % https_cacert)
-
-            sess = session.Session(auth=auth,
-                                   verify=(https_cacert or not https_insecure))
-
-            self.logger.debug("Looking up orchestration endpoint")
-            heat_endpoint = sess.get_endpoint(auth=auth,
-                                              service_type="orchestration",
-                                              endpoint_type='publicURL')
-
-            self.logger.debug("Orchestration endpoint is %s" % heat_endpoint)
-
-            self._heat_client = heatclient.Client(
-                "1",
-                endpoint=heat_endpoint,
-                session=sess)
-
-            self.logger.debug("Creating cinder client")
-            self._cinder_client = cinderclient.Client("2", session=sess,
-                                                      cacert=https_cacert)
-            self.logger.debug("OpenStack authentication complete")
