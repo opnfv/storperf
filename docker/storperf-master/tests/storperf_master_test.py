@@ -10,6 +10,8 @@
 import os
 import unittest
 
+import mock
+
 from storperf.db.configuration_db import ConfigurationDB
 from storperf.storperf_master import StorPerfMaster
 
@@ -22,7 +24,8 @@ class StorPerfMasterTest(unittest.TestCase):
             os.remove(ConfigurationDB.db_name)
         except OSError:
             pass
-        self.storperf = StorPerfMaster()
+        with mock.patch("storperf.storperf_master.OSCreds"):
+            self.storperf = StorPerfMaster()
 
     def tearDown(self):
         try:
