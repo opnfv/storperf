@@ -104,6 +104,10 @@ class TestExecutor(object):
     def terminated(self):
         return self._terminated
 
+    @property
+    def job_id(self):
+        return self.job_db.job_id
+
     @block_sizes.setter
     def block_sizes(self, block_sizes):
         self.logger.debug("Set block_sizes to: " + str(block_sizes))

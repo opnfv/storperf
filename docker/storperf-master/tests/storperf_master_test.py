@@ -10,8 +10,19 @@
 import os
 import unittest
 
+import mock
+
 from storperf.db.configuration_db import ConfigurationDB
 from storperf.storperf_master import StorPerfMaster
+
+
+class MockStack(object):
+
+    def __init__(self):
+        pass
+
+    def get_stack(self):
+        return None
 
 
 class StorPerfMasterTest(unittest.TestCase):
@@ -22,7 +33,12 @@ class StorPerfMasterTest(unittest.TestCase):
             os.remove(ConfigurationDB.db_name)
         except OSError:
             pass
-        self.storperf = StorPerfMaster()
+        with mock.patch("storperf.storperf_master.OSCreds"), \
+                mock.patch(
+                    "storperf.storperf_master.OpenStackHeatStack") as oshs:
+            oshs.return_value.get_stack.return_value = None
+
+            self.storperf = StorPerfMaster()
 
     def tearDown(self):
         try:

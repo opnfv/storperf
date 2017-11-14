@@ -54,7 +54,7 @@ RUN apk --no-cache add --update \
 # Install StorPerf
 
 COPY requirements.pip /storperf/
-RUN pip install --upgrade setuptools==33.1.1
+RUN pip install --upgrade setuptools==38.4.0
 RUN pip install -r /storperf/requirements.pip
 
 # Build stripped down StorPerf image

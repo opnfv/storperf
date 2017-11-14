@@ -19,7 +19,12 @@ export CARBON_DIR=${ci}/job/carbon/
 ${ci}/remove_docker_container.sh
 
 mkdir -p ${CARBON_DIR}
-touch ${ENV_FILE}
+cat << EOF > ${ENV_FILE}
+OS_USERNAME=username
+OS_PASSWORD=password
+OS_AUTH_URL=http://localhost
+OS_PROJECT_NAME=project
+EOF
 
 if [ -z $ARCH ]
 then
@@ -60,7 +65,7 @@ set +e
 check_for_life storperf-httpfrontend "/"
 FAILURES=$((FAILURES + $?))
 
-check_for_life storperf-master "/api/v1.0/configurations"
+check_for_life storperf-master "/api/v1.0/jobs"
 FAILURES=$((FAILURES + $?))
 
 check_for_life storperf-reporting "/reporting/"
