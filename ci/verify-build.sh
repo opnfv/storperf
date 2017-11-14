@@ -60,7 +60,7 @@ set +e
 check_for_life storperf-httpfrontend "/"
 FAILURES=$((FAILURES + $?))
 
-check_for_life storperf-master "/api/v1.0/configurations"
+check_for_life storperf-master "/api/v1.0/jobs"
 FAILURES=$((FAILURES + $?))
 
 check_for_life storperf-reporting "/reporting/"
