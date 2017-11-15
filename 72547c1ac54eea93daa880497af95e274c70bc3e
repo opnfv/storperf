@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_6582b595",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-15T14:52:15Z",
+      "side": 1,
+      "message": "For testing, I have been trying to evangelize the use of some sort of GUID for all names. This practice alone would make it possible for one to run multiple instances of a test against the same pod.",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c5d581ba",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-15T14:52:15Z",
+      "side": 1,
+      "message": "If you have the location to the RC file, I would recommend that you leverage that instead of environment variables for many reasons. The main one here is that there are other values such as API versions, CACERT, OS_INTERFACE, etc that are not being nor should be expected here. Please see the SNAPS function snaps.openstack.tests.openstack_tests#get_credentials()\n\nP.S. I dislike globals of all types and will always push back or try to mitigate their impacts.",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_c5ec6192",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 184,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-15T14:52:15Z",
+      "side": 1,
+      "message": "Lets discuss and design a good SNAPS OO type solution for this problem...",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_25b1cd8f",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-15T14:52:15Z",
+      "side": 1,
+      "message": "When using create(), the parameter block\u003dTrue should be used if you want to thread to block until the stack deployment has completed. If not, be prepared to deal with an incomplete stack which could be your concern here...",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_a5bddd6a",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-15T14:52:15Z",
+      "side": 1,
+      "message": "You don\u0027t really need to have self.stack_id as a member as self.heat_stack contains that and much more information on the stack. The ID at this point really should not be required at this level and should probably remain encapsulated by OpenStackHeatStack unless you have true reasons to manipulate the stack from outside of the class/object...",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
