@@ -84,6 +84,24 @@
       "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_6c5bbd2e",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 305,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-11-16T06:06:03Z",
+      "side": 1,
+      "message": "StorPerf makes a CURL request to openstack to launch a heat stack. If the stack creation is successful, it returns Stack ID.\n\nI was trying to re-create without changing ReST API code.",
+      "parentUuid": "9a3d3df0_a5bddd6a",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
