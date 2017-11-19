@@ -72,6 +72,24 @@
     },
     {
       "key": {
+        "uuid": "9a3d3df0_e31518e6",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 5761
+      },
+      "writtenOn": "2017-11-19T13:45:39Z",
+      "side": 1,
+      "message": "The way I am thinking about is that we provide the path to OS_ENV file while we perform a curl to configurations part of API.\n\nIt will call the create_stack function in StorPerf master. However, this way, the settings objects and the OpenStack objects will be local to this method. So, for Stack deletion, we will need to make these objects again and etc...\n\nLet me know if I have made my point clear",
+      "parentUuid": "9a3d3df0_6fe1effd",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_c5ec6192",
         "filename": "docker/storperf-master/storperf/storperf_master.py",
         "patchSetId": 2
