@@ -19,6 +19,23 @@
     },
     {
       "key": {
+        "uuid": "9a3d3df0_72326f11",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 294,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:37:01Z",
+      "side": 1,
+      "message": "StackSettings is now deprecated like as of today. Please change this to snaps.config.stack.StackConfig",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_d2725be2",
         "filename": "docker/storperf-master/storperf/storperf_master.py",
         "patchSetId": 3
@@ -30,6 +47,24 @@
       "writtenOn": "2017-11-20T19:18:22Z",
       "side": 1,
       "message": "If heat is creating the Volume, you won\u0027t need to configure it here.",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_5235abf5",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:37:01Z",
+      "side": 1,
+      "message": "BTW, VolumeSettings is also deprecated as of today so if you really do need this volume configuration object, please use snaps.config.volume.VolumeSettings instead",
+      "parentUuid": "9a3d3df0_d2725be2",
       "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
