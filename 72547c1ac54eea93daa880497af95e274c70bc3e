@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "9a3d3df0_72d42f20",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-20T14:40:25Z",
+      "side": 1,
+      "message": "The build is getting errors on importing SNAPS.  Has this been added to the requirements.txt file yet?",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_6582b595",
         "filename": "docker/storperf-master/storperf/storperf_master.py",
         "patchSetId": 2
@@ -13,6 +30,24 @@
       "writtenOn": "2017-11-15T14:52:15Z",
       "side": 1,
       "message": "For testing, I have been trying to evangelize the use of some sort of GUID for all names. This practice alone would make it possible for one to run multiple instances of a test against the same pod.",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_f2e79f10",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-20T14:40:25Z",
+      "side": 1,
+      "message": "We have another task to allow the user to specify the name of the stack.",
+      "parentUuid": "9a3d3df0_6582b595",
       "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
@@ -108,6 +143,24 @@
     },
     {
       "key": {
+        "uuid": "9a3d3df0_121683f1",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-20T14:40:25Z",
+      "side": 1,
+      "message": "The rc file is not copied into the container.  We have two options then:\n\n1) Mount the rc file when starting the container, or \n2) Continue to pass the rc file in to the container and have them be present as environment variables, which means referencing them this way.\n\nI\u0027m good with either.",
+      "parentUuid": "9a3d3df0_f2f95fc9",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9a3d3df0_c5ec6192",
         "filename": "docker/storperf-master/storperf/storperf_master.py",
         "patchSetId": 2
@@ -136,6 +189,24 @@
       "writtenOn": "2017-11-15T14:52:15Z",
       "side": 1,
       "message": "When using create(), the parameter block\u003dTrue should be used if you want to thread to block until the stack deployment has completed. If not, be prepared to deal with an incomplete stack which could be your concern here...",
+      "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_92e1f300",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 304,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2017-11-20T14:40:25Z",
+      "side": 1,
+      "message": "+1 to block\u003dTrue\n\nAlso, does the heat_stack.create() return an error if the stack already exists?",
+      "parentUuid": "9a3d3df0_25b1cd8f",
       "revId": "72547c1ac54eea93daa880497af95e274c70bc3e",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
