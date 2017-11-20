@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_127de3b1",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:18:22Z",
+      "side": 1,
+      "message": "may want to initiialize self.heat_stack \u003d None here",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_d2725be2",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:18:22Z",
+      "side": 1,
+      "message": "If heat is creating the Volume, you won\u0027t need to configure it here.",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_3282a794",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:18:22Z",
+      "side": 1,
+      "message": "This member is redundant. Can be retrieved with self._heat_stack.get_stack().id",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_724b8f87",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 310,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-20T19:18:22Z",
+      "side": 1,
+      "message": "Here you should just check if self.heat_stack is not None and do the clean.\n\nif self.heat_stack:\n    self.heat_stack.clean()",
+      "revId": "560dd09d27e6d990b39084e319fe2ff9d2070a62",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
