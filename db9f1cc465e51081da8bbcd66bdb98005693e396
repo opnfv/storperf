@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_0d8db931",
+        "filename": "docker/storperf-master/requirements.pip",
+        "patchSetId": 5
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2017-11-28T16:57:24Z",
+      "side": 1,
+      "message": "you should probably install from git rather than pip",
+      "revId": "db9f1cc465e51081da8bbcd66bdb98005693e396",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
