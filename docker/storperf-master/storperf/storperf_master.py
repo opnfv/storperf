@@ -401,7 +401,7 @@ class StorPerfMaster(object):
         workload_params = self.job_db.fetch_workload_params(job_id)
         if 'report' in workload_params:
             report = workload_params['report']
-            return report['metrics']
+            return report['details']['metrics']
         return {}
 
     def fetch_metadata(self, job_id):
