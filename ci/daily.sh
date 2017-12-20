@@ -29,11 +29,11 @@ virtualenv "${WORKSPACE}/ci/job/storperf_daily_venv"
 source "${WORKSPACE}/ci/job/storperf_daily_venv/bin/activate"
 
 pip install --upgrade setuptools==33.1.1
+pip install cryptography==1.7.2
 pip install functools32==3.2.3.post2
 pip install pytz==2016.10
 pip install osc_lib==1.3.0
 pip install python-openstackclient==3.7.0
-pip install python-heatclient==1.7.0
 
 "${WORKSPACE}/ci/generate-admin-rc.sh"
 echo "TEST_DB_URL=http://testresults.opnfv.org/test/api/v1" >> "${WORKSPACE}/ci/job/admin.rc"
