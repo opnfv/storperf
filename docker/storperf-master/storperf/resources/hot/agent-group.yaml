@@ -33,7 +33,9 @@ parameters:
     constraints:
       - range: { min: 1, max: 512 }
         description: must be between 1 and 512 agents.
-
+  availability_zone:
+    type: string
+    default: nova
 
 resources:
   slaves:
@@ -49,6 +51,7 @@ resources:
           agent_network: {get_resource: storperf_network},
           flavor: {get_param: agent_flavor},
           image: {get_param: agent_image},
+          availability_zone: {get_param: availability_zone},
           storperf_open_security_group: {get_resource: storperf_open_security_group},
           key_name: {get_resource: storperf_key_pair},
           volume_size: {get_param: volume_size}

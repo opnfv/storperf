@@ -503,6 +503,7 @@ class StorPerfMaster(object):
         heat_parameters['volume_size'] = self.volume_size
         heat_parameters['agent_image'] = self.agent_image
         heat_parameters['agent_flavor'] = self.agent_flavor
+        heat_parameters['availability_zone'] = self.availability_zone
         return heat_parameters
 
     def _attach_to_openstack(self):
