@@ -173,7 +173,7 @@ class Configure(Resource):
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
             if ('availability_zone' in request.json):
-                storperf.availabilty_zone = request.json['availability_zone']
+                storperf.availability_zone = request.json['availability_zone']
             if ('username' in request.json):
                 storperf.username = request.json['username']
             if ('password' in request.json):
@@ -186,9 +186,9 @@ class Configure(Resource):
             return jsonify({'agent_count': storperf.agent_count,
                             'agent_flavor': storperf.agent_flavor,
                             'agent_image': storperf.agent_image,
+                            'availability_zone': storperf.availability_zone,
                             'public_network': storperf.public_network,
                             'volume_size': storperf.volume_size,
-                            'availability_zone': storperf.availability_zone,
                             'stack_id': storperf.stack_id})
 
         except Exception as e:
