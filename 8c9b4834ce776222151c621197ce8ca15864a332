@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_19bdb2b7",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 227,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-01-10T21:58:29Z",
+      "side": 1,
+      "message": "I need to change this to \n  self.heat_stack.get_stack()\n\nand get rid of self.stack_id",
+      "revId": "8c9b4834ce776222151c621197ce8ca15864a332",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_79ae7e82",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 302,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-01-10T21:58:29Z",
+      "side": 1,
+      "message": "This still does not find the stack of the same name if it already exists in OpenStack.  Need to look into this.",
+      "revId": "8c9b4834ce776222151c621197ce8ca15864a332",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_59b3bae8",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 312,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-01-10T21:58:29Z",
+      "side": 1,
+      "message": "The prior version was preventing a second job from starting even if the first completed.  This seems more reliable.",
+      "revId": "8c9b4834ce776222151c621197ce8ca15864a332",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
