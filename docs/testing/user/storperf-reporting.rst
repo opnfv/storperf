@@ -21,7 +21,7 @@ About this project
 Usage
 =======
 
-* Enter the URL for the location of the data for which you want to generate the report.
+* Enter the URL for the location of the data for which you want to generate the report(http://StorPerf:5000/api/v1.0/jobs?type=metadata).
 * Note: You can test the module using the testdata present in the directory ``storperf-reporting/src/static/testdata``. Instead of the URL enter the filename present in the testdata directory, eg. **local-data.json**
 * After entering the URL, you are taken to the page showing the details of the all the jobs present in the data.
 * Click on the *Click here to view details* to see the different block sizes for the respective job.
