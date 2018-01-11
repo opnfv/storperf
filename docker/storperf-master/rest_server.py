@@ -199,8 +199,9 @@ class Configure(Resource):
     )
     def delete(self):
         try:
-            storperf.delete_stack()
+            return jsonify({'stack_id': storperf.delete_stack()})
         except Exception as e:
+            self.logger.exception(e)
             abort(400, str(e))
 
 
@@ -355,6 +356,7 @@ for any single test iteration.
             return jsonify({'job_id': job_id})
 
         except Exception as e:
+            self.logger.exception(e)
             abort(400, str(e))
 
     @swagger.operation(
