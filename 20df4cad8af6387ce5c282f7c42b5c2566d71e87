@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a3d3df0_9544d91b",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-01-17T17:33:46Z",
+      "side": 1,
+      "message": "From here on down, I needed to get more information from SNAPS.  Not sure if this is the best way, or if this is something that eventually could be added to the heat stack domain object itself.",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
