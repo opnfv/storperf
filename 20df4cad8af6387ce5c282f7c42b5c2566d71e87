@@ -16,6 +16,91 @@
       "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_1550c9d2",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-01-17T17:50:24Z",
+      "side": 1,
+      "message": "This is a value that probably should be placed in the snaps.domain.VmInst() class",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_756035a5",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 153,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-01-17T17:50:24Z",
+      "side": 1,
+      "message": "use vm1.get_vm_inst() instead",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_556531b3",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-01-17T17:50:24Z",
+      "side": 1,
+      "message": "You may want to assign the entire snaps.domain.Image object to self._agent_image just in case you may need additional data later, primarily the ID which is better for retrieval than using the name which can be somewhat problematic",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_b5563dcc",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-01-17T17:50:24Z",
+      "side": 1,
+      "message": "instead of using server here, you could try using vm1.get_vm_inst().volume_ids[0] instead",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a3d3df0_955b39f5",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-01-17T17:50:24Z",
+      "side": 1,
+      "message": "Is this the only means of the external network name? This smells a bit sketchy.",
+      "revId": "20df4cad8af6387ce5c282f7c42b5c2566d71e87",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
