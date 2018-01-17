@@ -20,10 +20,9 @@ from snaps.config.stack import StackConfig
 from snaps.openstack.create_stack import OpenStackHeatStack
 from snaps.openstack.os_credentials import OSCreds
 
-from storperf.db.configuration_db import ConfigurationDB
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
-from snaps.openstack.utils import heat_utils
+from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 
 
 class ParameterError(Exception):
@@ -35,11 +34,10 @@ class StorPerfMaster(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-        self.configuration_db = ConfigurationDB()
         self.job_db = JobDB()
 
         self.stack_settings = StackConfig(
-            name='StorPerfAgent',
+            name='StorPerfAgentGroup',
             template_path='storperf/resources/hot/agent-group.yaml')
 
         self.os_creds = OSCreds(username=os.environ.get('OS_USERNAME'),
@@ -49,129 +47,137 @@ class StorPerfMaster(object):
 
         self.heat_stack = OpenStackHeatStack(self.os_creds,
                                              self.stack_settings)
+        self.username = None
+        self.password = None
         self._test_executor = TestExecutor()
-        self._last_openstack_auth = datetime.now()
+        self._agent_count = 1
+        self._agent_image = "Ubuntu 14.04"
+        self._agent_flavor = "storperf"
+        self._availability_zone = None
+        self._public_network = None
+        self._volume_size = 1
+        self._cached_stack_id = None
+        self._last_snaps_check_time = None
 
     @property
     def volume_size(self):
-        value = self.configuration_db.get_configuration_value(
-            'stack',
-            'volume_size')
-        if (value is None):
-            self.volume_size = 1
-            value = 1
-        return int(value)
+        self._get_stack_info()
+        return self._volume_size
 
     @volume_size.setter
     def volume_size(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
                 "ERROR: Cannot change volume size after stack is created")
-
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'volume_size',
-            value)
+        self._volume_size = value
 
     @property
     def agent_count(self):
-        value = self.configuration_db.get_configuration_value(
-            'stack',
-            'agent_count')
-
-        if (value is None):
-            self.agent_count = 1
-            value = 1
-        return int(value)
+        self._get_stack_info()
+        return self._agent_count
 
     @agent_count.setter
     def agent_count(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
                 "ERROR: Cannot change agent count after stack is created")
-
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'agent_count',
-            value)
+        self._agent_count = value
 
     @property
     def agent_image(self):
-        value = self.configuration_db.get_configuration_value(
-            'stack',
-            'agent_image')
-
-        if (value is None):
-            value = 'Ubuntu 14.04'
-            self.agent_image = value
-
-        return value
+        self._get_stack_info()
+        return self._agent_image
 
     @agent_image.setter
     def agent_image(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
                 "ERROR: Cannot change agent image after stack is created")
-
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'agent_image',
-            value)
+        self._agent_image = value
 
     @property
     def public_network(self):
-        return self.configuration_db.get_configuration_value(
-            'stack',
-            'public_network')
+        self._get_stack_info()
+        return self._public_network
 
     @public_network.setter
     def public_network(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
                 "ERROR: Cannot change public network after stack is created")
-
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'public_network',
-            value)
+        self._public_network = value
 
     @property
     def agent_flavor(self):
-        return self.configuration_db.get_configuration_value(
-            'stack',
-            'agent_flavor')
+        self._get_stack_info()
+        return self._agent_flavor
 
     @agent_flavor.setter
     def agent_flavor(self, value):
         if (self.stack_id is not None):
             raise ParameterError(
                 "ERROR: Cannot change flavor after stack is created")
-
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'agent_flavor',
-            value)
+        self._agent_flavor = value
 
     @property
     def stack_id(self):
+        self._get_stack_info()
+        return self._cached_stack_id
+
+    def _get_stack_info(self):
+        if self._last_snaps_check_time is not None:
+            time_since_check = datetime.now() - self._last_snaps_check_time
+            if time_since_check.total_seconds() < 30:
+                return self._cached_stack_id
+
         self.heat_stack.initialize()
         if self.heat_stack.get_stack() is not None:
-            return self.heat_stack.get_stack().id
+            self._last_snaps_check_time = datetime.now()
+            if self._cached_stack_id == self.heat_stack.get_stack().id:
+                return self._cached_stack_id
+            self._cached_stack_id = self.heat_stack.get_stack().id
+            cinder_cli = cinder_utils.cinder_client(self.os_creds)
+            glance_cli = glance_utils.glance_client(self.os_creds)
+
+            vm_inst_creators = self.heat_stack.get_vm_inst_creators()
+
+            self._agent_count = len(vm_inst_creators)
+            vm1 = vm_inst_creators[0]
+            self._availability_zone = \
+                vm1.instance_settings.availability_zone
+            self._agent_flavor = vm1.instance_settings.flavor.name
+
+            server = vm1.get_vm_inst()
+
+            image_id = server.image_id
+            image = glance_utils.get_image_by_id(glance_cli, image_id)
+            self._agent_image = image.name
+
+            volume_id = server.volume_ids[0]['id']
+            volume = cinder_utils.get_volume_by_id(
+                cinder_cli, volume_id)
+            self._volume_size = volume.size
+            router_creators = self.heat_stack.get_router_creators()
+            router1 = router_creators[0]
+
+            self._public_network = \
+                router1.router_settings.external_gateway
         else:
-            return None
+            self._cached_stack_id = None
+
+        return self._cached_stack_id
 
     @property
     def availability_zone(self):
-        return self.configuration_db.get_configuration_value(
-            'stack',
-            'availability_zone')
+        self._get_stack_info()
+        return self._availability_zone
 
     @availability_zone.setter
     def availability_zone(self, value):
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'availability_zone',
-            value)
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change zone after stack is created")
+        self._availability_zone = value
 
     @property
     def volume_quota(self):
@@ -225,48 +231,11 @@ class StorPerfMaster(object):
 
     @property
     def workloads(self):
-        return self.configuration_db.get_configuration_value(
-            'workload',
-            'workloads')
+        return str(self._test_executor.workload_modules)
 
     @workloads.setter
     def workloads(self, value):
         self._test_executor.register_workloads(value)
-
-        self.configuration_db.set_configuration_value(
-            'workload',
-            'workloads',
-            str(self._test_executor.workload_modules))
-
-    @property
-    def username(self):
-        return self.configuration_db.get_configuration_value(
-            'stack',
-            'username'
-        )
-
-    @username.setter
-    def username(self, value):
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'username',
-            value
-        )
-
-    @property
-    def password(self):
-        return self.configuration_db.get_configuration_value(
-            'stack',
-            'password'
-        )
-
-    @password.setter
-    def password(self, value):
-        self.configuration_db.set_configuration_value(
-            'stack',
-            'password',
-            value
-        )
 
     def get_logs(self, lines=None):
         LOG_DIR = './storperf.log'
