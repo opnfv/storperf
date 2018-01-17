@@ -7,44 +7,22 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import os
 import unittest
 
 import mock
 
-from storperf.db.configuration_db import ConfigurationDB
 from storperf.storperf_master import StorPerfMaster
-
-
-class MockStack(object):
-
-    def __init__(self):
-        pass
-
-    def get_stack(self):
-        return None
 
 
 class StorPerfMasterTest(unittest.TestCase):
 
     def setUp(self):
-        ConfigurationDB.db_name = __name__ + '.db'
-        try:
-            os.remove(ConfigurationDB.db_name)
-        except OSError:
-            pass
         with mock.patch("storperf.storperf_master.OSCreds"), \
                 mock.patch(
                     "storperf.storperf_master.OpenStackHeatStack") as oshs:
             oshs.return_value.get_stack.return_value = None
 
             self.storperf = StorPerfMaster()
-
-    def tearDown(self):
-        try:
-            os.remove(ConfigurationDB.db_name)
-        except OSError:
-            pass
 
     def test_agent_count(self):
         expected = 10
