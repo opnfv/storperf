@@ -40,10 +40,17 @@ class StorPerfMaster(object):
             name='StorPerfAgentGroup',
             template_path='storperf/resources/hot/agent-group.yaml')
 
-        self.os_creds = OSCreds(username=os.environ.get('OS_USERNAME'),
-                                password=os.environ.get('OS_PASSWORD'),
-                                auth_url=os.environ.get('OS_AUTH_URL'),
-                                project_name=os.environ.get('OS_PROJECT_NAME'))
+        self.os_creds = OSCreds(
+            username=os.environ.get('OS_USERNAME'),
+            password=os.environ.get('OS_PASSWORD'),
+            auth_url=os.environ.get('OS_AUTH_URL'),
+            identity_api_version=os.environ.get('OS_IDENTITY_API_VERSION'),
+            user_domain_name=os.environ.get('OS_USER_DOMAIN_NAME'),
+            user_domain_id=os.environ.get('OS_USER_DOMAIN_ID'),
+            region_name=os.environ.get('OS_REGION_NAME'),
+            project_domain_name=os.environ.get('OS_PROJECT_DOMAIN_NAME'),
+            project_domain_id=os.environ.get('OS_PROJECT_DOMAIN_ID'),
+            project_name=os.environ.get('OS_PROJECT_NAME'))
 
         self.heat_stack = OpenStackHeatStack(self.os_creds,
                                              self.stack_settings)
@@ -129,6 +136,8 @@ class StorPerfMaster(object):
             time_since_check = datetime.now() - self._last_snaps_check_time
             if time_since_check.total_seconds() < 30:
                 return self._cached_stack_id
+
+        self.logger.debug("OSCreds: %s" % self.os_creds)
 
         self.heat_stack.initialize()
         if self.heat_stack.get_stack() is not None:

@@ -17,16 +17,15 @@ CA_CERT=""
 INSTALLER="$(./detect_installer.sh)"
 case $INSTALLER in
     joid)
-        OS_AUTH_URL=http://$(juju status keystone | grep public | awk '{print $2}'):5000/v2.0
-        OS_USERNAME=admin
-        OS_PASSWORD=openstack
-        cat << EOF > job/openstack.rc
-export OS_AUTH_URL=$OS_AUTH_URL
-export OS_USERNAME=$OS_USERNAME
-export OS_PASSWORD=$OS_PASSWORD
-export OS_TENANT_NAME=admin
-export OS_PROJECT_NAME=admin
-EOF
+        CUR_DIR="$(pwd)"
+        set -x
+        export JOB_DIR="${CUR_DIR}/job"
+        sed -i '/echo_info "Creating external network with neutron"/i \
+exit 0' job/joid/ci/openstack.sh
+        sed -i "s|~/joid_config/admin-openrc|${JOB_DIR}/openstack.rc|g" job/joid/ci/openstack.sh
+        cd job/joid/ci
+        ./openstack.sh
+        cd "${CUR_DIR}"
         ;;
     fuel)
         INSTALLER_IP=$(sudo virsh net-dumpxml mcpcontrol | grep 'cfg01' | cut -d"'" -f6)

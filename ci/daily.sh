@@ -23,6 +23,8 @@ fi
 
 rm -rf "${WORKSPACE}/ci/job/releng"
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng "${WORKSPACE}/ci/job/releng"
+rm -rf "${WORKSPACE}/ci/job/joid"
+git clone --depth 1 https://gerrit.opnfv.org/gerrit/joid "${WORKSPACE}/ci/job/joid"
 
 virtualenv "${WORKSPACE}/ci/job/storperf_daily_venv"
 # shellcheck source=/dev/null
