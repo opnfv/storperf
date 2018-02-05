@@ -1,0 +1,48 @@
+---
+project: 'Storage Performance Benchmarking for NFVI (storperf)'
+project_creation_date: '2015-09-15'
+project_category: 'Integration and Testing'
+lifecycle_state: 'Incubation'
+project_lead: &opnfv_storperf_ptl
+    name: 'Mark Beierl'
+    email: 'mark.beierl@dell.com'
+    company: 'dell.com'
+    id: 'mbeierl'
+    timezone: 'Unknown'
+primary_contact: *opnfv_storperf_ptl
+issue_tracking:
+    type: 'jira'
+    url: 'https://jira.opnfv.org/projects/STORPERF'
+    key: 'STORPERF'
+mailing_list:
+    type: 'mailman2'
+    url: 'opnfv-tech-discuss@lists.opnfv.org'
+    tag: '[storperf]'
+realtime_discussion:
+    type: irc
+    server: 'freenode.net'
+    channel: '#opnfv-storperf'
+meetings:
+    - type: 'gotomeeting+irc'
+      agenda:  # eg: 'https://wiki.opnfv.org/display/'
+      url:  # eg: 'https://global.gotomeeting.com/join/819733085'
+      server: 'freenode.net'
+      channel: '#opnfv-meeting'
+      repeats: 'weekly'
+      time:  # eg: '16:00 UTC'
+repositories:
+    - 'storperf'
+committers:
+    - <<: *opnfv_storperf_ptl
+    - name: 'Jose Lausuch'
+      email: 'jalausuch@suse.com'
+      company: 'suse.com'
+      id: 'jose.lausuch'
+    - name: 'Taseer Ahmed'
+      email: 'taseer94@gmail.com'
+      company: 'gmail.com'
+      id: 'linux_geek'
+tsc:
+    # yamllint disable rule:line-length
+    approval: ''
+    # yamllint enable rule:line-length
