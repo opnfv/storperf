@@ -192,6 +192,7 @@ class Configure(Resource):
                             'stack_id': storperf.stack_id})
 
         except Exception as e:
+            self.logger.exception(e)
             abort(400, str(e))
 
     @swagger.operation(

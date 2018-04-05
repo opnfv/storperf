@@ -52,6 +52,8 @@ class StorPerfMaster(object):
             project_domain_id=os.environ.get('OS_PROJECT_DOMAIN_ID'),
             project_name=os.environ.get('OS_PROJECT_NAME'))
 
+        self.logger.debug("OSCreds: %s" % self.os_creds)
+
         self.heat_stack = OpenStackHeatStack(self.os_creds,
                                              self.stack_settings)
         self.username = None
@@ -136,8 +138,6 @@ class StorPerfMaster(object):
             time_since_check = datetime.now() - self._last_snaps_check_time
             if time_since_check.total_seconds() < 30:
                 return self._cached_stack_id
-
-        self.logger.debug("OSCreds: %s" % self.os_creds)
 
         self.heat_stack.initialize()
         if self.heat_stack.get_stack() is not None:
@@ -274,12 +274,23 @@ class StorPerfMaster(object):
             res = heat_utils.get_resources(heat_cli,
                                            self.heat_stack.get_stack().id)
             self.logger.error("Stack creation failed")
+            reason = ""
+            failed = False
             for resource in res:
-                status = resource.status
-                self.logger.error("%s: %s" % (resource.name, status))
-                if status == u'CREATE_FAILED':
-                    self.delete_stack()
-                    raise Exception(resource.status_reason)
+                if resource.status == u'CREATE_FAILED':
+                    failed = True
+                    reason += "%s: %s " % (resource.name,
+                                           resource.status_reason)
+                self.logger.error("%s - %s: %s" % (resource.name,
+                                                   resource.status,
+                                                   resource.status_reason))
+
+            if failed:
+                try:
+                    self.heat_stack.clean()
+                except Exception:
+                    pass
+                raise Exception(reason)
 
     def delete_stack(self):
         if self._test_executor is not None:
