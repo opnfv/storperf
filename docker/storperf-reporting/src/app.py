@@ -128,12 +128,12 @@ def file_not_found():
     return redirect(url_for('index'))
 
 
-@app.route('/reporting/js/<path:path>')
+@app.route('/reporting/3rd_party/js/<path:path>')
 def js(path):
     return send_from_directory('static/js/', path)
 
 
-@app.route('/reporting/css/<path:path>')
+@app.route('/reporting/3rd_party/css/<path:path>')
 def css(path):
     return send_from_directory('static/css/', path)
 
