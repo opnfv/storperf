@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <title>Chart | Storperf</title>
-    <link rel="stylesheet" href="/reporting/css/bootstrap.min.css">
-    <script src="/reporting/js/jquery-2.1.3.min.js"></script>
-    <script src="/reporting/js/bootstrap.min.js"></script>
-    <script src="/reporting/js/jquery.bootpag.min.js"></script>
-    <script src="/reporting/js/plotly-latest.min.js"></script>
-    <script src="/reporting/js/Chart.min.js"></script>
+    <link rel="stylesheet" href="/reporting/3rd_party/css/bootstrap.min.css">
+    <script src="/reporting/3rd_party/js/jquery-2.1.3.min.js"></script>
+    <script src="/reporting/3rd_party/js/bootstrap.min.js"></script>
+    <script src="/reporting/3rd_party/js/jquery.bootpag.min.js"></script>
+    <script src="/reporting/3rd_party/js/plotly-latest.min.js"></script>
+    <script src="/reporting/3rd_party/js/Chart.min.js"></script>
     <style>
 /* The Modal (background) */
 .modal {
@@ -88,8 +88,8 @@ ul {
                 text += "<div class='row well' id='row-" + key[i] + "'>";
                 text += "<h4> Job ID: " + key[i] + "</h4>";
                 text += "<button type='button' class='btn btn-default btn-lg' id='para-"+ key[i] +
-                        "' onclick=add_info('" + key[i] + "')> Click here to view details </button>"; 
-                text += "</div>"; 
+                        "' onclick=add_info('" + key[i] + "')> Click here to view details </button>";
+                text += "</div>";
             }
             $("#content").html(text);
         }
@@ -112,8 +112,8 @@ ul {
                     text += "<h4 onclick=add_test('" + keys[i] + "')>" + keys[i] + "</h4>";
                     text += "</div>";
                 }
-            }   
-            $("#content").html(text);   
+            }
+            $("#content").html(text);
         }
         function add_test(key){
             if(document.getElementById("test-" + key) == null){
