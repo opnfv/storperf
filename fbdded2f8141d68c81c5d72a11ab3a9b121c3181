@@ -22,6 +22,30 @@
       "revId": "fbdded2f8141d68c81c5d72a11ab3a9b121c3181",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_9960ced0",
+        "filename": "docker/storperf-httpfrontend/html/index.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-04-13T19:53:15Z",
+      "side": 1,
+      "message": "This and reporting were the only 2 that have non Apache licenses.  If you are thinking of having one 3rd_party directory that all containers copy into their context, it will require a little bit of research as the container build cannot reference files outside of the context (ie: cannot copy ../3rd_party into itself).",
+      "parentUuid": "5a3f45e8_f923d2a4",
+      "range": {
+        "startLine": 20,
+        "startChar": 31,
+        "endLine": 20,
+        "endChar": 40
+      },
+      "revId": "fbdded2f8141d68c81c5d72a11ab3a9b121c3181",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
