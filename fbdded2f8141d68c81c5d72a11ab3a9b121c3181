@@ -46,6 +46,30 @@
       "revId": "fbdded2f8141d68c81c5d72a11ab3a9b121c3181",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a3f45e8_19fdde6e",
+        "filename": "docker/storperf-httpfrontend/html/index.html",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 6799
+      },
+      "writtenOn": "2018-04-14T07:19:02Z",
+      "side": 1,
+      "message": "No. I am not thinking of having single directory to put all non Apache licensed software and make all containers copy it. It will be unnecessary for containers who do not require them. Moreover, different containers may required different files. It does not make sense to copy the unrequired files.\n\nMy proposal was to change the structure of the current layout. At present we have put 3rd_party in directory :\nstorperf/docker/storperf-httpfrontend/html/3rd_party\nMy proposal was to put it  like this:\nstorperf/docker/storperf-httpfrontend/3rd_party\n\nPutting them in html folder make it seem more specific as html related 3rd_party resources. Its just a minor suggestion to make things more clear for future development prospects.",
+      "parentUuid": "5a3f45e8_9960ced0",
+      "range": {
+        "startLine": 20,
+        "startChar": 31,
+        "endLine": 20,
+        "endChar": 40
+      },
+      "revId": "fbdded2f8141d68c81c5d72a11ab3a9b121c3181",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
