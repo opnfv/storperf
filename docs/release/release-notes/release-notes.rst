@@ -17,7 +17,7 @@ Version history
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 2017-10-06         | Euphrates 1.0      | Mark Beierl        |                    |
+| 2018-04-18         | Fraser 1.0         | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
@@ -48,16 +48,16 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/commit-ID**                   | storperf/euphrates.1.0               |
+| **Repo/commit-ID**                   | storperf/fraser.1.0               |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Euphrates base release               |
+| **Release designation**              | Fraser base release               |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Release date**                     | 2017-10-06                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | OPNFV Euphrates release 1.0          |
+| **Purpose of the delivery**          | OPNFV Fraser release 1.0          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -75,31 +75,10 @@ Reason for version
 Features additions
 -------------------
 
-* STORPERF-125 - StorPerf container decomposition
-* STORPERF-141 - Create a series of graphs to support SNIA targers
-* STORPERF-94 - Logs can now be viewed via the API. One has the choice to either view the complete length of logs,
-  or limit himself to just a few lines.
-* STORPERF-193 - Support for ARM: StorPerf images for ARM and x86_64
-  are published on docker hub with the architecture in the image tag.
-* STORPERF-174 - Container base switched to Alpine
-* STORPERF-92 - Allow flavor to be set in stack create
-* STORPERF-178 - Add ability to specify availability zone
-* STORPERF-175 - Support for different agent OS, such as Cirros
-
+* STORPERF-231 - Integration with SNAPS
 
 Bug Fixes
 ----------
-
-The following minor bugs have been fixed:
-
-* STORPERF-56 - Cannot delete stack if create failed
-* STORPERF-180 - No details if stack create failed
-* STORPERF-186 - Duplicate entries for _warm_up with status query
-* STORPERF-197 - FIO 2.2.10 hangs when statically built
-* STORPERF-216 - Incorrect key names posted to testresults DB
-
-
-See JIRA for full `change log <https://jira.opnfv.org/jira/secure/ReleaseNote.jspa?projectId=11002&version=11227>`_
 
 Deliverables
 =============
@@ -108,19 +87,19 @@ Software
 ---------
 
 - `StorPerf master image <https://hub.docker.com/r/opnfv/storperf-master/>`_
-  (tag: x86_64-euphrates.1.0  or aarch64-euphrates.1.0)
+  (tag: x86_64-fraser.1.0  or aarch64-fraser.1.0)
 
 - `StorPerf swaggerui <https://hub.docker.com/r/opnfv/storperf-swaggerui/>`_
-  (tag: x86_64-euphrates.1.0  or aarch64-euphrates.1.0)
+  (tag: x86_64-fraser.1.0  or aarch64-fraser.1.0)
 
 - `StorPerf graphite image <https://hub.docker.com/r/opnfv/storperf-graphite/>`_
-  (tag: x86_64-euphrates.1.0  or aarch64-euphrates.1.0)
+  (tag: x86_64-fraser.1.0  or aarch64-fraser.1.0)
 
 - `StorPerf reporting image <https://hub.docker.com/r/opnfv/storperf-reporting/>`_
-  (tag: x86_64-euphrates.1.0  or aarch64-euphrates.1.0)
+  (tag: x86_64-fraser.1.0  or aarch64-fraser.1.0)
 
 - `StorPerf Http-Frontend image <https://hub.docker.com/r/opnfv/storperf-httpfrontend/>`_
-  (tag: x86_64-euphrates.1.0  or aarch64-euphrates.1.0)
+  (tag: x86_64-fraser.1.0  or aarch64-fraser.1.0)
 
 Documentation
 --------------
