@@ -74,9 +74,11 @@ class _base_workload(object):
 
     @property
     def fullname(self):
+        host_file = self.remote_host+"."+self.filename
+        host_file = host_file.replace(".", "-").replace("/", "-")
         return ("%s.%s.queue-depth.%s.block-size.%s.%s"
                 % (str(self.id),
                    self.__class__.__name__,
                    str(self.options['iodepth']),
                    str(self.options['bs']),
-                   str(self.remote_host).replace(".", "-")))
+                   host_file))
