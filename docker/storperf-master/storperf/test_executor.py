@@ -53,6 +53,7 @@ class TestExecutor(object):
         self.job_db = JobDB()
         self._slaves = []
         self._terminated = False
+        self._volume_count = 1
         self._workload_executors = []
         self._workload_thread = None
         self._thread_gate = None
@@ -86,6 +87,15 @@ class TestExecutor(object):
     def slaves(self, slaves):
         self.logger.debug("Set slaves to: " + str(slaves))
         self._slaves = slaves
+
+    @property
+    def volume_count(self):
+        return self._volume_count
+
+    @volume_count.setter
+    def volume_count(self, volume_count):
+        self.logger.debug("Set volume count to: " + str(volume_count))
+        self._volume_count = volume_count
 
     @property
     def queue_depths(self):
@@ -282,17 +292,24 @@ class TestExecutor(object):
 
             slave_threads = []
             for slave in self.slaves:
-                slave_workload = copy.copy(current_workload['workload'])
-                slave_workload.remote_host = slave
-
-                self._workload_executors.append(slave_workload)
-
-                t = Thread(target=self.execute_on_node,
-                           args=(slave_workload,),
-                           name="%s worker" % slave)
-                t.daemon = False
-                t.start()
-                slave_threads.append(t)
+                volume_number = 0
+                while volume_number < self.volume_count:
+                    slave_workload = copy.copy(current_workload['workload'])
+                    slave_workload.remote_host = slave
+                    last_char_of_filename = chr(ord(
+                        slave_workload.filename[-1:]) + volume_number)
+                    slave_workload.filename = "%s%s" % \
+                        (slave_workload.filename[:-1], last_char_of_filename)
+                    self.logger.debug("Device to profile: %s" %
+                                      slave_workload.filename)
+                    self._workload_executors.append(slave_workload)
+                    t = Thread(target=self.execute_on_node,
+                               args=(slave_workload,),
+                               name="%s worker" % slave)
+                    t.daemon = False
+                    t.start()
+                    slave_threads.append(t)
+                    volume_number += 1
 
             for slave_thread in slave_threads:
                 self.logger.debug("Waiting on %s" % slave_thread)
@@ -334,9 +351,6 @@ class TestExecutor(object):
             if (self.filename is not None):
                 workload.filename = self.filename
             workload.id = self.job_db.job_id
-
-            if (self.filename is not None):
-                workload.filename = self.filename
 
             if (workload_name.startswith("_")):
                 iodepths = [8, ]

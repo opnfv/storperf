@@ -165,6 +165,24 @@ is required in order to push results to the OPNFV Test Results DB:
           "test_case": "snia_steady_state"
       }
 
+Changing Stack Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~
+While StorPerf currently does not support changing the parameters of the
+stack directly, it is possible to change the stack using the OpenStack client
+library.  The following parameters can be changed:
+
+- agent_count: to increase or decrease the number of VMs.
+- volume_count: to change the number of Cinder volumes per VM.
+- volume_size: to increase the size of each volume.  Note: Cinder cannot shrink volumes.
+
+Increasing the number of agents or volumes, or increasing the size of the volumes
+will require you to kick off a new _warm_up job to initialize the newly
+allocated volumes.
+
+The following is an example of how to change the stack using the heat client:
+
+.. code-block::
+  heat stack-update StorPerfAgentGroup --existing -P "volume_count=2"
 
 
 Query Jobs Information
