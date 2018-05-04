@@ -165,6 +165,13 @@ is required in order to push results to the OPNFV Test Results DB:
           "test_case": "snia_steady_state"
       }
 
+Changing Stack Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Put info here about how the following command changes the number of volumes
+per agent:
+
+.. code-block::
+  heat stack-update StorPerfAgentGroup --existing -P "volume_count=2"
 
 
 Query Jobs Information
