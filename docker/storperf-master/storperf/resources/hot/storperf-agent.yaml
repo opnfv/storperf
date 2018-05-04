@@ -24,6 +24,13 @@ parameters:
     default: storperf
   storperf_open_security_group:
     type: string
+  volume_count:
+    type: number
+    description: Number of volumes to be created
+    default: 1
+    constraints:
+      - range: { min: 0, max: 1024 }
+        description: must be between 1 and 1024.
   volume_size:
     type: number
     description: Size of the volume to be created.
@@ -87,15 +94,16 @@ resources:
       port_id: { get_resource: storperf_agent_port }
 
   agent_volume:
-    type: OS::Cinder::Volume
+    type: OS::Heat::ResourceGroup
     properties:
-      size: { get_param: volume_size }
-
-  agent_volume_att:
-    type: OS::Cinder::VolumeAttachment
-    properties:
-      instance_uuid: { get_resource: storperf_agent }
-      volume_id: { get_resource: agent_volume}
+      count: { get_param: volume_count }
+      resource_def: {
+        type: "storperf-volume.yaml",
+        properties: {
+          volume_size: { get_param: volume_size },
+          agent_instance_uuid: { get_resource: storperf_agent }
+        }
+      }
 
 outputs:
   storperf_agent_ip:
