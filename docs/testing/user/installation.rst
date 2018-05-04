@@ -78,8 +78,8 @@ Planning
 StorPerf is delivered as a series of Docker containers managed by
 docker-compose.  There are two possible methods for installation:
 
-#. Run container on bare metal
-#. Run container in a VM
+#. Run the containers on bare metal
+#. Run the containers in a VM
 
 Requirements:
 
@@ -142,7 +142,7 @@ which should result in:
 
 .. code-block:: console
 
-     968c0c2d7c0e24f6777c33b37d9b4fd885575155069fb760405ec8214b2eb672  docker-compose.yaml
+    69856e9788bec36308a25303ec9154ed68562e126788a47d54641d68ad22c8b9  docker-compose.yaml
 
 To run, you must specify two environment variables:
 
@@ -175,7 +175,7 @@ which should result in:
 
 .. code-block:: console
 
-     00649e02237d27bf0b40d1a66160a68a56c9f5e1ceb78d7858e30715cf4350e3  create-compose.py
+     327cad2a7b3a3ca37910978005c743799313c2b90709e4a3f142286a06e53f57  create-compose.py
 
 Note: The script will run fine on python3. Install python future package to avoid error on python2.
 
@@ -187,79 +187,123 @@ Note: The script will run fine on python3. Install python future package to avoi
 Docker Exec
 ~~~~~~~~~~~
 
-If needed, the container can be entered with docker exec.  This is not normally
+If needed, any StorPerf container can be entered with docker exec.  This is not normally
 required.
 
 .. code-block:: console
 
-    docker exec -it storperf-master bash
+    docker exec -it storperf-master /bin/bash
 
 
 
-Pulling StorPerf Container
-==========================
+Pulling StorPerf Containers
+===========================
 
-Master (Euphrates)
-~~~~~~~~~~~~~~~~~~
+The tags for StorPerf can be found here: https://hub.docker.com/r/opnfv/storperf-master/tags/
 
-StorPerf has switched to docker-compose in the latest version.  The tag for
-pulling the latest master Euphrates container is:
+Master (latest)
+~~~~~~~~~~~~~~~
 
-.. code-block:: bash
+This tag represents  StorPerf at its most current state of development.  While
+self-tests have been run, there is not a guarantee that all features will be
+functional, or there may be bugs.
 
-   docker pull opnfv/storperf-master:latest
-   docker pull opnfv/storperf-reporting:latest
-   docker pull opnfv/storperf-httpfrontend:latest
-   docker pull opnfv/storperf-swaggerui:latest
-   docker pull opnfv/storperf-graphite:latest
+Documentation for latest can be found using the latest label at:
 
-However, by itself, this will no longer provide full functionality.  Full
-instructions are provided in the Running StorPerf Container section of this
-document.
+http://docs.opnfv.org/en/latest/submodules/storperf/docs/testing/user/index.html
 
-
-Danube
-~~~~~~
-
-The tag for the latest stable Danube is be:
-
-.. code-block:: bash
-
-   docker pull opnfv/storperf:danube.3.0
-
-Colorado
-~~~~~~~~
-
-The tag for the latest stable Colorado release is:
-
-.. code-block:: bash
-
-   docker pull opnfv/storperf:colorado.0.1
-
-Brahmaputra
-~~~~~~~~~~~
-
-The tag for the latest stable Brahmaputra release is:
-
-.. code-block:: bash
-
-   docker pull opnfv/storperf:brahmaputra.1.2
-
-StorPerf on ARM Processors
-==========================
-
-StorPerf now supports docker images on ARM processors as well. However, at the moment
-there is no upstream image on DockerHub. The user needs to manually build it. Firstly,
-clone StorPerf repository from GitHub
-
-.. code-block:: bash
-
-  git clone https://git.opnfv.org/storperf
-  cd storperf/docker/
-
-Next, build and setup the docker images
+For x86_64 based systems, use:
 
 .. code-block:: console
 
-  TAG=aarch64 ENV_FILE=./admin.rc CARBON_DIR=./carbon docker-compose -f local-docker-compose.yaml build
-  TAG=aarch64 ENV_FILE=./admin.rc CARBON_DIR=./carbon docker-compose -f local-docker-compose.yaml up -d
+    TAG=x86_64-latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=x86_64-latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+For 64 bit ARM based systems, use:
+
+.. code-block:: console
+
+    TAG=aarch64-latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=aarch64-latest ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+
+Release (stable)
+~~~~~~~~~~~~~~~~
+
+This tag represents StorPerf at its most recent stable release.  There are
+no known bugs and known issues and workarounds are documented in the release
+notes.  Issues found here should be reported in JIRA:
+
+https://jira.opnfv.org/secure/RapidBoard.jspa?rapidView=3
+
+For x86_64 based systems, use:
+
+.. code-block:: console
+
+    TAG=x86_64-stable ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=x86_64-stable ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+For 64 bit ARM based systems, use:
+
+.. code-block:: console
+
+    TAG=aarch64-stable ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=aarch64-stable ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+
+
+Fraser (opnfv-6.0.0)
+~~~~~~~~~~~~~~~~~~
+
+This tag represents the 6th OPNFV release and the 5th StorPerf release.  There
+are no known bugs and known issues and workarounds are documented in the release
+notes.  Documentation can be found under the Fraser label at:
+
+http://docs.opnfv.org/en/stable-fraser/submodules/storperf/docs/testing/user/index.html
+
+Issues found here should be reported against release 6.0.0 in JIRA:
+
+https://jira.opnfv.org/secure/RapidBoard.jspa?rapidView=3
+
+For x86_64 based systems, use:
+
+.. code-block:: console
+
+    TAG=x86_64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=x86_64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+For 64 bit ARM based systems, use:
+
+.. code-block:: console
+
+    TAG=aarch64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=aarch64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+
+
+Euphrates (opnfv-5.0.0)
+~~~~~~~~~~~~~~~~~
+
+This tag represents the 5th OPNFV release and the 4th StorPerf release.  There
+are no known bugs and known issues and workarounds are documented in the release
+notes.  Documentation can be found under the Euphrates label at:
+
+http://docs.opnfv.org/en/stable-euphrates/submodules/storperf/docs/testing/user/index.html
+
+Issues found here should be reported against release 6.0.0 in JIRA:
+
+https://jira.opnfv.org/secure/RapidBoard.jspa?rapidView=3
+
+For x86_64 based systems, use:
+
+.. code-block:: console
+
+    TAG=x86_64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=x86_64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d
+
+For 64 bit ARM based systems, use:
+
+.. code-block:: console
+
+    TAG=aarch64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose pull
+    TAG=aarch64-opnfv-6.0.0 ENV_FILE=./admin.rc CARBON_DIR=./carbon/ docker-compose up -d

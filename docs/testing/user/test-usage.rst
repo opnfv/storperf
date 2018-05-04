@@ -36,15 +36,30 @@ Configure The Environment
 
 The following pieces of information are required to prepare the environment:
 
-- The number of VMs/Cinder volumes to create
-- The Glance image that holds the VM operating system to use.  StorPerf has
-  only been tested with Ubuntu 16.04
-- The OpenStack flavor to use when creating the VMs
-- The name of the public network that agents will use
-- The size, in gigabytes, of the Cinder volumes to create
+- The number of VMs/Cinder volumes to create.
+- The Glance image that holds the VM operating system to use.
+- The OpenStack flavor to use when creating the VMs.
+- The name of the public network that agents will use.
+- The size, in gigabytes, of the Cinder volumes to create.
+- The number of the Cinder volumes to attach to each VM.
 - The availability zone (optional) in which the VM is to be launched. Defaults to **nova**.
 - The username (optional) if we specify a custom image.
 - The password (optional) for the above image.
+
+**Note**: on ARM based platforms there exists a bug in the kernel which can prevent
+VMs from properly attaching Cinder volumes.  There are two known workarounds:
+
+#. Create the environment with 0 Cinder volumes attached, and after the VMs
+  have finished booting, modify the stack to have 1 or more Cinder volumes.
+  See section on Changing Stack Parameters later in this guide.
+#. Add the following image metadata to Glance.  This will cause the Cinder
+  volume to be mounted as a SCSI device, and therefore your target will be
+  /dev/sdb, etc, instead of /dev/vdb.  You will need to specify this in your
+  warm up and workload jobs.
+
+.. code-block:
+  --property hw_disk_bus=scsi --property hw_scsi_model=virtio-scsi
+
 
 The ReST API is a POST to http://StorPerf:5000/api/v1.0/configurations and
 takes a JSON payload as follows.
@@ -57,6 +72,7 @@ takes a JSON payload as follows.
      "agent_image": string,
      "public_network": string,
      "volume_size": int,
+     "volume_count": int,
      "availability_zone": string,
      "username": string,
      "password": string
@@ -165,6 +181,24 @@ is required in order to push results to the OPNFV Test Results DB:
           "test_case": "snia_steady_state"
       }
 
+Changing Stack Parameters
+~~~~~~~~~~~~~~~~~~~~~~~~~
+While StorPerf currently does not support changing the parameters of the
+stack directly, it is possible to change the stack using the OpenStack client
+library.  The following parameters can be changed:
+
+- agent_count: to increase or decrease the number of VMs.
+- volume_count: to change the number of Cinder volumes per VM.
+- volume_size: to increase the size of each volume.  Note: Cinder cannot shrink volumes.
+
+Increasing the number of agents or volumes, or increasing the size of the volumes
+will require you to kick off a new _warm_up job to initialize the newly
+allocated volumes.
+
+The following is an example of how to change the stack using the heat client:
+
+.. code-block::
+  heat stack-update StorPerfAgentGroup --existing -P "volume_count=2"
 
 
 Query Jobs Information
