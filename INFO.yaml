@@ -1,0 +1,61 @@
+---
+project: 'Storage Performance Benchmarking for NFVI (storperf)'
+project_creation_date: '2015-09-15'
+project_category: 'Integration and Testing'
+lifecycle_state: 'Incubation'
+project_lead: &opnfv_storperf_ptl
+    name: 'Mark Beierl'
+    email: 'mark.beierl@dell.com'
+    company: 'dell.com'
+    id: 'mbeierl'
+    timezone: 'EST'
+primary_contact: *opnfv_storperf_ptl
+issue_tracking:
+    type: 'jira'
+    url: 'https://jira.opnfv.org/projects/STORPERF'
+    key: 'STORPERF'
+mailing_list:
+    type: 'mailman2'
+    url: 'opnfv-tech-discuss@lists.opnfv.org'
+    tag: '[storperf]'
+realtime_discussion:
+    type: irc
+    server: 'freenode.net'
+    channel: '#opnfv-storperf'
+meetings:
+    - type: 'gotomeeting+irc'
+      agenda: https://wiki.opnfv.org/display/meetings/Storperf+Team+Weekly+Meeting
+      url:  https://global.gotomeeting.com/join/819733085
+      server: 'freenode.net'
+      channel: '#opnfv-meeting'
+      repeats: 'weekly'
+      time:  '14:00 UTC'
+repositories:
+    - 'storperf'
+committers:
+    - <<: *opnfv_storperf_ptl
+    - name: 'Jose Lausuch'
+      email: 'jalausuch@suse.com'
+      company: 'suse.com'
+      id: 'jose.lausuch'
+    - name: 'Taseer Ahmed'
+      email: 'taseer94@gmail.com'
+      company: 'gmail.com'
+      id: 'linux_geek'
+tsc:
+    # yamllint disable rule:line-length
+    approval: 'http://meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-15-13.59.log.html'
+    changes:
+        - type: 'promotion'
+          name: 'Jose Lausuch'
+          link: 'http://lists.opnfv.org/pipermail/opnfv-tech-discuss/2015-December/007109.html'
+        - type: 'removal'
+          name: 'Edgar Stpierre'
+          link: 'https://lists.opnfv.org/pipermail/opnfv-tsc/2017-April/003419.html'
+        - type: 'removal'
+          name: 'Ferenc Farkas'
+          link: 'https://lists.opnfv.org/pipermail/opnfv-tsc/2017-August/003680.html'
+        - type: 'promotion'
+          name: 'Taseer Ahmed'
+          link: 'https://gerrit.opnfv.org/gerrit/#/c/38979/'
+     # yamllint enable rule:line-length
