@@ -64,9 +64,22 @@ class StorPerfMaster(object):
         self._agent_flavor = "storperf"
         self._availability_zone = None
         self._public_network = None
+        self._volume_count = 1
         self._volume_size = 1
         self._cached_stack_id = None
         self._last_snaps_check_time = None
+
+    @property
+    def volume_count(self):
+        self._get_stack_info()
+        return self._volume_count
+
+    @volume_count.setter
+    def volume_count(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change volume count after stack is created")
+        self._volume_count = value
 
     @property
     def volume_size(self):
@@ -136,14 +149,12 @@ class StorPerfMaster(object):
     def _get_stack_info(self):
         if self._last_snaps_check_time is not None:
             time_since_check = datetime.now() - self._last_snaps_check_time
-            if time_since_check.total_seconds() < 30:
+            if time_since_check.total_seconds() < 60:
                 return self._cached_stack_id
 
         self.heat_stack.initialize()
         if self.heat_stack.get_stack() is not None:
             self._last_snaps_check_time = datetime.now()
-            if self._cached_stack_id == self.heat_stack.get_stack().id:
-                return self._cached_stack_id
             self._cached_stack_id = self.heat_stack.get_stack().id
             cinder_cli = cinder_utils.cinder_client(self.os_creds)
             glance_cli = glance_utils.glance_client(self.os_creds)
@@ -162,10 +173,14 @@ class StorPerfMaster(object):
             image = glance_utils.get_image_by_id(glance_cli, image_id)
             self._agent_image = image.name
 
-            volume_id = server.volume_ids[0]['id']
-            volume = cinder_utils.get_volume_by_id(
-                cinder_cli, volume_id)
-            self._volume_size = volume.size
+            self._volume_count = len(server.volume_ids)
+            if self._volume_count > 0:
+                volume_id = server.volume_ids[0]['id']
+                volume = cinder_utils.get_volume_by_id(
+                    cinder_cli, volume_id)
+                self.logger.debug("Volume id %s, size=%s" % (volume.id,
+                                                             volume.size))
+                self._volume_size = volume.size
             router_creators = self.heat_stack.get_router_creators()
             router1 = router_creators[0]
 
@@ -265,15 +280,17 @@ class StorPerfMaster(object):
 
     def create_stack(self):
         self.stack_settings.resource_files = [
-            'storperf/resources/hot/storperf-agent.yaml']
+            'storperf/resources/hot/storperf-agent.yaml',
+            'storperf/resources/hot/storperf-volume.yaml']
         self.stack_settings.env_values = self._make_parameters()
         try:
             self.heat_stack.create()
-        except Exception:
+        except Exception as e:
+            self.logger.error("Stack creation failed")
+            self.logger.exception(e)
             heat_cli = heat_utils.heat_client(self.os_creds)
             res = heat_utils.get_resources(heat_cli,
                                            self.heat_stack.get_stack().id)
-            self.logger.error("Stack creation failed")
             reason = ""
             failed = False
             for resource in res:
@@ -325,10 +342,12 @@ class StorPerfMaster(object):
             thread.join()
 
         self._test_executor.slaves = slaves
+        self._test_executor.volume_count = self.volume_count
 
         params = metadata
         params['agent_count'] = self.agent_count
         params['public_network'] = self.public_network
+        params['volume_count'] = self.volume_count
         params['volume_size'] = self.volume_size
         if self.username and self.password:
             params['username'] = self.username
@@ -446,6 +465,7 @@ class StorPerfMaster(object):
         heat_parameters = {}
         heat_parameters['public_network'] = self.public_network
         heat_parameters['agent_count'] = self.agent_count
+        heat_parameters['volume_count'] = self.volume_count
         heat_parameters['volume_size'] = self.volume_size
         heat_parameters['agent_image'] = self.agent_image
         heat_parameters['agent_flavor'] = self.agent_flavor

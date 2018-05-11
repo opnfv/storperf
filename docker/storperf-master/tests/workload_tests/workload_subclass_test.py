@@ -22,33 +22,35 @@ class WorkloadSubclassTest(unittest.TestCase):
     def test_local_name(self):
         workload = rr()
         self.assertEqual(workload.fullname,
-                         "None.rr.queue-depth.1.block-size.64k.None",
+                         "None.rr.queue-depth.1.block-size.64k.None--dev-vdb",
                          workload.fullname)
 
     def test_remote_name(self):
         workload = rw()
         workload.remote_host = "192.168.0.1"
-        self.assertEqual(workload.fullname,
-                         "None.rw.queue-depth.1.block-size.64k.192-168-0-1",
-                         workload.fullname)
+        self.assertEqual(
+            workload.fullname,
+            "None.rw.queue-depth.1.block-size.64k.192-168-0-1--dev-vdb",
+            workload.fullname)
 
     def test_blocksize(self):
         workload = rs()
         workload.options["bs"] = "4k"
         self.assertEqual(workload.fullname,
-                         "None.rs.queue-depth.1.block-size.4k.None",
+                         "None.rs.queue-depth.1.block-size.4k.None--dev-vdb",
                          workload.fullname)
 
     def test_queue_depth(self):
         workload = wr()
         workload.options["iodepth"] = "8"
         self.assertEqual(workload.fullname,
-                         "None.wr.queue-depth.8.block-size.64k.None",
+                         "None.wr.queue-depth.8.block-size.64k.None--dev-vdb",
                          workload.fullname)
 
     def test_id(self):
         workload = ws()
         workload.id = "workloadid"
-        self.assertEqual(workload.fullname,
-                         "workloadid.ws.queue-depth.1.block-size.64k.None",
-                         workload.fullname)
+        self.assertEqual(
+            workload.fullname,
+            "workloadid.ws.queue-depth.1.block-size.64k.None--dev-vdb",
+            workload.fullname)
