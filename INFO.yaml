@@ -42,6 +42,10 @@ committers:
       email: 'taseer94@gmail.com'
       company: 'gmail.com'
       id: 'linux_geek'
+    - name: 'Shrenik Jain'
+      email: 'shrenik.jain@research.iiit.ac.in'
+      company: 'research.iiit.ac.in'
+      id: 'shrenikjain38'
 tsc:
     # yamllint disable rule:line-length
     approval: 'http://meetbot.opnfv.org/meetings/opnfv-meeting/2015/opnfv-meeting.2015-09-15-13.59.log.html'
