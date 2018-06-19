@@ -21,6 +21,7 @@ from snaps.config.stack import StackConfig
 from snaps.openstack.create_stack import OpenStackHeatStack
 from snaps.openstack.os_credentials import OSCreds
 from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
+from snaps.thread_utils import worker_pool
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
 
@@ -69,6 +70,7 @@ class StorPerfMaster(object):
         self._cached_stack_id = None
         self._last_snaps_check_time = None
         self._slave_addresses = []
+        self._thread_pool = worker_pool(20)
 
     @property
     def volume_count(self):
@@ -158,14 +160,16 @@ class StorPerfMaster(object):
                 return self._cached_stack_id
 
         self.heat_stack.initialize()
+
         if self.heat_stack.get_stack() is not None:
-            self._last_snaps_check_time = datetime.now()
             self._cached_stack_id = self.heat_stack.get_stack().id
             cinder_cli = cinder_utils.cinder_client(self.os_creds)
             glance_cli = glance_utils.glance_client(self.os_creds)
 
-            vm_inst_creators = self.heat_stack.get_vm_inst_creators()
+            router_worker = self._thread_pool.apply_async(
+                self.heat_stack.get_router_creators)
 
+            vm_inst_creators = self.heat_stack.get_vm_inst_creators()
             self._agent_count = len(vm_inst_creators)
             vm1 = vm_inst_creators[0]
             self._availability_zone = \
@@ -180,9 +184,8 @@ class StorPerfMaster(object):
 
             server = vm1.get_vm_inst()
 
-            image_id = server.image_id
-            image = glance_utils.get_image_by_id(glance_cli, image_id)
-            self._agent_image = image.name
+            image_worker = self._thread_pool.apply_async(
+                glance_utils.get_image_by_id, (glance_cli, server.image_id))
 
             self._volume_count = len(server.volume_ids)
             if self._volume_count > 0:
@@ -192,11 +195,16 @@ class StorPerfMaster(object):
                 self.logger.debug("Volume id %s, size=%s" % (volume.id,
                                                              volume.size))
                 self._volume_size = volume.size
-            router_creators = self.heat_stack.get_router_creators()
-            router1 = router_creators[0]
 
+            image = image_worker.get()
+            self._agent_image = image.name
+
+            router_creators = router_worker.get()
+            router1 = router_creators[0]
             self._public_network = \
                 router1.router_settings.external_gateway
+
+            self._last_snaps_check_time = datetime.now()
         else:
             self._cached_stack_id = None
 
