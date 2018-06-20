@@ -37,6 +37,7 @@ class ReverseProxied(object):
 
     :param app: the WSGI application
     '''
+
     def __init__(self, app):
         self.app = app
 
@@ -117,7 +118,8 @@ class ConfigurationResponseModel:
         'stack_id': fields.String,
         'volume_count': fields.Integer,
         'volume_size': fields.Integer,
-        'availability_zone': fields.String
+        'availability_zone': fields.String,
+        'slave_addresses': fields.Nested
     }
 
 
@@ -141,6 +143,7 @@ class Configure(Resource):
                         'volume_size': storperf.volume_size,
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
+                        'slave_addresses': storperf.slave_addresses,
                         'stack_id': storperf.stack_id})
 
     @swagger.operation(

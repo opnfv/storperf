@@ -16,13 +16,13 @@ from time import sleep
 
 import paramiko
 from scp import SCPClient
+
 from snaps.config.stack import StackConfig
 from snaps.openstack.create_stack import OpenStackHeatStack
 from snaps.openstack.os_credentials import OSCreds
-
+from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
-from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 
 
 class ParameterError(Exception):
@@ -68,6 +68,7 @@ class StorPerfMaster(object):
         self._volume_size = 1
         self._cached_stack_id = None
         self._last_snaps_check_time = None
+        self._slave_addresses = []
 
     @property
     def volume_count(self):
@@ -142,6 +143,10 @@ class StorPerfMaster(object):
         self._agent_flavor = value
 
     @property
+    def slave_addresses(self):
+        return self._slave_addresses
+
+    @property
     def stack_id(self):
         self._get_stack_info()
         return self._cached_stack_id
@@ -166,6 +171,12 @@ class StorPerfMaster(object):
             self._availability_zone = \
                 vm1.instance_settings.availability_zone
             self._agent_flavor = vm1.instance_settings.flavor.name
+
+            self._slave_addresses = []
+            for instance in vm_inst_creators:
+                floating_ip = instance.get_floating_ip()
+                self._slave_addresses.append(floating_ip.ip)
+                self.logger.debug("Found VM at %s" % floating_ip.ip)
 
             server = vm1.get_vm_inst()
 
@@ -251,7 +262,9 @@ class StorPerfMaster(object):
     @property
     def is_stack_created(self):
         return (self.stack_id is not None and
-                self.heat_stack.get_status() == u'CREATE_COMPLETE')
+                (self.heat_stack.get_status() == u'CREATE_COMPLETE'
+                 or
+                 self.heat_stack.get_status() == u'UPDATE_COMPLETE'))
 
     @property
     def workloads(self):
@@ -328,8 +341,7 @@ class StorPerfMaster(object):
             raise Exception("ERROR: Job {} is already running".format(
                 self._test_executor.job_id))
 
-        outputs = self.heat_stack.get_outputs()
-        slaves = outputs[0].value
+        slaves = self._slave_addresses
 
         setup_threads = []
 
