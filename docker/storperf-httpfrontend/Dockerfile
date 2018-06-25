@@ -16,6 +16,8 @@ ARG ARCH=x86_64
 ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 
+RUN ulimit -n 1024
+
 # This comes from https://github.com/nginxinc/docker-nginx/blob/14c1b938737cf4399a6bb039bc506957dce562ae/stable/alpine/Dockerfile
 # Is is cloned here so that we can use multiarch alpine
 
@@ -73,7 +75,8 @@ RUN \
         curl \
         gnupg
 
-RUN gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEYS" || \
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
+	gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEYS" || \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEYS" || \
     gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEYS"
 

@@ -19,6 +19,8 @@ ARG ARCH=x86_64
 ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION as storperf-builder
 
+RUN ulimit -n 1024
+
 LABEL version="5.0" description="OPNFV Storperf Docker container"
 
 ARG BRANCH=master

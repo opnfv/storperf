@@ -18,6 +18,8 @@ ARG ARCH=x86_64
 ARG ALPINE_VERSION=v3.5
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 
+RUN ulimit -n 1024
+
 # Install basic stuff =)
 RUN apk add --no-cache \
   bash \
