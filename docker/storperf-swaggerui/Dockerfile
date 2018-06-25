@@ -16,6 +16,8 @@ ARG ARCH=x86_64
 ARG ALPINE_VERSION=v3.6
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 
+RUN ulimit -n 1024
+
 # This is from https://github.com/nodejs/docker-node/blob/f547c4c7281027d5d90f4665815140126e1f70d5/8.2/alpine/Dockerfile
 
 ENV NPM_CONFIG_LOGLEVEL info
@@ -46,6 +48,7 @@ RUN addgroup -g 1000 node \
     C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8 \
     56730D5401028683275BD23C23EFEFE93C4CFFFE \
   ; do \
+    gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
     gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" ; \
@@ -70,6 +73,7 @@ RUN apk add --no-cache --virtual .build-deps-yarn curl gnupg tar \
   && for key in \
     6A010C5166006599AA17F08146C2130DFD2497F5 \
   ; do \
+    gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
     gpg --keyserver pgp.mit.edu --recv-keys "$key" || \
     gpg --keyserver keyserver.pgp.com --recv-keys "$key" || \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key" ; \
