@@ -23,6 +23,8 @@ LABEL version="0.1" description="OPNFV Storperf Reporting Container"
 
 ARG BRANCH=master
 
+RUN ulimit -n 1024
+
 RUN apk add --update python py-pip
 
 COPY . /home/opnfv/storperf-reporting
