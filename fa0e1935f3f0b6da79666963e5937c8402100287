@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_5b6df731",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1421
+      },
+      "writtenOn": "2018-06-26T19:35:38Z",
+      "side": 1,
+      "message": "I don\u0027t know if you will see any performance improvements here as get_image_by_id already creates a filter so the list being returned should not be large",
+      "revId": "fa0e1935f3f0b6da79666963e5937c8402100287",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
