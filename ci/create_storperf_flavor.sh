@@ -10,8 +10,6 @@
 
 echo "Checking for StorPerf flavor"
 
-openstack flavor delete storperf
-
 FLAVOUR=`openstack flavor list | grep "storperf"`
 if [ -z "$FLAVOUR" ]
 then
