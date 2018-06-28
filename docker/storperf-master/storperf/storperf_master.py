@@ -296,7 +296,7 @@ class StorPerfMaster(object):
             'storperf/resources/hot/storperf-volume.yaml']
         self.stack_settings.env_values = self._make_parameters()
         try:
-            self.heat_stack.create()
+            self.heat_stack.create(block=True)
         except Exception as e:
             self.logger.error("Stack creation failed")
             self.logger.exception(e)

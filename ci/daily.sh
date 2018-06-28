@@ -36,6 +36,7 @@ pip install functools32==3.2.3.post2
 pip install pytz==2016.10
 pip install osc_lib==1.3.0
 pip install python-openstackclient==3.7.0
+pip install python-heatclient==1.16.0
 
 "${WORKSPACE}/ci/generate-admin-rc.sh"
 
