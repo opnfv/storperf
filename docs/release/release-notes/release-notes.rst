@@ -23,6 +23,9 @@ Version history
 | 2018-05-18         | Fraser 2.0         | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
+| 2018-06-29         | Fraser 3.0         | Mark Beierl        |                    |
+|                    |                    |                    |                    |
++--------------------+--------------------+--------------------+--------------------+
 
 
 Important notes
@@ -65,17 +68,17 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/commit-ID**                   | storperf/fraser.2.0                  |
+| **Repo/tag**                         | opnfv-6.2.0                          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Fraser base release                  |
+| **Release designation**              | Fraser 6.2                           |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | 2018-05-18                           |
+| **Release date**                     | June 29 2018                         |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | OPNFV Fraser release 2.0             |
-|                                      |                                      |
+| **Purpose of the delivery**          | Improvements to stack detection      |
+|                                      | speed.                               |
 +--------------------------------------+--------------------------------------+
 
 Version change
@@ -89,11 +92,15 @@ No changes to any modules.
 Reason for version
 ===================
 
+* Loading stack properties from OpenStack could take minutes or longer
+  depending on the stack size.  This version includes changes from SNAPS
+  to take advantage of parallel OpenStack object lookups.
+
 Features additions
 -------------------
 
-* STORPERF-242 - Allow user to change stack parameters outside of StorPerf
-
+* STORPERF-239 - Add IP addresses of slaves to configurations API
+* STORPERF-245 - Change to use multithreaded SNAPS
 
 Bug Fixes
 ----------
