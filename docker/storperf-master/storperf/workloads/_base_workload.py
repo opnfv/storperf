@@ -30,8 +30,9 @@ class _base_workload(object):
         self.invoker = None
         self.remote_host = None
         self.id = None
+        self.name = self.__class__.__name__
 
-    def execute(self):
+    def execute(self, parse_only=False):
         if self.invoker is None:
             raise ValueError("No invoker has been set")
 
@@ -55,7 +56,10 @@ class _base_workload(object):
         for key, value in self.options.iteritems():
             args.append('--' + key + "=" + value)
 
-        self.invoker.execute(args)
+        if parse_only:
+            args.append('--parse-only')
+
+        return self.invoker.execute(args)
 
     def terminate(self):
         if self.invoker is not None:
@@ -74,11 +78,11 @@ class _base_workload(object):
 
     @property
     def fullname(self):
-        host_file = self.remote_host+"."+self.filename
+        host_file = self.remote_host + "." + self.filename
         host_file = host_file.replace(".", "-").replace("/", "-")
         return ("%s.%s.queue-depth.%s.block-size.%s.%s"
                 % (str(self.id),
-                   self.__class__.__name__,
+                   self.name,
                    str(self.options['iodepth']),
                    str(self.options['bs']),
                    host_file))

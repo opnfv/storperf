@@ -350,10 +350,10 @@ for any single test iteration.
                 storperf.queue_depths = request.json['queue_depths']
             if ('block_sizes' in request.json):
                 storperf.block_sizes = request.json['block_sizes']
+            storperf.workloads = None
+            storperf.custom_workloads = None
             if ('workload' in request.json):
                 storperf.workloads = request.json['workload']
-            else:
-                storperf.workloads = None
             if ('metadata' in request.json):
                 metadata = request.json['metadata']
             else:
@@ -378,10 +378,95 @@ for any single test iteration.
     )
     def delete(self):
         self.logger.info("Threads: %s" % sys._current_frames())
-        print sys._current_frames()
         try:
             return jsonify({'Slaves': storperf.terminate_workloads()})
         except Exception as e:
+            abort(400, str(e))
+
+
+@swagger.model
+class WorkloadV2Model:
+    resource_fields = {
+        'target': fields.String,
+        'deadline': fields.Integer,
+        "steady_state_samples": fields.Integer,
+        'workloads': fields.Nested,
+        'queue_depths': fields.String,
+        'block_sizes': fields.String
+    }
+
+
+class Job_v2(Resource):
+
+    """Job API"""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    @swagger.operation(
+        parameters=[
+            {
+                "name": "body",
+                "description": """Start execution of a workload with the
+following parameters:
+
+"target": The target device to profile",
+
+"deadline": if specified, the maximum duration in minutes
+for any single test iteration.
+
+"workloads":if specified, the workload to run. Defaults to all.
+                """,
+                "required": True,
+                "type": "WorkloadV2Model",
+                "paramType": "body"
+            }
+        ],
+        type=WorkloadResponseModel.__name__,
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Job submitted"
+            },
+            {
+                "code": 400,
+                "message": "Missing configuration data"
+            }
+        ]
+    )
+    def post(self):
+        if not request.json:
+            abort(400, "ERROR: Missing configuration data")
+
+        self.logger.info(request.json)
+
+        try:
+            if ('target' in request.json):
+                storperf.filename = request.json['target']
+            if ('deadline' in request.json):
+                storperf.deadline = request.json['deadline']
+            if ('steady_state_samples' in request.json):
+                storperf.steady_state_samples = request.json[
+                    'steady_state_samples']
+            if ('queue_depths' in request.json):
+                storperf.queue_depths = request.json['queue_depths']
+            if ('block_sizes' in request.json):
+                storperf.block_sizes = request.json['block_sizes']
+            storperf.workloads = None
+            storperf.custom_workloads = None
+            if ('workloads' in request.json):
+                storperf.custom_workloads = request.json['workloads']
+            if ('metadata' in request.json):
+                metadata = request.json['metadata']
+            else:
+                metadata = {}
+
+            job_id = storperf.execute_workloads(metadata)
+
+            return jsonify({'job_id': job_id})
+
+        except Exception as e:
+            self.logger.exception(e)
             abort(400, str(e))
 
 
@@ -433,6 +518,7 @@ def setup_logging(default_path='logging.json',
 api.add_resource(Configure, "/api/v1.0/configurations")
 api.add_resource(Quota, "/api/v1.0/quotas")
 api.add_resource(Job, "/api/v1.0/jobs")
+api.add_resource(Job_v2, "/api/v2.0/jobs")
 api.add_resource(Logs, "/api/v1.0/logs")
 
 if __name__ == "__main__":

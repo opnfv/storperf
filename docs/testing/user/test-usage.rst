@@ -37,6 +37,7 @@ Configure The Environment
 The following pieces of information are required to prepare the environment:
 
 - The number of VMs/Cinder volumes to create.
+- The Cinder volume type (optional) to create
 - The Glance image that holds the VM operating system to use.
 - The OpenStack flavor to use when creating the VMs.
 - The name of the public network that agents will use.
@@ -66,20 +67,21 @@ takes a JSON payload as follows.
 
 .. code-block:: json
 
-   {
-     "agent_count": int,
-     "agent_flavor": string
-     "agent_image": string,
-     "public_network": string,
-     "volume_size": int,
-     "volume_count": int,
-     "availability_zone": string,
-     "username": string,
-     "password": string
-   }
+	{
+	  "agent_count": int,
+	  "agent_flavor": "string",
+	  "agent_image": "string",
+	  "availability_zone": "string",
+	  "password": "string",
+	  "public_network": "string",
+	  "username": "string",
+	  "volume_count": int,
+	  "volume_size": int,
+	  "volume_type": "string"
+	}
 
 This call will block until the stack is created, at which point it will return
-the OpenStack heat stack id.
+the OpenStack heat stack id as well as the IP addresses of the slave agents.
 
 Initialize the Cinder Volumes
 =============================
@@ -128,11 +130,94 @@ rr
 rs
    Read, Sequential.  100% read of sequential blocks of data
 rw
-   Read / Write Mix, Random.  70% random read, 30% random write
+   Read / Write Mix, Sequential.  70% random read, 30% random write
 wr
    Write, Random.  100% write of random blocks
 ws
    Write, Sequential.  100% write of sequential blocks.
+
+Custom Workload Types
+~~~~~~~~~~~~~~~~~~~~~
+New in Gambia (7.0), you can specify custom workload parameters for StorPerf
+to pass on to FIO.  This is available in the /api/v2.0/jobs API, and takes
+a different format than the default v1.0 API.
+
+The format is as follows:
+
+.. code-block:: json
+
+  "workloads": {
+    "name": {
+       "fio argument": "fio value"
+    }
+  }
+
+The name is used the same way the 'rr', 'rs', 'rw', etc is used, but can be
+any arbitrary alphanumeric string.  This is for you to identify the job later.
+Following the name is a series of arguments to pass on to FIO.  The most
+important on of these is the actual I/O operation to perform.  From the `FIO
+manual`__, there are a number of different workloads:
+
+.. _FIO_IOP: http://git.kernel.dk/cgit/fio/tree/HOWTO#n985
+__ FIO_IOP_
+
+* read
+* write
+* trim
+* randread
+* etc
+
+This is an example of how the original 'ws' workload looks in the new format:
+
+.. code-block:: json
+
+  "workloads": {
+    "ws": {
+       "rw": "write"
+    }
+  }
+
+Using this format, it is now possible to initiate any combination of IO
+workload type.  For example, a mix of 60% reads and 40% writes scattered
+randomly throughout the volume being profiled would be:
+
+.. code-block:: json
+
+  "workloads": {
+    "6040randrw": {
+       "rw": "randrw",
+        "rwmixread": "60"
+    }
+  }
+
+Additional arguments can be added as needed.  Here is an example of random
+writes, with 25% duplicated blocks, followed by a second run of 75/25% mixed
+reads and writes.  This can be used to test the deduplication capabilities
+of the underlying storage driver.
+
+.. code-block:: json
+
+  "workloads": {
+    "dupwrite": {
+       "rw": "randwrite",
+        "dedupe_percentage": "25"
+    },
+    "7525randrw": {
+       "rw": "randrw",
+        "rwmixread": "75",
+        "dedupe_percentage": "25"
+    }
+  }
+
+There is no limit on the number of workloads and additional FIO arguments
+that can be specified.
+
+Note that as in v1.0, the list of workloads will be iterated over with the
+block sizes and queue depths specified.
+
+StorPerf will also do a verification of the arguments given prior to returning
+a Job ID from the ReST call.  If an argument fails validation, the error
+will be returned in the payload of the response.
 
 Block Sizes
 ~~~~~~~~~~~

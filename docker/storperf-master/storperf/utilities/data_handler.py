@@ -151,14 +151,12 @@ class DataHandler(object):
         test_db = os.environ.get('TEST_DB_URL')
         if test_db is not None:
             self.logger.info("Pushing results to %s" % (test_db))
-            try:
-                response = test_results_db.push_results_to_db(
-                    test_db,
-                    executor.metadata,
-                    self.logger)
-                executor.result_url = response['href']
-            except Exception:
-                self.logger.exception("Error pushing results into Database")
+            response = test_results_db.push_results_to_db(
+                test_db,
+                executor.metadata,
+                self.logger)
+            if response:
+                self.logger.info("Results reference: %s" % response['href'])
 
     def _determine_criteria(self, metadata):
         steady_state = True

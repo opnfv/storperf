@@ -23,6 +23,7 @@ class FIOInvoker(object):
         self.callback_id = None
         self.terminated = False
         self.metadata = var_dict
+        self.stderr = []
 
     @property
     def remote_host(self):
@@ -60,13 +61,13 @@ class FIOInvoker(object):
                                         "Event listener callback")
                                     event_listener(
                                         self.callback_id, json_metric)
-                                except Exception, e:
+                                except Exception as e:
                                     self.logger.exception(
                                         "Notifying listener %s: %s",
                                         self.callback_id, e)
                                 self.logger.debug(
                                     "Event listener callback complete")
-                except Exception, e:
+                except Exception as e:
                     self.logger.error("Error parsing JSON: %s", e)
         except IOError:
             pass  # We might have read from the closed socket, ignore it
@@ -78,6 +79,7 @@ class FIOInvoker(object):
         self.logger.debug("Started")
         for line in iter(stderr.readline, b''):
             self.logger.error("FIO Error: %s", line.rstrip())
+            self.stderr.append(line.rstrip())
 
             # Sometime, FIO gets stuck and will give us this message:
             # fio: job 'sequential_read' hasn't exited in 60 seconds,
@@ -125,6 +127,9 @@ class FIOInvoker(object):
         self.logger.debug("Joining stdout handler")
         tout.join()
         self.logger.debug("Ended")
+        if exit_status != 0:
+            return self.stderr
+        return None
 
     def terminate(self):
         self.logger.debug("Terminating fio on " + self.remote_host)
