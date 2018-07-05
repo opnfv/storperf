@@ -36,6 +36,7 @@ class TestExecutor(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.workload_modules = []
+        self._custom_workloads = {}
         self.filename = None
         self.deadline = None
         self.steady_state_samples = 10
@@ -43,7 +44,6 @@ class TestExecutor(object):
         self.end_time = None
         self.current_workload = None
         self.workload_status = {}
-        self.result_url = None
         self._queue_depths = [1, 4, 8]
         self._block_sizes = [512, 4096, 16384]
         self.event_listeners = set()
@@ -225,38 +225,9 @@ class TestExecutor(object):
             terminated_hosts.append(workload.remote_host)
         return terminated_hosts
 
-    def execution_status(self, job_id):
-
-        result = {}
-        status = "Completed"
-
-        if self.job_db.job_id == job_id and self._terminated is False:
-            status = "Running"
-
-            result['Status'] = status
-            result['Workloads'] = self.workload_status
-            result['TestResultURL'] = self.result_url
-
-        else:
-            jobs = self.job_db.fetch_jobs()
-            self.logger.info("Jobs")
-            self.logger.info(jobs)
-            for job in jobs:
-                if self.job_db.job_id == job_id and self._terminated is False:
-                    status = "Running"
-                    result['Status'] = status
-                    result['Workloads'] = self.workload_status
-                    result['TestResultURL'] = self.result_url
-                else:
-                    result[job] = {}
-                    result[job]['Status'] = "Completed"
-
-        return result
-
     def execute_workloads(self):
         self._terminated = False
         self.logger.info("Starting job %s" % (self.job_db.job_id))
-        self.event_listeners.clear()
         data_handler = DataHandler()
         self.register(data_handler.data_event)
 
@@ -337,8 +308,6 @@ class TestExecutor(object):
         report = {'report': json.dumps(self.metadata)}
         self.job_db.record_workload_params(report)
         self.job_db.job_id = None
-        if self.result_url is not None:
-            self.logger.info("Results can be found at %s" % self.result_url)
 
     def _create_workload_matrix(self):
         workloads = []
