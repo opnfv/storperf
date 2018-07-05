@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-heat_template_version: 2013-05-23
+heat_template_version: 2017-09-01
 
 parameters:
   public_network:
@@ -20,6 +20,12 @@ parameters:
   agent_image:
     type: string
     default: 'StorPerf Ubuntu 14.04'
+  volume_count:
+    type: number
+    default: 0
+    constraints:
+      - range: { min: 0, max: 512 }
+        description: must be between 1 and 512 agents.
   volume_size:
     type: number
     description: Size of the volume to be created.
@@ -27,12 +33,9 @@ parameters:
     constraints:
       - range: { min: 1, max: 1024 }
         description: must be between 1 and 1024 Gb.
-  volume_count:
-    type: number
-    default: 0
-    constraints:
-      - range: { min: 0, max: 512 }
-        description: must be between 1 and 512 agents.
+  volume_type:
+    type: string
+    default: 'None'
   agent_count:
     type: number
     default: 1
@@ -61,7 +64,8 @@ resources:
           storperf_open_security_group: {get_resource: storperf_open_security_group},
           key_name: {get_resource: storperf_key_pair},
           volume_count: {get_param: volume_count},
-          volume_size: {get_param: volume_size}
+          volume_size: {get_param: volume_size},
+          volume_type: {get_param: volume_type}
         }
       }
 

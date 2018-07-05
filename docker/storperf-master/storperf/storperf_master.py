@@ -67,6 +67,7 @@ class StorPerfMaster(object):
         self._public_network = None
         self._volume_count = 1
         self._volume_size = 1
+        self._volume_type = None
         self._cached_stack_id = None
         self._last_snaps_check_time = None
         self._slave_addresses = []
@@ -95,6 +96,18 @@ class StorPerfMaster(object):
             raise ParameterError(
                 "ERROR: Cannot change volume size after stack is created")
         self._volume_size = value
+
+    @property
+    def volume_type(self):
+        self._get_stack_info()
+        return self._volume_type
+
+    @volume_type.setter
+    def volume_type(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change volume type after stack is created")
+        self._volume_type = value
 
     @property
     def agent_count(self):
@@ -192,9 +205,12 @@ class StorPerfMaster(object):
                 volume_id = server.volume_ids[0]['id']
                 volume = cinder_utils.get_volume_by_id(
                     cinder_cli, volume_id)
-                self.logger.debug("Volume id %s, size=%s" % (volume.id,
-                                                             volume.size))
+                self.logger.debug("Volume id %s, size=%s, type=%s" %
+                                  (volume.id,
+                                   volume.size,
+                                   volume.type))
                 self._volume_size = volume.size
+                self._volume_type = volume.type
 
             image = image_worker.get()
             self._agent_image = image.name
@@ -309,25 +325,28 @@ class StorPerfMaster(object):
             self.logger.error("Stack creation failed")
             self.logger.exception(e)
             heat_cli = heat_utils.heat_client(self.os_creds)
-            res = heat_utils.get_resources(heat_cli,
-                                           self.heat_stack.get_stack().id)
-            reason = ""
-            failed = False
-            for resource in res:
-                if resource.status == u'CREATE_FAILED':
-                    failed = True
-                    reason += "%s: %s " % (resource.name,
-                                           resource.status_reason)
-                self.logger.error("%s - %s: %s" % (resource.name,
-                                                   resource.status,
-                                                   resource.status_reason))
+            if self.heat_stack.get_stack() is not None:
+                res = heat_utils.get_resources(heat_cli,
+                                               self.heat_stack.get_stack().id)
+                reason = ""
+                failed = False
+                for resource in res:
+                    if resource.status == u'CREATE_FAILED':
+                        failed = True
+                        reason += "%s: %s " % (resource.name,
+                                               resource.status_reason)
+                    self.logger.error("%s - %s: %s" % (resource.name,
+                                                       resource.status,
+                                                       resource.status_reason))
 
-            if failed:
-                try:
-                    self.heat_stack.clean()
-                except Exception:
-                    pass
-                raise Exception(reason)
+                if failed:
+                    try:
+                        self.heat_stack.clean()
+                    except Exception:
+                        pass
+                    raise Exception(reason)
+            else:
+                raise e
 
     def delete_stack(self):
         if self._test_executor is not None:
@@ -368,6 +387,8 @@ class StorPerfMaster(object):
         params['public_network'] = self.public_network
         params['volume_count'] = self.volume_count
         params['volume_size'] = self.volume_size
+        if self.volume_type is not None:
+            params['volume_type'] = self.volume_type
         if self.username and self.password:
             params['username'] = self.username
             params['password'] = self.password
@@ -486,6 +507,8 @@ class StorPerfMaster(object):
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_count'] = self.volume_count
         heat_parameters['volume_size'] = self.volume_size
+        if self.volume_type is not None:
+            heat_parameters['volume_type'] = self.volume_type
         heat_parameters['agent_image'] = self.agent_image
         heat_parameters['agent_flavor'] = self.agent_flavor
         heat_parameters['availability_zone'] = self.availability_zone

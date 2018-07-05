@@ -75,7 +75,7 @@ RUN \
         curl \
         gnupg
 
-RUN gpg --keyserver keyserver.ubuntu.com --recv-keys "$key" || \
+RUN gpg --keyserver keyserver.ubuntu.com --recv-keys "$GPG_KEYS" || \
 	gpg --keyserver pgp.mit.edu --recv-keys "$GPG_KEYS" || \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEYS" || \
     gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys "$GPG_KEYS"
