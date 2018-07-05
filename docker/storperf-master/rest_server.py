@@ -101,6 +101,7 @@ class ConfigurationRequestModel:
         'public_network': fields.String,
         'volume_count': fields.Integer,
         'volume_size': fields.Integer,
+        'volume_type': fields.String,
         'availability_zone': fields.String,
         'username': fields.String,
         'password': fields.String
@@ -118,6 +119,7 @@ class ConfigurationResponseModel:
         'stack_id': fields.String,
         'volume_count': fields.Integer,
         'volume_size': fields.Integer,
+        'volume_type': fields.String,
         'availability_zone': fields.String,
         'slave_addresses': fields.Nested
     }
@@ -141,6 +143,7 @@ class Configure(Resource):
                         'public_network': storperf.public_network,
                         'volume_count': storperf.volume_count,
                         'volume_size': storperf.volume_size,
+                        'volume_type': storperf.volume_type,
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
                         'slave_addresses': storperf.slave_addresses,
@@ -180,6 +183,8 @@ class Configure(Resource):
                 storperf.volume_count = request.json['volume_count']
             if ('volume_size' in request.json):
                 storperf.volume_size = request.json['volume_size']
+            if ('volume_type' in request.json):
+                storperf.volume_type = request.json['volume_type']
             if ('availability_zone' in request.json):
                 storperf.availability_zone = request.json['availability_zone']
             if ('username' in request.json):
@@ -191,14 +196,7 @@ class Configure(Resource):
             if storperf.stack_id is None:
                 abort(400, storperf.status_reason)
 
-            return jsonify({'agent_count': storperf.agent_count,
-                            'agent_flavor': storperf.agent_flavor,
-                            'agent_image': storperf.agent_image,
-                            'availability_zone': storperf.availability_zone,
-                            'public_network': storperf.public_network,
-                            'volume_count': storperf.volume_count,
-                            'volume_size': storperf.volume_size,
-                            'stack_id': storperf.stack_id})
+            return self.get()
 
         except Exception as e:
             self.logger.exception(e)

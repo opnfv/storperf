@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-heat_template_version: 2013-05-23
+heat_template_version: 2017-09-01
 
 parameters:
   flavor:
@@ -38,6 +38,8 @@ parameters:
     constraints:
       - range: { min: 1, max: 1024 }
         description: must be between 1 and 1024 Gb.
+  volume_type:
+    type: string
   agent_network:
     type: string
     constraints:
@@ -101,6 +103,7 @@ resources:
         type: "storperf-volume.yaml",
         properties: {
           volume_size: { get_param: volume_size },
+          volume_type: { get_param: volume_type },
           agent_instance_uuid: { get_resource: storperf_agent }
         }
       }
