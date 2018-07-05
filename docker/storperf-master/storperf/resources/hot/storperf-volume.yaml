@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-heat_template_version: 2013-05-23
+heat_template_version: 2017-09-01
 
 parameters:
   volume_size:
@@ -17,17 +17,41 @@ parameters:
     constraints:
       - range: { min: 1, max: 1024 }
         description: must be between 1 and 1024 Gb.
+  volume_type:
+    type: string
+    default: None
   agent_instance_uuid:
     type: string
 
+conditions: {
+  'without_type': {equals: [{get_param: volume_type}, 'None']},
+  'with_type': {not: {equals: [{get_param: volume_type}, 'None']}}
+}
+
 resources:
+  agent_volume_type:
+    type: OS::Cinder::Volume
+    condition: 'with_type'
+    properties:
+      size: { get_param: volume_size }
+      volume_type: { get_param: volume_type}
+
+  agent_volume_type_att:
+    type: OS::Cinder::VolumeAttachment
+    condition: 'with_type'
+    properties:
+      instance_uuid: { get_param: agent_instance_uuid }
+      volume_id: { get_resource: agent_volume_type}
+
   agent_volume:
     type: OS::Cinder::Volume
+    condition: 'without_type'
     properties:
       size: { get_param: volume_size }
 
   agent_volume_att:
     type: OS::Cinder::VolumeAttachment
+    condition: 'without_type'
     properties:
       instance_uuid: { get_param: agent_instance_uuid }
       volume_id: { get_resource: agent_volume}

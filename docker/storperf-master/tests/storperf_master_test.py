@@ -60,6 +60,15 @@ class StorPerfMasterTest(unittest.TestCase):
         self.assertEqual(
             expected, actual, "Did not expect: " + str(actual))
 
+    def test_volume_type(self):
+        expected = 'tripleo-ceph'
+
+        self.storperf.volume_type = expected
+        actual = self.storperf.volume_type
+
+        self.assertEqual(
+            expected, actual, "Did not expect: " + str(actual))
+
     def test_agent_network(self):
         expected = "ABCDEF"
 
