@@ -22,6 +22,30 @@
       "revId": "ff389f460711b17db2070ca90417f7ebbc0eff56",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "da5c1566_ecfc0141",
+        "filename": "docker/storperf-master/storperf/workloads/_custom_workload.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-07-09T13:57:41Z",
+      "side": 1,
+      "message": "Arguments such as rwmixread get passed through from the new v2 api in rest_server.  This way, we allow all available parameters for FIO to be specified by the user, in addition to the rwmixread.",
+      "parentUuid": "da5c1566_6c7d916e",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 32,
+        "endChar": 9
+      },
+      "revId": "ff389f460711b17db2070ca90417f7ebbc0eff56",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
