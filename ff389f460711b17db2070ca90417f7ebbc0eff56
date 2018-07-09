@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_6c7d916e",
+        "filename": "docker/storperf-master/storperf/workloads/_custom_workload.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 7335
+      },
+      "writtenOn": "2018-07-09T07:06:02Z",
+      "side": 1,
+      "message": "I think we have to add rwmixread? right ?",
+      "range": {
+        "startLine": 32,
+        "startChar": 8,
+        "endLine": 32,
+        "endChar": 9
+      },
+      "revId": "ff389f460711b17db2070ca90417f7ebbc0eff56",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
