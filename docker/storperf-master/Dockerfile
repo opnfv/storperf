@@ -21,7 +21,7 @@ FROM multiarch/alpine:$ARCH-$ALPINE_VERSION as storperf-builder
 
 RUN ulimit -n 1024
 
-LABEL version="5.0" description="OPNFV Storperf Docker container"
+LABEL version="7.0" description="OPNFV Storperf Docker container"
 
 ARG BRANCH=master
 
@@ -30,6 +30,7 @@ ENV repos_dir /home/opnfv/repos
 RUN apk --no-cache add --update \
     git \
     alpine-sdk \
+    coreutils \
     linux-headers \
     libaio \
     libaio-dev \
@@ -38,8 +39,8 @@ RUN apk --no-cache add --update \
 # Third party git fetches
 RUN git config --global http.sslVerify false
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
-RUN cd ${repos_dir}/fio && git checkout tags/fio-2.99
-RUN cd ${repos_dir}/fio && EXTFLAGS="-static" make install
+RUN cd ${repos_dir}/fio && git checkout tags/fio-3.7
+RUN cd ${repos_dir}/fio && EXTFLAGS="-static" make -j $(grep -c ^processor /proc/cpuinfo) install
 
 # Build StorPerf
 
