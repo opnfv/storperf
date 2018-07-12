@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da5c1566_ac4684bd",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-07-12T18:25:44Z",
+      "side": 1,
+      "message": "This makes more sense.  Alternatively we could set the self._last_snaps_check_time to None, but I think I like this better.",
+      "revId": "ce0a8f68093ade2756e19983a347315cf8449bcc",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
