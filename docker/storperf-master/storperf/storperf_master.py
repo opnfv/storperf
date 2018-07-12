@@ -24,6 +24,7 @@ from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 from snaps.thread_utils import worker_pool
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
+import json
 
 
 class ParameterError(Exception):
@@ -79,6 +80,7 @@ class StorPerfMaster(object):
         self._block_sizes = [512, 4096, 16384]
         self._workload_modules = []
         self._custom_workloads = []
+        self.slave_info = {}
 
     @property
     def volume_count(self):
@@ -425,12 +427,14 @@ class StorPerfMaster(object):
         params['public_network'] = self.public_network
         params['volume_count'] = self.volume_count
         params['volume_size'] = self.volume_size
+        params['agent_info'] = json.dumps(self.slave_info)
         if self.volume_type is not None:
             params['volume_type'] = self.volume_type
         if self.username and self.password:
             params['username'] = self.username
             params['password'] = self.password
         job_id = self._test_executor.execute(params)
+        self.slave_info = {}
 
         return job_id
 
@@ -520,6 +524,11 @@ class StorPerfMaster(object):
                         key_filename='storperf/resources/ssh/storperf_rsa',
                         timeout=2)
 
+        uname = self._get_uname(ssh)
+        logger.debug("Slave uname is %s" % uname)
+        self.slave_info[slave] = {}
+        self.slave_info[slave]['uname'] = uname
+
         available = self._check_root_fs(ssh)
         logger.debug("Available space on / is %s" % available)
         if available < 65536:
@@ -536,6 +545,10 @@ class StorPerfMaster(object):
         scp = SCPClient(ssh.get_transport())
         logger.debug("Transferring fio to %s" % slave)
         scp.put('/usr/local/bin/fio', '~/')
+
+    def _get_uname(self, ssh):
+        (_, stdout, _) = ssh.exec_command("uname -a")
+        return stdout.readline()
 
     def _check_root_fs(self, ssh):
         (_, stdout, _) = ssh.exec_command("df /")
