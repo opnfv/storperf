@@ -355,12 +355,7 @@ class StorPerfMaster(object):
         stack_id = None
         if (self.stack_id is not None):
             stack_id = self.stack_id
-            try:
-                self.heat_stack.clean()
-            except Exception as e:
-                self.logger.error("Stack creation failed")
-                raise Exception(e)
-            self.stack_id = None
+            self.heat_stack.clean()
         return stack_id
 
     def execute_workloads(self, metadata={}):
