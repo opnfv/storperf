@@ -39,7 +39,7 @@ RUN apk --no-cache add --update \
 # Third party git fetches
 RUN git config --global http.sslVerify false
 RUN git clone http://git.kernel.dk/fio.git ${repos_dir}/fio
-RUN cd ${repos_dir}/fio && git checkout tags/fio-3.7
+RUN cd ${repos_dir}/fio && git checkout tags/fio-2.99
 RUN cd ${repos_dir}/fio && EXTFLAGS="-static" make -j $(grep -c ^processor /proc/cpuinfo) install
 
 # Build StorPerf
