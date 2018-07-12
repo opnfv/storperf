@@ -166,6 +166,10 @@ class StorPerfMaster(object):
         self._get_stack_info()
         return self._cached_stack_id
 
+    @stack_id.setter
+    def stack_id(self, value):
+        self._cached_stack_id = value
+
     def _get_stack_info(self):
         if self._last_snaps_check_time is not None:
             time_since_check = datetime.now() - self._last_snaps_check_time
