@@ -69,7 +69,7 @@ class TestExecutor(object):
         try:
             installer = os.environ['INSTALLER_TYPE']
         except KeyError:
-            self.logger.error("Cannot determine installer")
+            self.logger.warn("Cannot determine installer")
             installer = "Unknown_installer"
 
         self.metadata = {}
