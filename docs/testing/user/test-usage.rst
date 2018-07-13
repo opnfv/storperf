@@ -83,28 +83,30 @@ takes a JSON payload as follows.
 This call will block until the stack is created, at which point it will return
 the OpenStack heat stack id as well as the IP addresses of the slave agents.
 
-Initialize the Cinder Volumes
+Initialize the Target Volumes
 =============================
 Before executing a test run for the purpose of measuring performance, it is
-necessary to fill the Cinder volume with random data.  Failure to execute this
+necessary to fill the volume or file with random data.  Failure to execute this
 step can result in meaningless numbers, especially for read performance.  Most
 Cinder drivers are smart enough to know what blocks contain data, and which do
 not.  Uninitialized blocks return "0" immediately without actually reading from
 the volume.
 
-Initiating the data fill looks the same as a regular performance test, but uses
-the special workload called "_warm_up".  StorPerf will never push _warm_up
-data to the OPNFV Test Results DB, nor will it terminate the run on steady state.
-It is guaranteed to run to completion, which fills 100% of the volume with
+Initiating the data fill behave similarly to a regular performance run, but
+will tag the data with a special workload name called "_warm_up".  It is
+designed to run to completion, filling 100% of the specified target with
 random data.
 
-The ReST API is a POST to http://StorPerf:5000/api/v1.0/jobs and
-takes a JSON payload as follows.
+The ReST API is a POST to http://StorPerf:5000/api/v1.0/initializations and
+takes a JSON payload as follows.  The body is optional unless your target
+is something other than /dev/vdb.  For example, if you want to profile a
+glance ephemeral storage file, you could specify the target as "/filename.dat",
+which is a file that then gets created on the root filesystem.
 
 .. code-block:: json
 
    {
-      "workload": "_warm_up"
+      "target": "/dev/vdb"
    }
 
 This will return a job ID as follows.

@@ -76,8 +76,8 @@ class StorPerfMaster(object):
         self._filename = None
         self._deadline = None
         self._steady_state_samples = 10
-        self._queue_depths = [1, 4, 8]
-        self._block_sizes = [512, 4096, 16384]
+        self._queue_depths = "1"
+        self._block_sizes = "4096"
         self._workload_modules = []
         self._custom_workloads = []
         self.slave_info = {}

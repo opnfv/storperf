@@ -471,6 +471,68 @@ for any single test iteration.
 
 
 @swagger.model
+class WarmUpModel:
+    resource_fields = {
+        'target': fields.String
+    }
+
+
+class Initialize(Resource):
+
+    """Disk initialization API"""
+
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+
+    @swagger.operation(
+        parameters=[
+            {
+                "name": "body",
+                "description": """Fill the target with random data.  If no
+target is specified, it will default to /dev/vdb
+
+"target": The target device or file to fill with random data",
+                """,
+                "required": False,
+                "type": "WarmUpModel",
+                "paramType": "body"
+            }
+        ],
+        type=WorkloadResponseModel.__name__,
+        notes='''Initialize the target device or file by filling it to
+        capacity with random data.  This is similar to the jobs API,
+        but does not have a deadline or steady state.  It also
+        uses a predefined block size and queue depth.''',
+        responseMessages=[
+            {
+                "code": 200,
+                "message": "Job submitted"
+            },
+            {
+                "code": 400,
+                "message": "Missing configuration data"
+            }
+        ]
+    )
+    def post(self):
+        self.logger.info(request.json)
+
+        try:
+            if (request.json and 'target' in request.json):
+                storperf.filename = request.json['target']
+            storperf.queue_depths = "8"
+            storperf.block_sizes = "8192"
+            storperf.workloads = "_warm_up"
+            job_id = storperf.execute_workloads()
+
+            return jsonify({'job_id': job_id})
+
+        except Exception as e:
+            self.logger.exception(e)
+            abort(400, str(e))
+
+
+@swagger.model
 class QuotaModel:
 
     resource_fields = {
@@ -516,6 +578,7 @@ def setup_logging(default_path='logging.json',
 
 
 api.add_resource(Configure, "/api/v1.0/configurations")
+api.add_resource(Initialize, "/api/v1.0/initializations")
 api.add_resource(Quota, "/api/v1.0/quotas")
 api.add_resource(Job, "/api/v1.0/jobs")
 api.add_resource(Job_v2, "/api/v2.0/jobs")
