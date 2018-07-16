@@ -103,6 +103,7 @@ class ConfigurationRequestModel:
         'volume_size': fields.Integer,
         'volume_type': fields.String,
         'availability_zone': fields.String,
+        'subnet_CIDR': fields.String,
         'username': fields.String,
         'password': fields.String
     }
@@ -121,6 +122,7 @@ class ConfigurationResponseModel:
         'volume_size': fields.Integer,
         'volume_type': fields.String,
         'availability_zone': fields.String,
+        'subnet_CIDR': fields.String,
         'slave_addresses': fields.Nested
     }
 
@@ -146,6 +148,7 @@ class Configure(Resource):
                         'volume_type': storperf.volume_type,
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
+                        'subnet_CIDR': storperf.subnet_CIDR,
                         'slave_addresses': storperf.slave_addresses,
                         'stack_id': storperf.stack_id})
 
@@ -187,6 +190,8 @@ class Configure(Resource):
                 storperf.volume_type = request.json['volume_type']
             if ('availability_zone' in request.json):
                 storperf.availability_zone = request.json['availability_zone']
+            if ('subnet_CIDR' in request.json):
+                storperf.subnet_CIDR = request.json['subnet_CIDR']
             if ('username' in request.json):
                 storperf.username = request.json['username']
             if ('password' in request.json):

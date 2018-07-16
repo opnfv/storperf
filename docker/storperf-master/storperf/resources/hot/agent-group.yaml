@@ -45,6 +45,9 @@ parameters:
   availability_zone:
     type: string
     default: nova
+  subnet_CIDR:
+    type: string
+    default: '172.16.0.0/16'
 
 resources:
   slaves:
@@ -78,8 +81,7 @@ resources:
         type: OS::Neutron::Subnet
         properties:
           network_id: { get_resource: storperf_network }
-          cidr: 172.16.0.0/16
-          gateway_ip: 172.16.0.1
+          cidr: { get_param: subnet_CIDR}
 
   storperf_network_router:
         type: OS::Neutron::Router

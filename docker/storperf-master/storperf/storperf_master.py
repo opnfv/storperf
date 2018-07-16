@@ -80,6 +80,7 @@ class StorPerfMaster(object):
         self._block_sizes = "4096"
         self._workload_modules = []
         self._custom_workloads = []
+        self._subnet_CIDR = '172.16.0.0/16'
         self.slave_info = {}
 
     @property
@@ -117,6 +118,17 @@ class StorPerfMaster(object):
             raise ParameterError(
                 "ERROR: Cannot change volume type after stack is created")
         self._volume_type = value
+
+    @property
+    def subnet_CIDR(self):
+        return self._subnet_CIDR
+
+    @subnet_CIDR.setter
+    def subnet_CIDR(self, value):
+        if (self.stack_id is not None):
+            raise ParameterError(
+                "ERROR: Cannot change subnet CIDR after stack is created")
+        self._subnet_CIDR = value
 
     @property
     def agent_count(self):
@@ -431,6 +443,7 @@ class StorPerfMaster(object):
         params['public_network'] = self.public_network
         params['volume_count'] = self.volume_count
         params['volume_size'] = self.volume_size
+        params['subnet_CIDR'] = self.subnet_CIDR
         params['agent_info'] = json.dumps(self.slave_info)
         if self.volume_type is not None:
             params['volume_type'] = self.volume_type
@@ -578,6 +591,7 @@ class StorPerfMaster(object):
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_count'] = self.volume_count
         heat_parameters['volume_size'] = self.volume_size
+        heat_parameters['subnet_CIDR'] = self.subnet_CIDR
         if self.volume_type is not None:
             heat_parameters['volume_type'] = self.volume_type
         heat_parameters['agent_image'] = self.agent_image
