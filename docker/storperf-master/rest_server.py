@@ -523,6 +523,7 @@ target is specified, it will default to /dev/vdb
             storperf.queue_depths = "8"
             storperf.block_sizes = "8192"
             storperf.workloads = "_warm_up"
+            storperf.custom_workloads = None
             job_id = storperf.execute_workloads()
 
             return jsonify({'job_id': job_id})
