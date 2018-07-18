@@ -459,6 +459,8 @@ for any single test iteration.
                 storperf.block_sizes = request.json['block_sizes']
             storperf.workloads = None
             storperf.custom_workloads = None
+            if ('workload' in request.json):
+                storperf.workloads = request.json['workload']
             if ('workloads' in request.json):
                 storperf.custom_workloads = request.json['workloads']
             if ('metadata' in request.json):

@@ -267,6 +267,7 @@ class TestExecutor(object):
         thread_pool = ThreadPool(processes=len(self.slaves) *
                                  self.volume_count)
 
+        self._workload_executors = []
         for slave in self.slaves:
             volume_number = 0
             while volume_number < self.volume_count:
