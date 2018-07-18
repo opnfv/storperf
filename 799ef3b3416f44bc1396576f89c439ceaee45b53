@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a561d44_e619f07a",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-07-18T17:09:55Z",
+      "side": 1,
+      "message": "As this is done in the __init__ it is never called again, so when the stack_name is set later, the StackConfig object still retains the original name",
+      "revId": "799ef3b3416f44bc1396576f89c439ceaee45b53",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_4626dcbb",
+        "filename": "docker/storperf-master/storperf/storperf_master.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-07-18T17:09:55Z",
+      "side": 1,
+      "message": "We need to update the StackConfig object here.",
+      "revId": "799ef3b3416f44bc1396576f89c439ceaee45b53",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    }
+  ]
+}
