@@ -104,6 +104,7 @@ class ConfigurationRequestModel:
         'volume_type': fields.String,
         'availability_zone': fields.String,
         'subnet_CIDR': fields.String,
+        'stack_name': fields.String,
         'username': fields.String,
         'password': fields.String
     }
@@ -123,6 +124,7 @@ class ConfigurationResponseModel:
         'volume_type': fields.String,
         'availability_zone': fields.String,
         'subnet_CIDR': fields.String,
+        'stack_name': fields.String,
         'slave_addresses': fields.Nested
     }
 
@@ -136,9 +138,23 @@ class Configure(Resource):
 
     @swagger.operation(
         notes='Fetch the current agent configuration',
+        parameters=[
+            {
+                "name": "stack_name",
+                "description": "The name of the stack to use, defaults to" +
+                "StorPerfAgentGroup or the last stack named",
+                "required": False,
+                "type": "string",
+                "allowMultiple": False,
+                "paramType": "query"
+            }],
         type=ConfigurationResponseModel.__name__
     )
     def get(self):
+        stack_name = request.args.get('stack_name')
+        if stack_name:
+            storperf.stack_name = stack_name
+
         return jsonify({'agent_count': storperf.agent_count,
                         'agent_flavor': storperf.agent_flavor,
                         'agent_image': storperf.agent_image,
@@ -149,6 +165,7 @@ class Configure(Resource):
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
                         'subnet_CIDR': storperf.subnet_CIDR,
+                        'stack_name': storperf.stack_name,
                         'slave_addresses': storperf.slave_addresses,
                         'stack_id': storperf.stack_id})
 
@@ -174,6 +191,10 @@ class Configure(Resource):
             abort(400, "ERROR: No data specified")
 
         try:
+            # Note this must be first in order to be able to create
+            # more than one stack in the same StorPerf instance.
+            if ('stack_name' in request.json):
+                storperf.stack_name = request.json['stack_name']
             if ('agent_count' in request.json):
                 storperf.agent_count = request.json['agent_count']
             if ('agent_flavor' in request.json):
@@ -208,9 +229,22 @@ class Configure(Resource):
             abort(400, str(e))
 
     @swagger.operation(
-        notes='Deletes the agent configuration and the stack'
+        notes='Deletes the agent configuration and the stack',
+        parameters=[
+            {
+                "name": "stack_name",
+                "description": "The name of the stack to delete, defaults to" +
+                "StorPerfAgentGroup or the last stack named",
+                "required": False,
+                "type": "string",
+                "allowMultiple": False,
+                "paramType": "query"
+            }]
     )
     def delete(self):
+        stack_name = request.args.get('stack_name')
+        if stack_name:
+            storperf.stack_name = stack_name
         try:
             return jsonify({'stack_id': storperf.delete_stack()})
         except Exception as e:
@@ -226,7 +260,8 @@ class WorkloadModel:
         "steady_state_samples": fields.Integer,
         'workload': fields.String,
         'queue_depths': fields.String,
-        'block_sizes': fields.String
+        'block_sizes': fields.String,
+        'stack_name': fields.String
     }
 
 
@@ -319,6 +354,9 @@ following parameters:
 for any single test iteration.
 
 "workload":if specified, the workload to run. Defaults to all.
+
+"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+the last stack named.
                 """,
                 "required": True,
                 "type": "WorkloadModel",
@@ -344,6 +382,8 @@ for any single test iteration.
         self.logger.info(request.json)
 
         try:
+            if ('stack_name' in request.json):
+                storperf.stack_name = request.json['stack_name']
             if ('target' in request.json):
                 storperf.filename = request.json['target']
             if ('deadline' in request.json):
@@ -390,15 +430,36 @@ for any single test iteration.
 
 
 @swagger.model
+class WorkloadsBodyModel:
+    resource_fields = {
+        "rw": fields.String(default="randrw")
+    }
+    required = ['rw']
+
+
+@swagger.model
+@swagger.nested(
+   name=WorkloadsBodyModel.__name__)
+class WorkloadsNameModel:
+    resource_fields = {
+        "name": fields.Nested(WorkloadsBodyModel.resource_fields)
+    }
+
+
+@swagger.model
+@swagger.nested(
+   workloads=WorkloadsNameModel.__name__)
 class WorkloadV2Model:
     resource_fields = {
         'target': fields.String,
         'deadline': fields.Integer,
         "steady_state_samples": fields.Integer,
-        'workloads': fields.Nested,
+        'workloads': fields.Nested(WorkloadsNameModel.resource_fields),
         'queue_depths': fields.String,
-        'block_sizes': fields.String
+        'block_sizes': fields.String,
+        'stack_name': fields.String
     }
+    required = ['workloads']
 
 
 class Job_v2(Resource):
@@ -420,7 +481,10 @@ following parameters:
 "deadline": if specified, the maximum duration in minutes
 for any single test iteration.
 
-"workloads":if specified, the workload to run. Defaults to all.
+"workloads": A JSON formatted map of workload names and parameters for FIO.
+
+"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+the last stack named.
                 """,
                 "required": True,
                 "type": "WorkloadV2Model",
@@ -446,6 +510,8 @@ for any single test iteration.
         self.logger.info(request.json)
 
         try:
+            if ('stack_name' in request.json):
+                storperf.stack_name = request.json['stack_name']
             if ('target' in request.json):
                 storperf.filename = request.json['target']
             if ('deadline' in request.json):
@@ -478,6 +544,7 @@ for any single test iteration.
 @swagger.model
 class WarmUpModel:
     resource_fields = {
+        'stack_name': fields.String,
         'target': fields.String
     }
 
@@ -496,7 +563,10 @@ class Initialize(Resource):
                 "description": """Fill the target with random data.  If no
 target is specified, it will default to /dev/vdb
 
-"target": The target device or file to fill with random data",
+"target": The target device or file to fill with random data.
+
+"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+the last stack named.
                 """,
                 "required": False,
                 "type": "WarmUpModel",
@@ -523,10 +593,13 @@ target is specified, it will default to /dev/vdb
         self.logger.info(request.json)
 
         try:
-            if (request.json and 'target' in request.json):
-                storperf.filename = request.json['target']
+            if request.json:
+                if 'target' in request.json:
+                    storperf.filename = request.json['target']
+                if 'stack_name' in request.json:
+                    storperf.stack_name = request.json['stack_name']
             storperf.queue_depths = "8"
-            storperf.block_sizes = "8192"
+            storperf.block_sizes = "16k"
             storperf.workloads = "_warm_up"
             storperf.custom_workloads = None
             job_id = storperf.execute_workloads()

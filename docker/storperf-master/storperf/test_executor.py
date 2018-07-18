@@ -222,8 +222,8 @@ class TestExecutor(object):
         except Exception as e:
             self.terminate()
             raise e
-        self.job_db.record_workload_params(metadata)
         self._setup_metadata(metadata)
+        self.job_db.record_workload_params(metadata)
         self._workload_thread = Thread(target=self.execute_workloads,
                                        args=(),
                                        name="Workload thread")
@@ -263,6 +263,7 @@ class TestExecutor(object):
     def _execute_workload(self, current_workload, workload, parse_only=False):
         workload.options['iodepth'] = str(current_workload['queue-depth'])
         workload.options['bs'] = str(current_workload['blocksize'])
+        self._workload_executors = []
         slave_threads = []
         thread_pool = ThreadPool(processes=len(self.slaves) *
                                  self.volume_count)
