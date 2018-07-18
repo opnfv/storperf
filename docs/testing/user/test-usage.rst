@@ -187,7 +187,7 @@ randomly throughout the volume being profiled would be:
 
   "workloads": {
     "6040randrw": {
-       "rw": "randrw",
+        "rw": "randrw",
         "rwmixread": "60"
     }
   }
