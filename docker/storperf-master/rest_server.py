@@ -104,6 +104,7 @@ class ConfigurationRequestModel:
         'volume_type': fields.String,
         'availability_zone': fields.String,
         'subnet_CIDR': fields.String,
+        'stack_name': fields.String,
         'username': fields.String,
         'password': fields.String
     }
@@ -123,6 +124,7 @@ class ConfigurationResponseModel:
         'volume_type': fields.String,
         'availability_zone': fields.String,
         'subnet_CIDR': fields.String,
+        'stack_name': fields.String,
         'slave_addresses': fields.Nested
     }
 
@@ -149,6 +151,7 @@ class Configure(Resource):
                         'stack_created': storperf.is_stack_created,
                         'availability_zone': storperf.availability_zone,
                         'subnet_CIDR': storperf.subnet_CIDR,
+                        'stack_name': storperf.stack_name,
                         'slave_addresses': storperf.slave_addresses,
                         'stack_id': storperf.stack_id})
 
@@ -174,6 +177,8 @@ class Configure(Resource):
             abort(400, "ERROR: No data specified")
 
         try:
+            if ('stack_name' in request.json):
+                storperf.stack_name = request.json['stack_name']
             if ('agent_count' in request.json):
                 storperf.agent_count = request.json['agent_count']
             if ('agent_flavor' in request.json):

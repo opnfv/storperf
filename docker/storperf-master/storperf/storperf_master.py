@@ -25,7 +25,7 @@ from snaps.thread_utils import worker_pool
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
 import json
-
+import uuid
 
 class ParameterError(Exception):
     """ """
@@ -37,9 +37,9 @@ class StorPerfMaster(object):
         self.logger = logging.getLogger(__name__)
 
         self.job_db = JobDB()
-
+        self._stack_name = 'StorPerfAgentGroup'
         self.stack_settings = StackConfig(
-            name='StorPerfAgentGroup',
+            name=self.stack_name,
             template_path='storperf/resources/hot/agent-group.yaml')
 
         self.os_creds = OSCreds(
@@ -118,6 +118,14 @@ class StorPerfMaster(object):
             raise ParameterError(
                 "ERROR: Cannot change volume type after stack is created")
         self._volume_type = value
+
+    @property
+    def stack_name(self):
+        return self._stack_name
+
+    @stack_name.setter
+    def stack_name(self, value):
+        self._stack_name = value
 
     @property
     def subnet_CIDR(self):
@@ -351,6 +359,8 @@ class StorPerfMaster(object):
         return logs
 
     def create_stack(self):
+        self.stack_settings.name = self.stack_name
+
         self.stack_settings.resource_files = [
             'storperf/resources/hot/storperf-agent.yaml',
             'storperf/resources/hot/storperf-volume.yaml']
@@ -437,7 +447,6 @@ class StorPerfMaster(object):
 
         self._test_executor.slaves = slaves
         self._test_executor.volume_count = self.volume_count
-
         params = metadata
         params['agent_count'] = self.agent_count
         params['public_network'] = self.public_network
@@ -586,11 +595,13 @@ class StorPerfMaster(object):
             logger.error(line)
 
     def _make_parameters(self):
+        random_str = uuid.uuid4().hex[:6].upper()
         heat_parameters = {}
         heat_parameters['public_network'] = self.public_network
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_count'] = self.volume_count
         heat_parameters['volume_size'] = self.volume_size
+        heat_parameters['keypair_name'] = 'storperf_agent_keypair' + random_str
         heat_parameters['subnet_CIDR'] = self.subnet_CIDR
         if self.volume_type is not None:
             heat_parameters['volume_type'] = self.volume_type
