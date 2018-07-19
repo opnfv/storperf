@@ -25,6 +25,7 @@ from snaps.thread_utils import worker_pool
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
 import json
+import uuid
 
 
 class ParameterError(Exception):
@@ -37,9 +38,9 @@ class StorPerfMaster(object):
         self.logger = logging.getLogger(__name__)
 
         self.job_db = JobDB()
-
+        self._stack_name = 'StorPerfAgentGroup'
         self.stack_settings = StackConfig(
-            name='StorPerfAgentGroup',
+            name=self.stack_name,
             template_path='storperf/resources/hot/agent-group.yaml')
 
         self.os_creds = OSCreds(
@@ -118,6 +119,17 @@ class StorPerfMaster(object):
             raise ParameterError(
                 "ERROR: Cannot change volume type after stack is created")
         self._volume_type = value
+
+    @property
+    def stack_name(self):
+        return self._stack_name
+
+    @stack_name.setter
+    def stack_name(self, value):
+        self._stack_name = value
+        self.stack_settings.name = self.stack_name
+        self.stack_id = None
+        self._last_snaps_check_time = None
 
     @property
     def subnet_CIDR(self):
@@ -411,7 +423,8 @@ class StorPerfMaster(object):
                 self._test_executor.job_id))
 
         if (self.stack_id is None):
-            raise ParameterError("ERROR: Stack does not exist")
+            raise ParameterError("ERROR: Stack %s does not exist" %
+                                 self.stack_name)
 
         self._test_executor = TestExecutor()
         self._test_executor.register(self.executor_event)
@@ -437,16 +450,22 @@ class StorPerfMaster(object):
 
         self._test_executor.slaves = slaves
         self._test_executor.volume_count = self.volume_count
-
         params = metadata
         params['agent_count'] = self.agent_count
+        params['agent_flavor'] = self.agent_flavor
+        params['agent_image'] = self.agent_image
+        params['agent_info'] = json.dumps(self.slave_info)
+        params['avaiability_zone'] = self.availability_zone
+        params['block_sizes'] = self.block_sizes
+        params['deadline'] = self.deadline
         params['public_network'] = self.public_network
+        params['stack_name'] = self.stack_name
+        params['steady_state_samples'] = self.steady_state_samples
+        params['subnet_CIDR'] = self.subnet_CIDR
+        params['target'] = self.filename
         params['volume_count'] = self.volume_count
         params['volume_size'] = self.volume_size
-        params['subnet_CIDR'] = self.subnet_CIDR
-        params['agent_info'] = json.dumps(self.slave_info)
-        if self.volume_type is not None:
-            params['volume_type'] = self.volume_type
+        params['volume_type'] = self.volume_type
         if self.username and self.password:
             params['username'] = self.username
             params['password'] = self.password
@@ -586,11 +605,13 @@ class StorPerfMaster(object):
             logger.error(line)
 
     def _make_parameters(self):
+        random_str = uuid.uuid4().hex[:6].upper()
         heat_parameters = {}
         heat_parameters['public_network'] = self.public_network
         heat_parameters['agent_count'] = self.agent_count
         heat_parameters['volume_count'] = self.volume_count
         heat_parameters['volume_size'] = self.volume_size
+        heat_parameters['keypair_name'] = 'storperf_agent_keypair' + random_str
         heat_parameters['subnet_CIDR'] = self.subnet_CIDR
         if self.volume_type is not None:
             heat_parameters['volume_type'] = self.volume_type
