@@ -8,6 +8,9 @@
 ##############################################################################
 import copy
 
+RANGE_DEVIATION = 0.20
+SLOPE_DEVIATION = 0.10
+
 
 def slope(data_series):
     """
@@ -114,3 +117,58 @@ def average(data_series):
         average = data_sum / float(m)
 
     return average
+
+
+def slope_series(data_series):
+    """
+    This function returns an adjusted series based on the average
+    for the supplied series and the slope of the series.
+    """
+
+    new_series = []
+    average_series = []
+    for l in data_series:
+        average_series.append(l[1])
+
+    avg = average(average_series)
+    slp = slope(data_series)
+
+    multiplier = float(len(data_series) + 1) / 2.0 - len(data_series)
+    for index, _ in data_series:
+        new_value = avg + (slp * multiplier)
+        new_series.append([index, new_value])
+        multiplier += 1
+
+    return new_series
+
+
+def min_series(data_series):
+    """
+    This function returns an copy of the series with only the
+    minimum allowed deviation as its values
+    """
+
+    new_series = []
+    avg = average(data_series)
+    low = avg - (avg * RANGE_DEVIATION)
+
+    for _ in data_series:
+        new_series.append(low)
+
+    return new_series
+
+
+def max_series(data_series):
+    """
+    This function returns an copy of the series with only the
+    maximum allowed deviation as its values
+    """
+
+    new_series = []
+    avg = average(data_series)
+    high = avg + (avg * RANGE_DEVIATION)
+
+    for _ in data_series:
+        new_series.append(high)
+
+    return new_series

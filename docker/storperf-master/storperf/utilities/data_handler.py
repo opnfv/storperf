@@ -59,6 +59,8 @@ class DataHandler(object):
 
                     metrics[metric][io_type]['series'] = series
                     metrics[metric][io_type]['steady_state'] = steady
+                    metrics[metric][io_type]['series_slope'] = \
+                        math.slope_series(series)
                     treated_data = DataTreatment.data_treatment(series)
 
                     metrics[metric][io_type]['slope'] = \
@@ -67,6 +69,11 @@ class DataHandler(object):
                         math.range_value(treated_data['range_data'])
                     average = math.average(treated_data['average_data'])
                     metrics[metric][io_type]['average'] = average
+
+                    metrics[metric][io_type]['series_min'] = \
+                        math.min_series(treated_data['range_data'])
+                    metrics[metric][io_type]['series_max'] = \
+                        math.max_series(treated_data['range_data'])
 
                     metrics_key = '%s.%s.%s' % (workload, io_type, metric)
                     executor.metadata['details']['metrics'][metrics_key] = \

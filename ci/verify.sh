@@ -22,7 +22,6 @@ pip install --upgrade setuptools
 pip install autoflake==1.2
 pip install autopep8==1.3.5
 pip install coverage==4.5.1
-#pip install cryptography
 pip install flake8==3.5.0
 pip install mock==2.0.0
 pip install nose==1.3.7

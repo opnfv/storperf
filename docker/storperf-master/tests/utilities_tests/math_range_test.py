@@ -118,3 +118,25 @@ class MathRangeTest(unittest.TestCase):
             data_series.insert(randrange(len(data_series)), -18954.98)
             actual = Range.range_value(data_series)
             self.assertEqual(expected, actual)
+
+    def test_min_series(self):
+        expected = [427.7333333333333,
+                    427.7333333333333,
+                    427.7333333333333,
+                    427.7333333333333,
+                    427.7333333333333,
+                    427.7333333333333]
+        data_series = [5, 351, 847, 2, 1985, 18]
+        actual = Range.min_series(data_series)
+        self.assertEqual(expected, actual)
+
+    def test_max_series(self):
+        expected = [641.5999999999999,
+                    641.5999999999999,
+                    641.5999999999999,
+                    641.5999999999999,
+                    641.5999999999999,
+                    641.5999999999999]
+        data_series = [5, 351, 847, 2, 1985, 18]
+        actual = Range.max_series(data_series)
+        self.assertEqual(expected, actual)

@@ -9,7 +9,8 @@
 import logging
 
 from storperf.utilities import data_treatment as DataTreatment
-from storperf.utilities import math as math
+from storperf.utilities import math
+from storperf.utilities.math import RANGE_DEVIATION, SLOPE_DEVIATION
 
 
 def steady_state(data_series):
@@ -38,15 +39,19 @@ def steady_state(data_series):
             average_value is not None):
         # Verification of the Steady State conditions following the SNIA
         # definition
-        range_condition = abs(range_value) <= 0.20 * abs(average_value)
-        slope_condition = abs(slope_value) <= 0.10 * abs(average_value)
+        range_condition = abs(range_value) <= RANGE_DEVIATION * \
+            abs(average_value)
+        slope_condition = abs(slope_value) <= SLOPE_DEVIATION * \
+            abs(average_value)
 
         steady_state = range_condition and slope_condition
 
         logger.debug("Range %s <= %s?" % (abs(range_value),
-                                          (0.20 * abs(average_value))))
+                                          (RANGE_DEVIATION *
+                                           abs(average_value))))
         logger.debug("Slope %s <= %s?" % (abs(slope_value),
-                                          (0.10 * abs(average_value))))
+                                          (SLOPE_DEVIATION *
+                                           abs(average_value))))
         logger.debug("Steady State? %s" % steady_state)
     else:
         steady_state = False
