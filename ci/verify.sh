@@ -18,13 +18,13 @@ fi
 virtualenv $WORKSPACE/storperf_venv
 source $WORKSPACE/storperf_venv/bin/activate
 
-pip install --upgrade setuptools==33.1.1
-pip install autoflake==0.6.6
-pip install autopep8==1.2.2
-pip install coverage==4.1
-pip install cryptography==1.7.2
-pip install flake8==2.5.4
-pip install mock==1.3.0
+pip install --upgrade setuptools
+pip install autoflake==1.2
+pip install autopep8==1.3.5
+pip install coverage==4.5.1
+#pip install cryptography
+pip install flake8==3.5.0
+pip install mock==2.0.0
 pip install nose==1.3.7
 pip install -r docker/storperf-master/requirements.pip
 

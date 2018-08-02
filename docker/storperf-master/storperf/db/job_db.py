@@ -265,7 +265,7 @@ class JobDB(object):
                     break
                 try:
                     data = json.loads(row[1])
-                except:
+                except Exception:
                     data = row[1]
                 params[row[0]] = data
             db.close()

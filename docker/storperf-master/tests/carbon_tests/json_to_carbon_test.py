@@ -7,9 +7,10 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from storperf.carbon.converter import Converter
 import json
 import unittest
+
+from storperf.carbon.converter import Converter
 
 
 class JSONToCarbonTest(unittest.TestCase):
@@ -111,6 +112,7 @@ class JSONToCarbonTest(unittest.TestCase):
         self.assertEqual(
             "value", result["list_with_spaces.1.key"],
             result["list_with_spaces.1.key"])
+
 
 if __name__ == '__main__':
     unittest.main()
