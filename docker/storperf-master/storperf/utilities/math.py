@@ -133,6 +133,9 @@ def slope_series(data_series):
     avg = average(average_series)
     slp = slope(data_series)
 
+    if slp is None or avg is None:
+        return new_series
+
     multiplier = float(len(data_series) + 1) / 2.0 - len(data_series)
     for index, _ in data_series:
         new_value = avg + (slp * multiplier)

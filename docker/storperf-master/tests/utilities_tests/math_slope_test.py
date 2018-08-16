@@ -21,6 +21,11 @@ class MathSlopeTest(unittest.TestCase):
         actual = Slope.slope([])
         self.assertEqual(expected, actual)
 
+    def test_slope_one_series(self):
+        expected = None
+        actual = Slope.slope([[1, 0.0]])
+        self.assertEqual(expected, actual)
+
     def test_slope_integer_series(self):
         expected = 1.4
         actual = Slope.slope([[1, 6], [2, 5], [3, 7], [4, 10]])
