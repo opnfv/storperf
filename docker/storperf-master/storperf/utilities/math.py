@@ -152,11 +152,14 @@ def min_series(data_series):
     """
 
     new_series = []
-    avg = average(data_series)
+    average_series = []
+    for l in data_series:
+        average_series.append(l[1])
+    avg = average(average_series)
     low = avg - (avg * RANGE_DEVIATION)
 
-    for _ in data_series:
-        new_series.append(low)
+    for index, _ in data_series:
+        new_series.append([index, low])
 
     return new_series
 
@@ -168,10 +171,13 @@ def max_series(data_series):
     """
 
     new_series = []
-    avg = average(data_series)
+    average_series = []
+    for l in data_series:
+        average_series.append(l[1])
+    avg = average(average_series)
     high = avg + (avg * RANGE_DEVIATION)
 
-    for _ in data_series:
-        new_series.append(high)
+    for index, _ in data_series:
+        new_series.append([index, high])
 
     return new_series

@@ -120,23 +120,13 @@ class MathRangeTest(unittest.TestCase):
             self.assertEqual(expected, actual)
 
     def test_min_series(self):
-        expected = [427.7333333333333,
-                    427.7333333333333,
-                    427.7333333333333,
-                    427.7333333333333,
-                    427.7333333333333,
-                    427.7333333333333]
-        data_series = [5, 351, 847, 2, 1985, 18]
+        expected = [[1, 5.6], [2, 5.6], [3, 5.6], [4, 5.6]]
+        data_series = [[1, 6], [2, 5], [3, 7], [4, 10]]
         actual = Range.min_series(data_series)
         self.assertEqual(expected, actual)
 
     def test_max_series(self):
-        expected = [641.5999999999999,
-                    641.5999999999999,
-                    641.5999999999999,
-                    641.5999999999999,
-                    641.5999999999999,
-                    641.5999999999999]
-        data_series = [5, 351, 847, 2, 1985, 18]
+        expected = [[1, 8.4], [2, 8.4], [3, 8.4], [4, 8.4]]
+        data_series = [[1, 6], [2, 5], [3, 7], [4, 10]]
         actual = Range.max_series(data_series)
         self.assertEqual(expected, actual)
