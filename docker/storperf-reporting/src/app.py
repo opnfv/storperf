@@ -130,12 +130,12 @@ def file_not_found():
 
 @app.route('/reporting/3rd_party/js/<path:path>')
 def js(path):
-    return send_from_directory('static/js/', path)
+    return send_from_directory('static/3rd_party/js/', path)
 
 
 @app.route('/reporting/3rd_party/css/<path:path>')
 def css(path):
-    return send_from_directory('static/css/', path)
+    return send_from_directory('static/3rd_party/css/', path)
 
 
 @app.route('/reporting/images/<path:path>')
