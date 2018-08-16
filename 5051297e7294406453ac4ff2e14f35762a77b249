@@ -22,6 +22,30 @@
       "revId": "5051297e7294406453ac4ff2e14f35762a77b249",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a561d44_0d3b413b",
+        "filename": "docker/storperf-master/storperf/utilities/math.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-08-16T02:30:09Z",
+      "side": 1,
+      "message": "Sorry about that - it should not affect the final result, but I have added guards to ensure the message no longer appears.\n\nSee https://gerrit.opnfv.org/gerrit/60987",
+      "parentUuid": "9a561d44_6225acc1",
+      "range": {
+        "startLine": 138,
+        "startChar": 27,
+        "endLine": 138,
+        "endChar": 30
+      },
+      "revId": "5051297e7294406453ac4ff2e14f35762a77b249",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
     }
   ]
 }
