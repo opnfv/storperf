@@ -210,7 +210,7 @@ functional, or there may be bugs.
 
 Documentation for latest can be found using the latest label at:
 
-http://docs.opnfv.org/en/latest/submodules/storperf/docs/testing/user/index.html
+:ref:`User Guide <storperf-userguide>`
 
 For x86_64 based systems, use:
 

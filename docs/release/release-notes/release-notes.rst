@@ -123,7 +123,7 @@ Software
 Documentation
 --------------
 
-- `User Guide <http://docs.opnfv.org/en/latest/submodules/storperf/docs/testing/user/index.html>`_
+- :ref:`User Guide <storperf-userguide>`
 
 Known Limitations, Issues and Workarounds
 ------------------------------------------
