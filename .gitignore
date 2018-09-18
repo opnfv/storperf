@@ -10,5 +10,6 @@ cover
 storperf.egg-info
 *.db
 ci/job
-docs_build
 docs_output
+.tox
+docs/_build/*
