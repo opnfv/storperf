@@ -39,15 +39,15 @@ StorPerf User Guide
    ./testing/user/storperf-reporting.rst
 
 ******************************
-StorPerf Dev Guide
+StorPerf Developer Guide
 ******************************
 
 .. toctree::
-   :caption: StorPerf Dev Guide
+   :caption: StorPerf Developer Guide
    :maxdepth: 5
    :numbered: 5
 
-   ./dev/index.rst
+   ./testing/developer/devguide/index.rst
 
 
 Indices
