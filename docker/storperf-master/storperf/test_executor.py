@@ -315,8 +315,9 @@ class TestExecutor(object):
                 continue
 
             workload = current_workload['workload']
-            self._thread_gate = ThreadGate(len(self.slaves),
-                                           workload.options['status-interval'])
+            self._thread_gate = ThreadGate(
+                len(self.slaves) * min(1, self.volume_count),
+                workload.options['status-interval'])
 
             self.current_workload = current_workload['name']
 

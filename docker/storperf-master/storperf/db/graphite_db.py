@@ -41,7 +41,7 @@ class GraphiteDB(object):
         start = end - duration
 
         request = ("http://%s:%s/graphite/render/?target="
-                   "%s(%s.*.jobs.1.%s.%s)"
+                   "%s(%s.*.jobs.*.%s.%s)"
                    "&format=json"
                    "&from=%s"
                    "&until=%s"
