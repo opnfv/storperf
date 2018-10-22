@@ -2,7 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 
 
-This document provides the release notes for Fraser 2.0 of StorPerf.
+This document provides the release notes for Gambia 1.0 of StorPerf.
 
 .. contents::
    :depth: 3
@@ -17,7 +17,7 @@ Version history
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 2018-06-29         | Fraser 3.0         | Mark Beierl        |                    |
+| 2018-11-09         | Gambia 1.0         | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
@@ -30,6 +30,10 @@ agent VM to test.  The name of the device that the volume is attached to
 has been appended to the host IP address in the metrics so that it can be
 tracked independently.
 
+It is now possible to specify custom arguments to FIO.  Different engines
+such as libaio, posixaio or psync can be specified, as well as different
+mixes for read/write, or any other FIO parameter.
+
 
 Summary
 --------
@@ -38,21 +42,6 @@ StorPerf is a standalone framework that uses OpenStack to measure Cinder volume
 performance.  If desired, it can push results to the OPNFV Test Results DB, or
 the embedded Graphite web interface can be used to perform ad hoc queries.
 
-This release allows for changing of stack attributes from the OpenStack CLI.
-Using a command such as
-
-.. code-block::
-  heat stack-update StorPerfAgentGroup --existing -P "agent_count=6"
-
-will change the existing stack to use 6 agents.  Note that StorPerf can take
-up to 1 minute after the stack update is complete before detecting the new
-values.  Please use a GET of the configurations API to test for updated
-values prior to submitting a new test.
-
-The following command changes the number of volumes per agent:
-
-.. code-block::
-  heat stack-update StorPerfAgentGroup --existing -P "volume_count=2"
 
 
 Release Data
@@ -62,17 +51,17 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | opnfv-6.2.0                          |
+| **Repo/tag**                         | opnfv-7.0.0                          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Fraser 6.2                           |
+| **Release designation**              | Gambia.7                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | June 29 2018                         |
+| **Release date**                     | November 9 2018                      |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          | Improvements to stack detection      |
-|                                      | speed.                               |
+| **Purpose of the delivery**          |                                      |
+|                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
 Version change
@@ -86,18 +75,24 @@ No changes to any modules.
 Reason for version
 ===================
 
-* Loading stack properties from OpenStack could take minutes or longer
-  depending on the stack size.  This version includes changes from SNAPS
-  to take advantage of parallel OpenStack object lookups.
+* Timed release schedule
 
 Features additions
 -------------------
 
-* STORPERF-239 - Add IP addresses of slaves to configurations API
-* STORPERF-245 - Change to use multithreaded SNAPS
+* STORPERF-263 Support for multiple jobs
+* STORPERF-254 Create new API for Warm Up job
+* STORPERF-253 Add uname from each agent to metadata
+* STORPERF-250 Update containers to upstream
+* STORPERF-246 Add support for custom R/W mix
+* STORPERF-239 Add IP addresses of slaves to configurations API
+* STORPERF-217 Allow user to specify cinder volume type on stack create
+* STORPERF-176 Testing strategy overview document
 
 Bug Fixes
 ----------
+
+* STORPERF-258 Reporting module does not display any graphs
 
 Deliverables
 =============
@@ -106,19 +101,19 @@ Software
 ---------
 
 - `StorPerf master image <https://hub.docker.com/r/opnfv/storperf-master/>`_
-  (tag: x86_64-fraser.2.0  or aarch64-fraser.2.0)
+  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
 
 - `StorPerf swaggerui <https://hub.docker.com/r/opnfv/storperf-swaggerui/>`_
-  (tag: x86_64-fraser.2.0  or aarch64-fraser.2.0)
+  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
 
 - `StorPerf graphite image <https://hub.docker.com/r/opnfv/storperf-graphite/>`_
-  (tag: x86_64-fraser.2.0  or aarch64-fraser.2.0)
+  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
 
 - `StorPerf reporting image <https://hub.docker.com/r/opnfv/storperf-reporting/>`_
-  (tag: x86_64-fraser.2.0  or aarch64-fraser.2.0)
+  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
 
 - `StorPerf Http-Frontend image <https://hub.docker.com/r/opnfv/storperf-httpfrontend/>`_
-  (tag: x86_64-fraser.2.0  or aarch64-fraser.2.0)
+  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
 
 Documentation
 --------------
