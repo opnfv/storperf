@@ -7,7 +7,7 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-heat_template_version: 2017-09-01
+heat_template_version: newton
 
 parameters:
   volume_size:
