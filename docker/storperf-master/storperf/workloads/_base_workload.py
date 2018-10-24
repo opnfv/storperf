@@ -44,17 +44,24 @@ class _base_workload(object):
             self.options['size'] = "100%"
             self.logger.debug(
                 "Profiling a device, using 100% of " + self.filename)
+            self.options['filename'] = self.filename
         else:
-            self.options['size'] = self.default_filesize
+            if 'size' not in self.options:
+                self.options['size'] = self.default_filesize
             self.logger.debug("Profiling a filesystem, using " +
-                              self.default_filesize + " file")
-
-        self.options['filename'] = self.filename
+                              self.options['size'] + " file")
+            if not self.filename.endswith('/'):
+                self.filename = self.filename + "/"
+            self.options['directory'] = self.filename
+            self.options['filename_format'] = "'storperf.$jobnum.$filenum'"
 
         self.setup()
 
         for key, value in self.options.iteritems():
-            args.append('--' + key + "=" + value)
+            if value is not None:
+                args.append('--' + key + "=" + str(value))
+            else:
+                args.append('--' + key)
 
         if parse_only:
             args.append('--parse-only')
