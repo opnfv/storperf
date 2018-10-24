@@ -27,16 +27,16 @@ How Does StorPerf Work?
 
 Once launched, StorPerf presents a ReST interface, along with a
 `Swagger UI <https://swagger.io/swagger-ui/>`_ that makes it easier to
-form HTTP ReST requests.  Issuing an HTTP POST to the configurations API
-causes StorPerf to talk to OpenStack's heat service to create a new stack
-with as many agent VMs and attached Cinder volumes as specified.
+form HTTP ReST requests.
 
-After the stack is created, we can issue one or more jobs by issuing a POST
-to the jobs ReST API.  The job is the smallest unit of work that StorPerf
-can use to measure the disk's performance.
+StorPerf enables us to run FIO on multiple VMs, containers or bare
+metal servers by providing a recent release of FIO, copying it to the
+target system and running I/O workloads specified.  It also provides a
+simple API to initialize the target device and fill it with random data
+to ensure that performance is measured against real data, not blank media.
 
-While the job is running, StorPerf collects the performance metrics from each
-of the disks under test every minute.  Once the trend of metrics match the
+While an FIO job is running, StorPerf collects the performance metrics from
+each of the jobs every minute.  Once the trend of metrics match the
 criteria specified in the SNIA methodology, the job automatically terminates
 and the valid set of metrics are available for querying.
 
@@ -44,6 +44,29 @@ What is the criteria?  Simply put, it specifies that when the metrics
 measured start to "flat line" and stay within that range for the specified
 amount of time, then the metrics are considered to be indicative of a
 repeatable level of performance.
+
+With OpenStack Heat
+~~~~~~~~~~~~~~~~~~~
+
+StorPerf provides an API to interact with OpenStack Heat to automatically
+create a set of target VMs and Cinder volumes.  The Configurations API is
+used to specify how many VMs and volumes to create, as well as the size of
+each Cinder volume.
+
+Without OpenStack Heat
+~~~~~~~~~~~~~~~~~~~~~~
+
+StorPerf can also use IP addresses or DNS names to connect to systems that
+have already been provisioned by any external provider, including OpenStack.
+By specifying a stack name of 'null' in the JSON payload, StorPerf will look
+for a list of IP addresses and credentials to use in order to SSH to the
+target systems.  In this way, StorPerf can be used to profile bare metal,
+containers that have SSH enabled, or VMs running under OpenStack, WMware ESXi,
+VIO, Microsoft Hyper-V, or anything else.  The only requirement is that
+the target be capable of accepting and authenticating SSH connections, and that
+it is Linux based, as currently the FIO supplied by StorPerf is not compiled
+to run under Microsoft Windows or other non-Linux operating systems.
+
 
 StorPerf Testing Guidelines
 ===========================

@@ -31,8 +31,15 @@ The typical test execution follows this pattern:
 #. Execute one or more performance runs
 #. Delete the environment
 
-Configure The Environment
-=========================
+OpenStack or Stackless
+======================
+StorPerf provides the option of controlling the OpenStack environment
+via a Heat Stack, or it can run in stackless mode, where it connects
+directly to the IP addresses supplied, regardless of how the slave
+was created or even if it is an OpenStack VM.
+
+Configure The Environment for OpenStack Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following pieces of information are required to prepare the environment:
 
@@ -51,12 +58,12 @@ The following pieces of information are required to prepare the environment:
 VMs from properly attaching Cinder volumes.  There are two known workarounds:
 
 #. Create the environment with 0 Cinder volumes attached, and after the VMs
-  have finished booting, modify the stack to have 1 or more Cinder volumes.
-  See section on Changing Stack Parameters later in this guide.
+   have finished booting, modify the stack to have 1 or more Cinder volumes.
+   See section on Changing Stack Parameters later in this guide.
 #. Add the following image metadata to Glance.  This will cause the Cinder
-  volume to be mounted as a SCSI device, and therefore your target will be
-  /dev/sdb, etc, instead of /dev/vdb.  You will need to specify this in your
-  warm up and workload jobs.
+   volume to be mounted as a SCSI device, and therefore your target will be
+   /dev/sdb, etc, instead of /dev/vdb.  You will need to specify this in your
+   warm up and workload jobs.
 
 .. code-block:
   --property hw_disk_bus=scsi --property hw_scsi_model=virtio-scsi
@@ -82,6 +89,26 @@ takes a JSON payload as follows.
 
 This call will block until the stack is created, at which point it will return
 the OpenStack heat stack id as well as the IP addresses of the slave agents.
+
+
+Configure The Environment for Stackless Usage
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To configure the environment for stackless usage, the slaves must be
+fully operational (ie: a Linux operating system is running, are reachable
+via TCP/IP address or hostname).
+
+It is not necessary to use the Configurations API, but instead define the
+stack name as 'null' in any of the other APIs.  This instructs StorPerf not to
+gather information about the stack from OpenStack, and to simply use the
+supplied IP addresses and credentials to communicate with the slaves.
+
+A slave can be a container (provided we can SSH to it), a VM running in any
+hypervisor, or even a bare metal server.  In the bare metal case, it even
+allows for performing RADOS or RDB performance tests using the appropriate
+FIO engine.
+
+
 
 Initialize the Target Volumes
 =============================
@@ -119,6 +146,137 @@ This will return a job ID as follows.
 
 This job ID can be used to query the state to determine when it has completed.
 See the section on querying jobs for more information.
+
+Authentication and Slave Selection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+It is possible to run the Initialization API against a subset of the slaves
+known to the stack, or to run it in stackless mode, where StorPerf
+connects directly to the IP addresses supplied via SSH.  The following
+keys are available:
+
+slave_addresses
+  (optional) A list of IP addresses or hostnames to use as targets.  If
+  omitted, and StorPerf is not running in stackless mode, the full list of
+  IP addresses from the OpenStack Heat stack is used.
+
+stack_name
+  (optional) Either the name of the stack in Heat to use, or null if running
+  in stackless mode.
+
+username
+  (optional) The username to supply to SSH when logging in.  This defaults to
+  'storperf' if not supplied.
+
+password
+  (optional) The password to supply to SSH when logging in.  If omitted, the
+  SSH key is used instead.
+
+ssh_private_key
+  (optional) The SSH private key to supply to SSH when logging in.  If omitted,
+  the default StorPerf private key is used.
+
+This shows an example of stackless mode going against a single bare metal
+server reachable by IP address:
+
+.. code-block:: json
+
+   {
+     "username": "labadmin",
+     "ssh_private_key": "-----BEGIN RSA PRIVATE KEY----- \nMIIE...X0=\n-----END RSA PRIVATE KEY-----",
+     "slave_addresses": [
+       "172.17.108.44"
+     ],
+     "stack_name": null,
+   }
+
+
+Filesystems and Mounts
+~~~~~~~~~~~~~~~~~~~~~~
+
+It is also possible to instruct StorPerf to create a file system on a device
+and mount that as the target directory.  The filesystem can be anything
+supported by the target slave OS and it is possible to pass specific arguments
+to the mkfs command.  The following additional keys are available in the
+Initializations API for file system control:
+
+mkfs
+  The type and arguments to pass for creating a filesystem
+
+mount_device
+  The target device on which to make the file system.  The file system will
+  be mounted on the target specified.
+
+The following example shows the forced creation (-f) of an XFS filesystem
+on device /dev/sdb, and mounting that device on /storperf/filesystem.
+
+**Note** If any of the commands (mkfs, mount) fail for any reason, the
+Initializations API will return with a 400 code and the body of the response
+will contain the error message.
+
+.. code-block:: json
+
+   {
+     "target": "/storperf/filesystem",
+     "mkfs": "xfs -f",
+     "mount_device": "/dev/sdb",
+   }
+
+
+Initializing Filesystems
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Just like we need to fill Cinder volumes with data, if we want to profile
+files on a mounted file system, we need to initialize the file sets with
+random data prior to starting a performance run.  The Initializations API
+can also be used to create test data sets.
+
+**Note** be sure to use the same parameters for the number of files, sizes
+and jobs in both the Initializations API and the Jobs API, or you will end
+up with possibly incorrect results in the Job performance run.
+
+The following keys are available in the Initializations API for file creation:
+
+filesize
+  The size of each file to be created and filled with random data.
+
+nrfiles
+  The number of files per job to create.
+
+numjobs
+  The number of independent instances of FIO to launch.
+
+Example:
+
+.. code-block:: json
+
+   {
+     "target": "/storperf/filesystem",
+     "filesize": "2G",
+     "nrfiles": 10,
+     "numjobs": 10
+   }
+
+This would create 100 (10 nrfiles x 10 numjobs) 2G files in the directory
+/storperf/filesystem.
+
+
+.. code-block:: json
+
+   {
+     "username": "labadmin",
+     "ssh_private_key": "-----BEGIN RSA PRIVATE KEY----- \nMIIE...X0=\n-----END RSA PRIVATE KEY-----",
+     "slave_addresses": [
+       "172.17.108.44"
+     ],
+     "stack_name": null,
+     "target": "/storperf/filesystem",
+     "mkfs": "ext4",
+     "mount_device": "/dev/sdb",
+     "filesize": "2G",
+     "nrfiles": 10,
+     "numjobs": 10
+   }
+
 
 Execute a Performance Run
 =========================
@@ -220,6 +378,63 @@ block sizes and queue depths specified.
 StorPerf will also do a verification of the arguments given prior to returning
 a Job ID from the ReST call.  If an argument fails validation, the error
 will be returned in the payload of the response.
+
+File System Profiling
+~~~~~~~~~~~~~~~~~~~~~
+
+As noted in the Initializations API, files in a file system should be
+initialized prior to executing a performance run, and the number of jobs,
+files and size of files should match the initialization.  Given the following
+Initializations API call:
+
+.. code-block:: json
+
+   {
+     "username": "labadmin",
+     "ssh_private_key": "-----BEGIN RSA PRIVATE KEY----- \nMIIE...X0=\n-----END RSA PRIVATE KEY-----",
+     "slave_addresses": [
+       "172.17.108.44"
+     ],
+     "stack_name": null,
+     "target": "/storperf/filesystem",
+     "mkfs": "ext4",
+     "mount_device": "/dev/sdb",
+     "filesize": "2G",
+     "nrfiles": 10,
+     "numjobs": 10
+   }
+
+The corresponding call to the Jobs API would appear as follows:
+
+.. code-block:: json
+
+   {
+     "username": "labadmin",
+     "ssh_private_key": "-----BEGIN RSA PRIVATE KEY----- \nMIIE...X0=\n-----END RSA PRIVATE KEY-----",
+     "slave_addresses": [
+       "172.17.108.44"
+     ],
+     "stack_name": null,
+     "target": "/storperf/filesystem",
+     "block_sizes": "4k",
+     "queue_depths": "8",
+     "workloads": {
+       "readwritemix": {
+         "rw": "rw",
+         "filesize": "2G",
+         "nrfiles": "10",
+         "numjobs": "10"
+       }
+     }
+   }
+
+**Note** the queue depths and block sizes as well as the I/O pattern (rw)
+can change, but the filesize, nrfiles, numjobs and slave addresses must
+match the initialization or the performance run could contain skewed results
+due to disk initialization.  StorPerf explicitly allows for the mismatch
+of these so that it is possible to visualize performance when the files
+or disks have not been properly initialized.
+
 
 Block Sizes
 ~~~~~~~~~~~
