@@ -379,11 +379,13 @@ the last stack named.
         if not request.json:
             abort(400, "ERROR: Missing configuration data")
 
+        storperf.reset_values()
         self.logger.info(request.json)
 
         try:
             if ('stack_name' in request.json):
                 storperf.stack_name = request.json['stack_name']
+                storperf.stackless = False
             if ('target' in request.json):
                 storperf.filename = request.json['target']
             if ('deadline' in request.json):
@@ -439,7 +441,7 @@ class WorkloadsBodyModel:
 
 @swagger.model
 @swagger.nested(
-   name=WorkloadsBodyModel.__name__)
+    name=WorkloadsBodyModel.__name__)
 class WorkloadsNameModel:
     resource_fields = {
         "name": fields.Nested(WorkloadsBodyModel.resource_fields)
@@ -448,7 +450,7 @@ class WorkloadsNameModel:
 
 @swagger.model
 @swagger.nested(
-   workloads=WorkloadsNameModel.__name__)
+    workloads=WorkloadsNameModel.__name__)
 class WorkloadV2Model:
     resource_fields = {
         'target': fields.String,
@@ -457,7 +459,11 @@ class WorkloadV2Model:
         'workloads': fields.Nested(WorkloadsNameModel.resource_fields),
         'queue_depths': fields.String,
         'block_sizes': fields.String,
-        'stack_name': fields.String
+        'stack_name': fields.String,
+        'username': fields.String,
+        'password': fields.String,
+        'ssh_private_key': fields.String,
+        'slave_addresses': fields.List
     }
     required = ['workloads']
 
@@ -484,7 +490,19 @@ for any single test iteration.
 "workloads": A JSON formatted map of workload names and parameters for FIO.
 
 "stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
-the last stack named.
+the last stack named.  Explicitly specifying null will bypass all Heat Stack
+operations and go directly against the IP addresses specified.
+
+"username": if specified, the username to use when logging into the slave.
+
+"password": if specified, the password to use when logging into the slave.
+
+"ssh_private_key": if specified, the ssh private key to use when logging
+into the slave.
+
+"slave_addresses": if specified, a list of IP addresses to use instead of
+looking all of them up from the stack.
+
                 """,
                 "required": True,
                 "type": "WorkloadV2Model",
@@ -505,9 +523,10 @@ the last stack named.
     )
     def post(self):
         if not request.json:
-            abort(400, "ERROR: Missing configuration data")
+            abort(400, "ERROR: Missing job data")
 
         self.logger.info(request.json)
+        storperf.reset_values()
 
         try:
             if ('stack_name' in request.json):
@@ -534,6 +553,15 @@ the last stack named.
             else:
                 metadata = {}
 
+            if 'username' in request.json:
+                storperf.username = request.json['username']
+            if 'password' in request.json:
+                storperf.password = request.json['password']
+            if 'ssh_private_key' in request.json:
+                storperf.ssh_key = request.json['ssh_private_key']
+            if 'slave_addresses' in request.json:
+                storperf.slave_addresses = request.json['slave_addresses']
+
             job_id = storperf.execute_workloads(metadata)
 
             return jsonify({'job_id': job_id})
@@ -547,7 +575,15 @@ the last stack named.
 class WarmUpModel:
     resource_fields = {
         'stack_name': fields.String,
-        'target': fields.String
+        'target': fields.String,
+        'username': fields.String,
+        'password': fields.String,
+        'ssh_private_key': fields.String,
+        'slave_addresses': fields.List,
+        'mkfs': fields.String,
+        'mount_point': fields.String,
+        'file_size': fields.String,
+        'file_count': fields.String
     }
 
 
@@ -565,10 +601,35 @@ class Initialize(Resource):
                 "description": """Fill the target with random data.  If no
 target is specified, it will default to /dev/vdb
 
-"target": The target device or file to fill with random data.
+"target": The target device to use.
 
 "stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
-the last stack named.
+the last stack named.  Explicitly specifying null will bypass all Heat Stack
+operations and go directly against the IP addresses specified.
+
+"username": if specified, the username to use when logging into the slave.
+
+"password": if specified, the password to use when logging into the slave.
+
+"ssh_private_key": if specified, the ssh private key to use when logging
+into the slave.
+
+"slave_addresses": if specified, a list of IP addresses to use instead of
+looking all of them up from the stack.
+
+"mkfs": if specified, the command to execute in order to create a filesystem
+on the target device (eg: mkfs.ext4)
+
+"mount_point": if specified, the directory to use when mounting the device.
+
+"filesize": if specified, the size of the files to create when profiling
+a filesystem.
+
+"nrfiles": if specified, the number of files to create when profiling
+a filesystem
+
+"numjobs": if specified, the number of jobs for when profiling
+a filesystem
                 """,
                 "required": False,
                 "type": "WarmUpModel",
@@ -593,17 +654,46 @@ the last stack named.
     )
     def post(self):
         self.logger.info(request.json)
+        storperf.reset_values()
 
         try:
+            warm_up_args = {
+                'rw': 'randwrite',
+                'direct': "1",
+                'loops': "1"
+            }
+            storperf.queue_depths = "8"
+            storperf.block_sizes = "16k"
+
             if request.json:
                 if 'target' in request.json:
                     storperf.filename = request.json['target']
                 if 'stack_name' in request.json:
                     storperf.stack_name = request.json['stack_name']
-            storperf.queue_depths = "8"
-            storperf.block_sizes = "16k"
-            storperf.workloads = "_warm_up"
-            storperf.custom_workloads = None
+                if 'username' in request.json:
+                    storperf.username = request.json['username']
+                if 'password' in request.json:
+                    storperf.password = request.json['password']
+                if 'ssh_private_key' in request.json:
+                    storperf.ssh_key = request.json['ssh_private_key']
+                if 'slave_addresses' in request.json:
+                    storperf.slave_addresses = request.json['slave_addresses']
+                if 'mkfs' in request.json:
+                    storperf.mkfs = request.json['mkfs']
+                if 'mount_device' in request.json:
+                    storperf.mount_device = request.json['mount_device']
+                if 'filesize' in request.json:
+                    warm_up_args['filesize'] = str(request.json['filesize'])
+                if 'nrfiles' in request.json:
+                    warm_up_args['nrfiles'] = str(request.json['nrfiles'])
+                if 'numjobs' in request.json:
+                    warm_up_args['numjobs'] = str(request.json['numjobs'])
+
+            storperf.workloads = None
+            storperf.custom_workloads = {
+                '_warm_up': warm_up_args
+            }
+            self.logger.info(storperf.custom_workloads)
             job_id = storperf.execute_workloads()
 
             return jsonify({'job_id': job_id})
