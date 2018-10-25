@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "5a682502_6ce1fbcf",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 529,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-10-25T14:25:55Z",
+      "side": 1,
+      "message": "Stackless \u003d False gets set here.",
+      "revId": "539c58ad4c10dc6801f050e75be3e163b7c7f256",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a682502_3173e016",
         "filename": "docker/storperf-master/rest_server.py",
         "patchSetId": 1
@@ -25,6 +42,30 @@
     },
     {
       "key": {
+        "uuid": "5a682502_2cc0a329",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 533,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-10-25T14:25:55Z",
+      "side": 1,
+      "message": "It is needed if anyone wants to run a test with a different stack outside of Yardstick.\n\nIt is also the only method of saying that we are running stackless by specifying stack_name: null in the JSON payload.",
+      "parentUuid": "5a682502_3173e016",
+      "range": {
+        "startLine": 532,
+        "startChar": 12,
+        "endLine": 533,
+        "endChar": 64
+      },
+      "revId": "539c58ad4c10dc6801f050e75be3e163b7c7f256",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a682502_51781cf2",
         "filename": "docker/storperf-master/rest_server.py",
         "patchSetId": 1
@@ -36,6 +77,24 @@
       "writtenOn": "2018-10-25T07:09:33Z",
       "side": 1,
       "message": "we have to set storperf.stackless \u003d True here. or somewhere else",
+      "revId": "539c58ad4c10dc6801f050e75be3e163b7c7f256",
+      "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a682502_8cde1710",
+        "filename": "docker/storperf-master/rest_server.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 558,
+      "author": {
+        "id": 2034
+      },
+      "writtenOn": "2018-10-25T14:25:55Z",
+      "side": 1,
+      "message": "It is possible that the stack was created using a Cirros image, in which case the cubswin:) password is needed at the same time as it being part of a stack.  Having a password does not imply stackless.",
+      "parentUuid": "5a682502_51781cf2",
       "revId": "539c58ad4c10dc6801f050e75be3e163b7c7f256",
       "serverId": "bbac25d2-bf60-4904-9ba8-a72fc000d6c5",
       "unresolved": false
