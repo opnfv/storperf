@@ -217,18 +217,19 @@ class TestExecutor(object):
 
     def execute(self, metadata):
         self.job_db.create_job_id()
+        self._setup_metadata(metadata)
         try:
             self.test_params()
         except Exception as e:
             self.terminate()
             raise e
-        self._setup_metadata(metadata)
-        self.job_db.record_workload_params(metadata)
+        stripped_metadata = metadata.copy()
+        stripped_metadata.pop('ssh_key', None)
+        self.job_db.record_workload_params(stripped_metadata)
         self._workload_thread = Thread(target=self.execute_workloads,
                                        args=(),
                                        name="Workload thread")
         self._workload_thread.start()
-        # seems to be hanging here
         return self.job_db.job_id
 
     def terminate(self):
@@ -362,12 +363,17 @@ class TestExecutor(object):
 
         if self._custom_workloads:
             for workload_name in self._custom_workloads.iterkeys():
-                if not workload_name.isalnum():
+                real_name = workload_name
+                if real_name.startswith('_'):
+                    real_name = real_name.replace('_', '')
+                self.logger.info("--- real_name: %s" % real_name)
+
+                if not real_name.isalnum():
                     raise InvalidWorkloadName(
                         "Workload name must be alphanumeric only: %s" %
-                        workload_name)
+                        real_name)
                 workload = _custom_workload()
-                workload.options['name'] = workload_name
+                workload.options['name'] = real_name
                 workload.name = workload_name
                 if (self.filename is not None):
                     workload.filename = self.filename

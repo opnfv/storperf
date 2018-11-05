@@ -18,12 +18,12 @@ class _custom_workload(_base_workload._base_workload):
         self.default_filesize = "1G"
         self.filename = '/dev/vdb'
         self.fixed_options = {
-            'loops': '200',
             'output-format': 'json',
             'status-interval': '60'
         }
         self.options = {
             'ioengine': 'libaio',
+            'loops': '200',
             'direct': '1',
             'numjobs': '1',
             'rw': 'read',

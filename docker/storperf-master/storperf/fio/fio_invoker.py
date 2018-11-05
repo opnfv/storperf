@@ -158,6 +158,11 @@ class FIOInvoker(object):
                         username=self.metadata['username'],
                         password=self.metadata['password'])
             return ssh
+        elif 'username' in self.metadata and 'ssh_key' in self.metadata:
+            ssh.connect(self.remote_host,
+                        username=self.metadata['username'],
+                        pkey=self.metadata['ssh_key'])
+            return ssh
         else:
             ssh.connect(self.remote_host, username='storperf',
                         key_filename='storperf/resources/ssh/storperf_rsa',

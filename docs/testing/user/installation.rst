@@ -8,11 +8,20 @@ StorPerf Installation Guide
 
 OpenStack Prerequisites
 ===========================
-If you do not have an Ubuntu 16.04 image in Glance, you will need to add one.
-You also need to create the StorPerf flavor, or choose one that closely
-matches.  For Ubuntu 16.04, it must have a minimum of a 4 GB disk.  It should
-also have about 8 GB RAM to support FIO's memory mapping of written data blocks
-to ensure 100% coverage of the volume under test.
+StorPerf can be instructed to use OpenStack APIs in order to manage a
+Heat stack of virtual machines and Cinder volumes, or it can be run in
+stackless mode, where it does not need to know anything about OpenStack.
+
+When running in OpenStack mode, there will need to be an external network
+with floating IPs available to assign to the VMs, as well as a Glance image
+that can be used to boot the VMs.  This can be almost any Linux based
+image, as long as it can either accept OpenStack metadata for injecting
+the SSH key, or it has known SSH credentials as part of the base image.
+
+The flavor for the image should provide enough disk space for the initial
+boot, along with additional space if profiling of the Glance backing is
+desired.  It should also provide at least 8 GB RAM to support FIO's memory
+mapping of written data blocks.
 
 There are scripts in storperf/ci directory to assist, or you can use the follow
 code snippets:
@@ -34,9 +43,10 @@ code snippets:
 OpenStack Credentials
 ~~~~~~~~~~~~~~~~~~~~~
 
-You must have your OpenStack Controller environment variables defined and passed to
-the StorPerf container. The easiest way to do this is to put the rc file contents
-into a clean file called admin.rc that looks similar to this for V2 authentication:
+Unless running in stackless mode, the OpenStack Controller environment
+variables must be defined and passed to the StorPerf container. The easiest
+way to do this is to put the rc file contents into a clean file called
+admin.rc that looks similar to this for V2 authentication:
 
 .. code-block:: console
 
@@ -89,7 +99,7 @@ Requirements:
 * Host has access to the OpenStack Controller API
 * Host must have internet connectivity for downloading docker image
 * Enough OpenStack floating IPs must be available to match your agent count
-* A local directory for holding the Carbon DB Whisper files
+* Optionally, a local directory for holding the Carbon DB Whisper files
 
 Local disk used for the Carbon DB storage as the default size of the docker
 container is only 10g. Here is an example of how to create a local storage
@@ -117,7 +127,7 @@ http://storperf:5000/graphite
 Running StorPerf Container
 ==========================
 
-**As of Euphrates (development) release (June 2017), StorPerf has
+**As of Euphrates release (June 2017), StorPerf has
 changed to use docker-compose in order to start its services.**
 
 Docker compose requires a local file to be created in order to define the
@@ -146,8 +156,12 @@ which should result in:
 
 To run, you must specify two environment variables:
 
-* ENV_FILE, which points to your OpenStack admin.rc as noted above.
-* CARBON_DIR, which points to a directory that will be mounted to store the raw metrics.
+* ENV_FILE, which points to your OpenStack admin.rc as noted above.  If running
+  in stackless mode only, it is possible to remove the ENV_FILE reference from
+  the docker-compose.yaml file.
+* CARBON_DIR, which points to a directory that will be mounted to store the
+  raw metrics.  If desired, the CARBON_DIR can be removed from the
+  docker-compose.yaml file, causing metrics to be kept in the container only.
 * TAG, which specified the Docker tag for the build (ie: latest, danube.3.0, etc).
 
 The following command will start all the StorPerf services:

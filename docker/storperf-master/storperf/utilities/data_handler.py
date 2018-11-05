@@ -157,9 +157,11 @@ class DataHandler(object):
         test_db = os.environ.get('TEST_DB_URL')
         if test_db is not None:
             self.logger.info("Pushing results to %s" % (test_db))
+            stripped_metadata = executor.metadata
+            stripped_metadata.pop("ssh_key", None)
             response = test_results_db.push_results_to_db(
                 test_db,
-                executor.metadata,
+                stripped_metadata,
                 self.logger)
             if response:
                 self.logger.info("Results reference: %s" % response['href'])
