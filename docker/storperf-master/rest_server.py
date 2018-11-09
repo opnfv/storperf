@@ -424,7 +424,6 @@ the last stack named.
         ]
     )
     def delete(self):
-        self.logger.info("Threads: %s" % sys._current_frames())
         try:
             return jsonify({'Slaves': storperf.terminate_workloads()})
         except Exception as e:
