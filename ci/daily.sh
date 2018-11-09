@@ -89,14 +89,14 @@ JOB=$("${WORKSPACE}/ci/start_job.sh" \
 curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=${JOB}&type=status" \
     -o "${WORKSPACE}/ci/job/status.json"
 
-JOB_STATUS=$(grep -A2 $JOB "${WORKSPACE}/ci/job/status.json" | awk '/Status/ {print $2}' | cut -d\" -f2)
+JOB_STATUS=$(awk '/Status/ {print $2}' "${WORKSPACE}/ci/job/status.json" | cut -d\" -f2)
 while [ "${JOB_STATUS}" != "Completed" ]
 do
     sleep 600
     mv "${WORKSPACE}/ci/job/status.json" "${WORKSPACE}/ci/job/old-status.json"
     curl -s -X GET "http://127.0.0.1:5000/api/v1.0/jobs?id=${JOB}&type=status" \
         -o "${WORKSPACE}/ci/job/status.json"
-    JOB_STATUS=$(grep -A2 $JOB "${WORKSPACE}/ci/job/status.json" | awk '/Status/ {print $2}' | cut -d\" -f2)
+    JOB_STATUS=$(awk '/Status/ {print $2}' "${WORKSPACE}/ci/job/status.json" | cut -d\" -f2)
     if diff "${WORKSPACE}/ci/job/status.json" "${WORKSPACE}/ci/job/old-status.json" >/dev/null
     then
         cat "${WORKSPACE}/ci/job/status.json"
