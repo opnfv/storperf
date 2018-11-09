@@ -62,8 +62,6 @@ class StorPerfMaster(object):
         self.heat_stack = OpenStackHeatStack(self.os_creds,
                                              self.stack_settings)
 
-        self._cached_stack_id = None
-        self._last_snaps_check_time = None
         self._snaps_pool = worker_pool(20)
 
     def reset_values(self):
@@ -93,6 +91,8 @@ class StorPerfMaster(object):
         self.stackless = False
         self.mkfs = None
         self.mount_device = None
+        self._last_snaps_check_time = None
+        self._cached_stack_id = None
 
     @property
     def volume_count(self):

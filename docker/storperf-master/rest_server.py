@@ -10,7 +10,6 @@
 import json
 import logging.config
 import os
-import sys
 
 from flask import abort, Flask, request, jsonify
 from flask_cors import CORS
@@ -424,7 +423,6 @@ the last stack named.
         ]
     )
     def delete(self):
-        self.logger.info("Threads: %s" % sys._current_frames())
         try:
             return jsonify({'Slaves': storperf.terminate_workloads()})
         except Exception as e:
