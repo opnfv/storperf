@@ -2,7 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 
 
-This document provides the release notes for Gambia 1.0 of StorPerf.
+This document provides the release notes for Hunter 1.0 of StorPerf.
 
 .. contents::
    :depth: 3
@@ -17,7 +17,7 @@ Version history
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 2018-11-09         | Gambia 1.0         | Mark Beierl        |                    |
+| 2018-11-09         | Hunter 1.0         | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
@@ -25,9 +25,8 @@ Version history
 Important notes
 ----------------
 
-It is now possible to specify custom arguments to FIO.  Different engines
-such as libaio, posixaio or psync can be specified, as well as different
-mixes for read/write, or any other FIO parameter.
+It is now possible to specify arbitrary IP addresses to StorPerf and not
+require OpenStack or Heat for stack creation.
 
 Summary
 --------
@@ -36,10 +35,10 @@ StorPerf is a standalone framework that uses OpenStack to measure Cinder volume
 performance.  If desired, it can push results to the OPNFV Test Results DB, or
 the embedded Graphite web interface can be used to perform ad hoc queries.
 
-This release provides enhancements to job execution, including being able
-to specify volume types and subnet CIDRs to stack creation, and being able
-to specify additional FIO parameters to expand the types of tests that can
-be run.
+This release provides the ability to use existing servers (virtual or physical)
+as the targets for workload execution.  All that is required is the IP address
+and the SSH key or username/password for StorPerf to be able to log in and
+start FIO workloads.
 
 Release Data
 -------------
@@ -48,13 +47,13 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | opnfv-7.0.0                          |
+| **Repo/tag**                         | opnfv-8.0.0                          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Gambia.7                             |
+| **Release designation**              | Hunter.8                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | November 9 2018                      |
+| **Release date**                     | May 10, 2019                         |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 | **Purpose of the delivery**          |                                      |
@@ -77,19 +76,13 @@ Reason for version
 Features additions
 -------------------
 
-* STORPERF-263 Support for multiple jobs
-* STORPERF-254 Create new API for Warm Up job
-* STORPERF-253 Add uname from each agent to metadata
-* STORPERF-250 Update containers to upstream
-* STORPERF-246 Add support for custom R/W mix
-* STORPERF-239 Add IP addresses of slaves to configurations API
-* STORPERF-217 Allow user to specify cinder volume type on stack create
-* STORPERF-176 Testing strategy overview document
+* STORPERF-265 Add support for stackless (IP address) runs
+* STORPERF-228 Allow user to specify list of IP addresses for StorPerf test
 
 Bug Fixes
 ----------
 
-* STORPERF-258 Reporting module does not display any graphs
+None
 
 Deliverables
 =============
@@ -98,19 +91,19 @@ Software
 ---------
 
 - `StorPerf master image <https://hub.docker.com/r/opnfv/storperf-master/>`_
-  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
+  (tag: x86_64-opnfv-8.0.0  or aarch64-opnfv-8.0.0)
 
 - `StorPerf swaggerui <https://hub.docker.com/r/opnfv/storperf-swaggerui/>`_
-  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
+  (tag: x86_64-opnfv-8.0.0  or aarch64-opnfv-8.0.0)
 
 - `StorPerf graphite image <https://hub.docker.com/r/opnfv/storperf-graphite/>`_
-  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
+  (tag: x86_64-opnfv-8.0.0  or aarch64-opnfv-8.0.0)
 
 - `StorPerf reporting image <https://hub.docker.com/r/opnfv/storperf-reporting/>`_
-  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
+  (tag: x86_64-opnfv-8.0.0  or aarch64-opnfv-8.0.0)
 
 - `StorPerf Http-Frontend image <https://hub.docker.com/r/opnfv/storperf-httpfrontend/>`_
-  (tag: x86_64-opnfv-7.0.0  or aarch64-opnfv-7.0.0)
+  (tag: x86_64-opnfv-8.0.0  or aarch64-opnfv-8.0.0)
 
 Documentation
 --------------
@@ -140,7 +133,3 @@ Known issues
   --property hw_disk_bus=scsi --property hw_scsi_model=virtio-scsi
 
 
-Test Result
-===========
-
-- `OPNFV Test Results DB <http://testresults.opnfv.org/reporting/fraser/storperf/status-apex.html>`_
