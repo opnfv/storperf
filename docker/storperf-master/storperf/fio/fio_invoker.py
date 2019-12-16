@@ -45,6 +45,8 @@ class FIOInvoker(object):
         self.json_body = ""
         try:
             for line in iter(stdout.readline, b''):
+                if type(line) == bytes:
+                    line = line.decode('utf=8')
                 if line.startswith("fio"):
                     line = ""
                     continue
@@ -78,7 +80,8 @@ class FIOInvoker(object):
     def stderr_handler(self, stderr):
         self.logger.debug("Started")
         for line in iter(stderr.readline, b''):
-            self.logger.error("FIO Error: %s", line.rstrip())
+            if len(line) > 0:
+                self.logger.error("FIO Error: %s", line.rstrip())
             self.stderr.append(line.rstrip())
 
             # Sometime, FIO gets stuck and will give us this message:
@@ -137,10 +140,12 @@ class FIOInvoker(object):
 
         ssh = self._ssh_client()
 
-        command = "sudo killall fio"
-
-        self.logger.debug("Executing on %s: %s" % (self.remote_host, command))
-        (_, stdout, stderr) = ssh.exec_command(command)
+        kill_commands = ['sudo killall fio',
+                         'sudo pkill fio']
+        for command in kill_commands:
+            self.logger.debug("Executing on %s: %s" %
+                              (self.remote_host, command))
+            (_, stdout, stderr) = ssh.exec_command(command)
 
         for line in stdout.readlines():
             self.logger.debug(line.strip())

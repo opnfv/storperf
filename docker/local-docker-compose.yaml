@@ -19,6 +19,7 @@ services:
         env_file: ${ENV_FILE}
         volumes:
             - ./storperf-master/:/storperf
+            - ./certs:/etc/ssl/certs/
         links:
             - storperf-graphite
 

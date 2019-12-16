@@ -11,7 +11,7 @@ import json
 from time import strptime
 import unittest
 
-import mock
+from unittest import mock
 
 from storperf.carbon import converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
@@ -70,7 +70,7 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         emitter.transmit_metrics(result, None)
 
         self.assertEqual("host.run-name.key 123.0 975542400\n",
-                         data[1],
+                         data[1].decode('utf-8'),
                          data[1])
 
     @mock.patch("socket.socket")
@@ -91,7 +91,7 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         emitter.transmit_metrics(result, None)
 
         self.assertEqual("None.commit-marker 975542400 975542400\n",
-                         data[1],
+                         data[1].decode('utf-8'),
                          data[1])
 
     @mock.patch("socket.socket")
