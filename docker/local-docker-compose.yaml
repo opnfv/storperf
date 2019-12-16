@@ -17,8 +17,10 @@ services:
             args:
                 ARCH: ${ARCH}
         env_file: ${ENV_FILE}
+        user: ${CURRENT_UID}
         volumes:
             - ./storperf-master/:/storperf
+            - ./certs:/etc/ssl/certs/
         links:
             - storperf-graphite
 
@@ -28,6 +30,7 @@ services:
             context: storperf-reporting
             args:
                 ARCH: ${ARCH}
+        user: ${CURRENT_UID}
         volumes:
             - ./storperf-reporting/:/home/opnfv/storperf-reporting
 

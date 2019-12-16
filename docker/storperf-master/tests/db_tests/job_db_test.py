@@ -11,8 +11,7 @@ import os
 import sqlite3
 import unittest
 
-import mock
-
+from unittest import mock
 from storperf.db.job_db import JobDB
 from storperf.workloads.rr import rr
 
