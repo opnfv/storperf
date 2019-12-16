@@ -7,26 +7,25 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-import StringIO
-from datetime import datetime
-import json
-import logging
-from multiprocessing.pool import ThreadPool
-import os
-import socket
-from time import sleep
-import uuid
 
-import paramiko
+from _io import StringIO
+from datetime import datetime
+from multiprocessing.pool import ThreadPool
 from scp import SCPClient
 from snaps.config.stack import StackConfig
 from snaps.openstack.create_stack import OpenStackHeatStack
 from snaps.openstack.os_credentials import OSCreds
 from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 from snaps.thread_utils import worker_pool
-
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
+from time import sleep
+import json
+import logging
+import os
+import paramiko
+import socket
+import uuid
 
 
 class ParameterError(Exception):

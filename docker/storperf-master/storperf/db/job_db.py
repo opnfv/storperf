@@ -220,7 +220,7 @@ class JobDB(object):
 
             db = sqlite3.connect(JobDB.db_name)
             cursor = db.cursor()
-            for param, value in params.iteritems():
+            for param, value in params.items():
                 cursor.execute(
                     """insert into job_params
                                (job_id,
