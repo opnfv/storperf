@@ -10,7 +10,7 @@
 import os
 import unittest
 
-import mock
+from unittest import mock
 
 from storperf.utilities.data_handler import DataHandler
 
@@ -311,10 +311,10 @@ class DataHandlerTest(unittest.TestCase):
     def test_pass_criteria(self):
         metadata = {
             "details": {
-              "steady_state": {
-                "_warm_up.queue-depth.8.block-size.16384": False,
-                "rw.queue-depth.4.block-size.16384": True
-              }
+                "steady_state": {
+                    "_warm_up.queue-depth.8.block-size.16384": False,
+                    "rw.queue-depth.4.block-size.16384": True
+                }
             },
         }
         criteria = self.data_handler._determine_criteria(metadata)
@@ -325,11 +325,11 @@ class DataHandlerTest(unittest.TestCase):
     def test_fail_criteria(self):
         metadata = {
             "details": {
-              "steady_state": {
-                "_warm_up.queue-depth.8.block-size.16384": False,
-                "rw.queue-depth.4.block-size.16384": True,
-                "rw.queue-depth.8.block-size.16384": False
-              }
+                "steady_state": {
+                    "_warm_up.queue-depth.8.block-size.16384": False,
+                    "rw.queue-depth.4.block-size.16384": True,
+                    "rw.queue-depth.8.block-size.16384": False
+                }
             },
         }
         criteria = self.data_handler._determine_criteria(metadata)

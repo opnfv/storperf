@@ -11,7 +11,7 @@ import json
 from time import strptime
 import unittest
 
-import mock
+from unittest import mock
 
 from storperf.carbon import converter
 from storperf.carbon.emitter import CarbonMetricTransmitter
@@ -69,9 +69,15 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         emitter.carbon_port = self.listen_port
         emitter.transmit_metrics(result, None)
 
+        element = ""
+        for element in data:
+            element = element.decode('utf-8')
+            if element.startswith("host.run-name"):
+                break
+
         self.assertEqual("host.run-name.key 123.0 975542400\n",
-                         data[1],
-                         data[1])
+                         element,
+                         data)
 
     @mock.patch("socket.socket")
     @mock.patch("time.gmtime")
@@ -90,9 +96,14 @@ class CarbonMetricTransmitterTest(unittest.TestCase):
         emitter.carbon_port = self.listen_port
         emitter.transmit_metrics(result, None)
 
+        element = ""
+        for element in data:
+            element = element.decode('utf-8')
+            if element.startswith("None.commit-marker"):
+                break
         self.assertEqual("None.commit-marker 975542400 975542400\n",
-                         data[1],
-                         data[1])
+                         element,
+                         data)
 
     @mock.patch("socket.socket")
     def test_connect_fails(self, mock_socket):

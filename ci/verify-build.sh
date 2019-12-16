@@ -35,6 +35,8 @@ export ARCH=${ARCH}
 
 echo Using $ARCH architecture
 
+export CURRENT_UID=$(id -u):$(id -g)
+
 docker-compose -f local-docker-compose.yaml down
 docker-compose -f local-docker-compose.yaml build
 docker-compose -f local-docker-compose.yaml up -d

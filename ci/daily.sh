@@ -26,13 +26,13 @@ git clone --depth 1 https://gerrit.opnfv.org/gerrit/releng "${WORKSPACE}/ci/job/
 rm -rf "${WORKSPACE}/ci/job/joid"
 git clone --depth 1 https://gerrit.opnfv.org/gerrit/joid "${WORKSPACE}/ci/job/joid"
 
-virtualenv "${WORKSPACE}/ci/job/storperf_daily_venv"
+python3 -m venv "${WORKSPACE}/ci/job/storperf_daily_venv"
 # shellcheck source=/dev/null
 source "${WORKSPACE}/ci/job/storperf_daily_venv/bin/activate"
 
-pip install --upgrade setuptools==40.5.0
-pip install python-openstackclient==3.16.1
-pip install python-heatclient==1.16.1
+python3 -m pip install --upgrade setuptools==40.5.0
+python3 -m pip install python-openstackclient==3.16.1
+python3 -m pip install python-heatclient==1.16.1
 
 "${WORKSPACE}/ci/generate-admin-rc.sh"
 
