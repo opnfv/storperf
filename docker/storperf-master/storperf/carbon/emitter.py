@@ -40,19 +40,19 @@ class CarbonMetricTransmitter():
                     message = "%s %s %s\n" \
                         % (key, value, timestamp)
                     self.logger.debug("Metric: " + message.strip())
-                    carbon_socket.send(message)
+                    carbon_socket.send(message.encode('utf-8'))
                 except ValueError:
                     self.logger.debug("Ignoring non numeric metric %s %s"
                                       % (key, value))
 
             message = "%s.commit-marker %s %s\n" \
                 % (commit_marker, timestamp, timestamp)
-            carbon_socket.send(message)
+            carbon_socket.send(message.encode('utf-8'))
             self.logger.debug("Marker %s" % message.strip())
             self.logger.info("Sent metrics to %s:%s with timestamp %s"
                              % (self.host, self.port, timestamp))
 
-        except Exception, e:
+        except Exception as e:
             self.logger.error("While notifying carbon %s:%s %s"
                               % (self.host, self.port, e))
 

@@ -7,11 +7,11 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 ##############################################################################
 
-from StringIO import StringIO
 import json
 import unittest
 
 from storperf.fio.fio_invoker import FIOInvoker
+from io import BytesIO
 
 
 class Test(unittest.TestCase):
@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         self.fio_invoker.register(self.event)
         string = json.dumps(self.simple_dictionary, indent=4, sort_keys=True)
 
-        output = StringIO(string + "\n")
+        output = BytesIO((string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(self.simple_dictionary, self.metric)
@@ -43,7 +43,7 @@ class Test(unittest.TestCase):
         self.fio_invoker.register(self.event)
         string = json.dumps(self.simple_dictionary, indent=4, sort_keys=True)
         terminating = "fio: terminating on signal 2\n"
-        output = StringIO(terminating + string + "\n")
+        output = BytesIO((terminating + string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(self.simple_dictionary, self.metric)
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         self.fio_invoker.register(self.event)
         string = "{'key': 'value'}"
 
-        output = StringIO(string + "\n")
+        output = BytesIO((string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(None, self.metric)
@@ -61,7 +61,7 @@ class Test(unittest.TestCase):
         self.fio_invoker.register(self.event)
         string = "{'key':\n}"
 
-        output = StringIO(string + "\n")
+        output = BytesIO((string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(None, self.metric)
@@ -71,7 +71,7 @@ class Test(unittest.TestCase):
         string = json.dumps(self.simple_dictionary, indent=4, sort_keys=True)
 
         self.fio_invoker.terminated = True
-        output = StringIO(string + "\n")
+        output = BytesIO((string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(None, self.metric)
@@ -81,7 +81,7 @@ class Test(unittest.TestCase):
         self.fio_invoker.register(self.event)
         string = json.dumps(self.simple_dictionary, indent=4, sort_keys=True)
 
-        output = StringIO(string + "\n")
+        output = BytesIO((string + "\n").encode('utf-8'))
         self.fio_invoker.stdout_handler(output)
 
         self.assertEqual(self.simple_dictionary, self.metric)

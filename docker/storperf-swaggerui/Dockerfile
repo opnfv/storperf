@@ -13,7 +13,7 @@
 ##
 
 ARG ARCH=x86_64
-ARG ALPINE_VERSION=v3.6
+ARG ALPINE_VERSION=v3.10
 FROM node:10-alpine
 
 RUN ulimit -n 1024
