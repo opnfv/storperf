@@ -54,6 +54,8 @@ class ThreadGate(object):
 
             for k, v in self._registrants.items():
                 time_since_last_report = now - v
+                self.logger.info("Type of time_since = " +
+                                 str(type(time_since_last_report)))
                 if time_since_last_report > self._timeout:
                     self.logger.debug("Registrant %s last reported %s ago",
                                       k, time_since_last_report)

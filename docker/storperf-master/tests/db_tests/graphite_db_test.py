@@ -9,8 +9,7 @@
 
 import unittest
 
-import mock
-
+from unittest import mock
 from storperf.db.graphite_db import GraphiteDB
 
 

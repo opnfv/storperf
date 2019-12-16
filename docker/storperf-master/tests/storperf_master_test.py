@@ -9,7 +9,7 @@
 
 import unittest
 
-import mock
+from unittest.mock import patch
 
 from storperf.storperf_master import StorPerfMaster
 
@@ -17,8 +17,8 @@ from storperf.storperf_master import StorPerfMaster
 class StorPerfMasterTest(unittest.TestCase):
 
     def setUp(self):
-        with mock.patch("storperf.storperf_master.OSCreds"), \
-                mock.patch(
+        with patch("storperf.storperf_master.OSCreds"), \
+                patch(
                     "storperf.storperf_master.OpenStackHeatStack") as oshs:
             oshs.return_value.get_stack.return_value = None
 

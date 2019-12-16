@@ -32,12 +32,12 @@ class Converter(object):
 
     def resurse_to_flat_dictionary(self, json, prefix=None):
         if type(json) == dict:
-            for k, v in json.items():
+            for k, v in list(json.items()):
                 if prefix is None:
-                    key = k.decode("utf-8").replace(" ", "_")
+                    key = k.replace(" ", "_")
                 else:
-                    key = prefix + "." + k.decode("utf-8").replace(" ", "_")
-                if hasattr(v, '__iter__'):
+                    key = prefix + "." + k.replace(" ", "_")
+                if type(v) is list or type(v) is dict:
                     self.resurse_to_flat_dictionary(v, key)
                 else:
                     self.flat_dictionary[key] = str(v).replace(" ", "_")
@@ -45,7 +45,7 @@ class Converter(object):
             index = 0
             for v in json:
                 index += 1
-                if hasattr(v, '__iter__'):
+                if type(v) is list or type(v) is dict:
                     self.resurse_to_flat_dictionary(
                         v, prefix + "." + str(index))
                 else:

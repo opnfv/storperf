@@ -16,22 +16,22 @@
 
 
 ARG ARCH=x86_64
-ARG ALPINE_VERSION=v3.6
+ARG ALPINE_VERSION=v3.10
 FROM multiarch/alpine:$ARCH-$ALPINE_VERSION
 MAINTAINER Mark Beierl <mark.beierl@dell.com>
-LABEL version="0.1" description="OPNFV Storperf Reporting Container"
+LABEL version="8.0" description="OPNFV Storperf Reporting Container"
 
 ARG BRANCH=master
 
 RUN ulimit -n 1024
 
-RUN apk add --update python py-pip
+RUN apk add --update python3=3.7.5-r1
 
 COPY . /home/opnfv/storperf-reporting
 WORKDIR /home/opnfv/storperf-reporting/src
 
-RUN pip install -r /home/opnfv/storperf-reporting/requirements.txt
+RUN python3 -m pip install -r /home/opnfv/storperf-reporting/requirements.txt
 
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
 
 EXPOSE 5000

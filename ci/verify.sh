@@ -15,17 +15,17 @@ then
     WORKSPACE="$HOME"
 fi
 
-virtualenv $WORKSPACE/storperf_venv
+python3 -m venv $WORKSPACE/storperf_venv
 source $WORKSPACE/storperf_venv/bin/activate
 
-pip install --upgrade setuptools
-pip install autoflake==1.2
-pip install autopep8==1.3.5
-pip install coverage==4.5.1
-pip install flake8==3.5.0
-pip install mock==2.0.0
-pip install nose==1.3.7
-pip install -r docker/storperf-master/requirements.pip
+python3 -m pip  install --upgrade setuptools
+python3 -m pip  install autoflake==1.2
+python3 -m pip  install autopep8==1.3.5
+python3 -m pip  install coverage==4.5.1
+python3 -m pip  install flake8==3.5.0
+python3 -m pip  install mock==2.0.0
+python3 -m pip  install nose==1.3.7
+python3 -m pip  install -r docker/storperf-master/requirements.pip
 
 final_rc=0
 

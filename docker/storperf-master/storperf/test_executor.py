@@ -318,7 +318,7 @@ class TestExecutor(object):
             workload = current_workload['workload']
             self._thread_gate = ThreadGate(
                 len(self.slaves) * min(1, self.volume_count),
-                workload.options['status-interval'])
+                float(workload.options['status-interval']))
 
             self.current_workload = current_workload['name']
 
@@ -362,7 +362,7 @@ class TestExecutor(object):
         workloads = []
 
         if self._custom_workloads:
-            for workload_name in self._custom_workloads.iterkeys():
+            for workload_name in self._custom_workloads.keys():
                 real_name = workload_name
                 if real_name.startswith('_'):
                     real_name = real_name.replace('_', '')
@@ -380,7 +380,7 @@ class TestExecutor(object):
                 workload.id = self.job_db.job_id
 
                 workload_params = self._custom_workloads[workload_name]
-                for param, value in workload_params.iteritems():
+                for param, value in workload_params.items():
                     if param == "readwrite":
                         param = "rw"
                     if param in workload.fixed_options:

@@ -57,7 +57,7 @@ class _base_workload(object):
 
         self.setup()
 
-        for key, value in self.options.iteritems():
+        for key, value in self.options.items():
             if value is not None:
                 args.append('--' + key + "=" + str(value))
             else:
