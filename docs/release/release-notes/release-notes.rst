@@ -2,7 +2,7 @@
 .. http://creativecommons.org/licenses/by/4.0
 
 
-This document provides the release notes for Hunter 1.0 of StorPerf.
+This document provides the release notes for Iruya 1.0 of StorPerf.
 
 .. contents::
    :depth: 3
@@ -17,7 +17,7 @@ Version history
 | **Date**           | **Ver.**           | **Author**         | **Comment**        |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
-| 2018-11-09         | Hunter 1.0         | Mark Beierl        |                    |
+| 2020-01-10         | Iruya 1.0          | Mark Beierl        |                    |
 |                    |                    |                    |                    |
 +--------------------+--------------------+--------------------+--------------------+
 
@@ -25,8 +25,14 @@ Version history
 Important notes
 ----------------
 
-It is now possible to specify arbitrary IP addresses to StorPerf and not
-require OpenStack or Heat for stack creation.
+Heat stack support is being sunsetted in StorPerf Iruya.  Once Kali is released,
+StorPerf will no longer support the following APIs:
+
+/configurations
+/quota
+
+Additionally, the stack_name parameter will no longer be used.  This also means
+that all tests must run using IP addresses.
 
 Summary
 --------
@@ -47,16 +53,16 @@ Release Data
 | **Project**                          | StorPerf                             |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Repo/tag**                         | opnfv-8.0.0                          |
+| **Repo/tag**                         | opnfv-9.0.0                          |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release designation**              | Hunter.8                             |
+| **Release designation**              | Iruya.9                              |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Release date**                     | May 10, 2019                         |
+| **Release date**                     | Jan 10, 2020                         |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
-| **Purpose of the delivery**          |                                      |
+| **Purpose of the delivery**          | Regular release                      |
 |                                      |                                      |
 +--------------------------------------+--------------------------------------+
 
@@ -66,7 +72,7 @@ Version change
 Module version changes
 -----------------------
 
-No changes to any modules.
+All modules have been upgraded to use python3.
 
 Reason for version
 ===================
@@ -76,8 +82,7 @@ Reason for version
 Features additions
 -------------------
 
-* STORPERF-265 Add support for stackless (IP address) runs
-* STORPERF-228 Allow user to specify list of IP addresses for StorPerf test
+* STORPERF-268 Allow user to specify list of IP addresses for StorPerf test
 
 Bug Fixes
 ----------
@@ -109,6 +114,9 @@ Documentation
 --------------
 
 - :ref:`User Guide <storperf-userguide>`
+
+Note: The quotas and configurations apis are being sunsetted with the next
+release.
 
 Known Limitations, Issues and Workarounds
 ------------------------------------------

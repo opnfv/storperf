@@ -38,6 +38,8 @@ via a Heat Stack, or it can run in stackless mode, where it connects
 directly to the IP addresses supplied, regardless of how the slave
 was created or even if it is an OpenStack VM.
 
+Note: Stack support in StorPerf will be deprecated as of the next release.
+
 Configure The Environment for OpenStack Usage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
