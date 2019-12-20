@@ -596,7 +596,8 @@ class WarmUpModel:
         'mkfs': fields.String,
         'mount_point': fields.String,
         'file_size': fields.String,
-        'file_count': fields.String
+        'nrfiles': fields.String,
+        'numjobs': fields.String,
     }
 
 

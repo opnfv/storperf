@@ -8,8 +8,8 @@
 ##############################################################################
 
 
-from _io import StringIO
 from datetime import datetime
+from io import StringIO
 from multiprocessing.pool import ThreadPool
 from scp import SCPClient
 from snaps.config.stack import StackConfig
@@ -19,6 +19,7 @@ from snaps.openstack.utils import heat_utils, cinder_utils, glance_utils
 from snaps.thread_utils import worker_pool
 from storperf.db.job_db import JobDB
 from storperf.test_executor import TestExecutor
+from storperf.utilities import ip_helper
 from time import sleep
 import json
 import logging
@@ -364,7 +365,7 @@ class StorPerfMaster(object):
     def ssh_key(self):
         if self._ssh_key is None:
             return None
-        key = StringIO.StringIO(self._ssh_key)
+        key = StringIO(self._ssh_key)
         pkey = paramiko.RSAKey.from_private_key(key)
         key.close()
         return pkey
@@ -578,7 +579,8 @@ class StorPerfMaster(object):
         timer = 10
         while not alive:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = s.connect_ex((slave, 22))
+            host, port = ip_helper.parse_address_and_port(slave)
+            result = s.connect_ex((host, port))
             s.close()
 
             if result:
@@ -596,19 +598,22 @@ class StorPerfMaster(object):
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         if self.username and self.password:
             ssh.connect(
-                slave,
+                host,
+                port=port,
                 username=self.username,
                 password=self.password,
                 timeout=2)
         elif self.username and self.ssh_key:
             ssh.connect(
-                slave,
+                host,
+                port=port,
                 username=self.username,
                 pkey=self.ssh_key,
                 timeout=2)
         else:
             ssh.connect(
                 slave,
+                port=port,
                 username='storperf',
                 key_filename='storperf/resources/ssh/storperf_rsa',
                 timeout=2)

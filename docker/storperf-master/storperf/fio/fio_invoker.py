@@ -11,6 +11,7 @@ import json
 import logging
 from threading import Thread
 import paramiko
+from storperf.utilities import ip_helper
 
 
 class FIOInvoker(object):
@@ -158,18 +159,25 @@ class FIOInvoker(object):
     def _ssh_client(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        address, port = ip_helper.parse_address_and_port(self.remote_host)
         if 'username' in self.metadata and 'password' in self.metadata:
-            ssh.connect(self.remote_host,
+            ssh.connect(address,
+                        port=port,
                         username=self.metadata['username'],
-                        password=self.metadata['password'])
+                        password=self.metadata['password'],
+                        timeout=5)
             return ssh
         elif 'username' in self.metadata and 'ssh_key' in self.metadata:
-            ssh.connect(self.remote_host,
+            ssh.connect(address,
+                        port=port,
                         username=self.metadata['username'],
-                        pkey=self.metadata['ssh_key'])
+                        pkey=self.metadata['ssh_key'],
+                        timeout=5)
             return ssh
         else:
-            ssh.connect(self.remote_host, username='storperf',
+            ssh.connect(address,
+                        port=port,
+                        username='storperf',
                         key_filename='storperf/resources/ssh/storperf_rsa',
-                        timeout=2)
+                        timeout=5)
             return ssh
