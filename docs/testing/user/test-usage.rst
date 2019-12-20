@@ -108,7 +108,33 @@ hypervisor, or even a bare metal server.  In the bare metal case, it even
 allows for performing RADOS or RDB performance tests using the appropriate
 FIO engine.
 
+If the slave SSH server is listening to a port other than 22, the port number
+can be specified as part of the address as follows:
 
+IPv4 example for port 2222:
+
+.. code-block::
+    192.168.1.10:2222
+
+IPv6 example for port 2222:
+
+.. code-block::
+    [1fe80::58bb:c8b:f2f2:c888]:2222
+
+Helper Container Image for Workloads
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A new docker container is provided with StorPerf that can be used to test
+under docker or Kubernetes environments.  It has hard coded credentials
+of root/password with an SSH server built it, so be cautious about security
+concerns when using this image.  It listens internally on port 22, so that
+port must be exposed to a free port on the host in order for StorPerf to
+reach the synthetic workload container.
+
+.. code-block:: bash
+
+    docker run --name=storperf-workloadagent -p 2222:22
+       opnfv/storperf-workloadagent:latest
 
 Initialize the Target Volumes
 =============================
