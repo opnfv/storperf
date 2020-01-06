@@ -17,6 +17,7 @@ from flask_restful import Resource, Api, fields
 from flask_restful_swagger import swagger
 
 from storperf.storperf_master import StorPerfMaster
+import flask
 
 
 class ReverseProxied(object):
@@ -136,7 +137,9 @@ class Configure(Resource):
         self.logger = logging.getLogger(__name__)
 
     @swagger.operation(
-        notes='Fetch the current agent configuration',
+        notes='''Fetch the current agent configuration.
+
+        This API is in sunset until the next OPNFV release.''',
         parameters=[
             {
                 "name": "stack_name",
@@ -154,7 +157,7 @@ class Configure(Resource):
         if stack_name:
             storperf.stack_name = stack_name
 
-        return jsonify({'agent_count': storperf.agent_count,
+        json = jsonify({'agent_count': storperf.agent_count,
                         'agent_flavor': storperf.agent_flavor,
                         'agent_image': storperf.agent_image,
                         'public_network': storperf.public_network,
@@ -167,10 +170,15 @@ class Configure(Resource):
                         'stack_name': storperf.stack_name,
                         'slave_addresses': storperf.slave_addresses,
                         'stack_id': storperf.stack_id})
+        response = flask.make_response(json)
+        response.headers['Sunset'] = "Tue. 31 Mar 2020 23:59:59 GMT"
+        return response
 
     @swagger.operation(
         notes='''Set the current agent configuration and create a stack in
-        the controller.  Returns once the stack create is completed.''',
+        the controller.  Returns once the stack create is completed.
+
+        This API is in sunset until the next OPNFV release.''',
         parameters=[
             {
                 "name": "configuration",
@@ -228,7 +236,9 @@ class Configure(Resource):
             abort(400, str(e))
 
     @swagger.operation(
-        notes='Deletes the agent configuration and the stack',
+        notes='''Deletes the agent configuration and the stack
+
+        This API is in sunset until the next OPNFV release.''',
         parameters=[
             {
                 "name": "stack_name",
@@ -245,7 +255,10 @@ class Configure(Resource):
         if stack_name:
             storperf.stack_name = stack_name
         try:
-            return jsonify({'stack_id': storperf.delete_stack()})
+            json = jsonify({'stack_id': storperf.delete_stack()})
+            response = flask.make_response(json)
+            response.headers['Sunset'] = "Tue. 31 Mar 2020 23:59:59 GMT"
+            return response
         except Exception as e:
             self.logger.exception(e)
             abort(400, str(e))
@@ -354,7 +367,8 @@ for any single test iteration.
 
 "workload":if specified, the workload to run. Defaults to all.
 
-"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+"stack_name": This field is in sunset until the next OPNVF release.
+The target stack to use.  Defaults to StorPerfAgentGroup, or
 the last stack named.
                 """,
                 "required": True,
@@ -487,7 +501,8 @@ for any single test iteration.
 
 "workloads": A JSON formatted map of workload names and parameters for FIO.
 
-"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+"stack_name": This field is in sunset until the next OPNFV release.
+The target stack to use.  Defaults to StorPerfAgentGroup, or
 the last stack named.  Explicitly specifying null will bypass all Heat Stack
 operations and go directly against the IP addresses specified.
 
@@ -602,7 +617,8 @@ target is specified, it will default to /dev/vdb
 
 "target": The target device to use.
 
-"stack_name": The target stack to use.  Defaults to StorPerfAgentGroup, or
+"stack_name": This field is in sunset until the next OPNFV release.
+The target stack to use.  Defaults to StorPerfAgentGroup, or
 the last stack named.  Explicitly specifying null will bypass all Heat Stack
 operations and go directly against the IP addresses specified.
 
@@ -717,12 +733,18 @@ class Quota(Resource):
         notes='''Fetch the current Cinder volume quota.  This value limits
         the number of volumes that can be created, and by extension, defines
         the maximum number of agents that can be created for any given test
-        scenario''',
+        scenario
+
+
+        This API is in sunset until the next OPNFV release.''',
         type=QuotaModel.__name__
     )
     def get(self):
-        quota = storperf.volume_quota
-        return jsonify({'quota': quota})
+        quota = []  # storperf.volume_quota
+        # return jsonify({'quota': quota})
+        response = flask.make_response(jsonify({'quota': quota}))
+        response.headers['Sunset'] = "Tue. 31 Mar 2020 23:59:59 GMT"
+        return response
 
 
 def setup_logging(default_path='logging.json',
