@@ -30,7 +30,7 @@ RUN apk add --update python3=3.7.5-r1
 COPY . /home/opnfv/storperf-reporting
 WORKDIR /home/opnfv/storperf-reporting/src
 
-RUN python3 -m pip install -r /home/opnfv/storperf-reporting/requirements.txt
+RUN python3 -m pip install --no-cache-dir -r /home/opnfv/storperf-reporting/requirements.txt
 
 CMD ["python3", "app.py"]
 

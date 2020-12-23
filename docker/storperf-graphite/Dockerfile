@@ -29,7 +29,7 @@ RUN apk add --no-cache \
   py2-pip \
   supervisor \
   tini \
-  && pip install \
+  && pip install --no-cache-dir \
   supervisor-stdout \
   gunicorn
 
